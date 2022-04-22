@@ -1,0 +1,8 @@
+.vscode
+bin
+obj
+Properties
+appsettings.Development.json
+appsettings.json
+LogiWeb.csproj
+Program.cs
