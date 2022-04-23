@@ -2,7 +2,7 @@ using logiWeb.Models;
 
 namespace logiWeb.Models; 
 
-abstract class PessoaJuridica : Pessoa 
+public abstract class PessoaJuridica : Pessoa 
 {
   public string cnpj {get; set;}
 
