@@ -1,0 +1,58 @@
+@{
+  Layout = "~/Views/Templates/_Layout.cshtml";
+  ViewBag.Title = "Página de login"; 
+}
+
+<style>
+  body{
+    background: whitesmoke !important;
+  }
+  [data-invalid]{
+    visibility: hidden;
+  }
+</style>
+<div class="container">
+    <div class="row vh-100 justify-content-center">
+      <div class="col-12 col-md-3 ">
+        <div class="d-flex  h-100 flex-column align-items-center justify-content-center">
+           <div class="shadow bg-white rounded gap-3 p-5 d-flex flex-column">
+              <div class="col-12 text-center" >
+                <img src="~/images/logo.svg" class="mb-2" style="max-width: 250px; max-height:250px;" alt="Logo - LogiWeb" >
+                <div id='msg_usuario_senha_invalidos' class="text-danger fw-bold"style="visibility: hidden;" >
+                  Usuário/Senha inválidos!
+                </div>
+              </div>
+              <div class="col-12 ">
+                <label for="login">
+                  Login 
+                </label>
+                <div class="input-group input-group-sm">
+                  <input id="login" type="text" class="form-control">
+                </div>
+                <small data-invalid="login" class="text-danger">Preencha este campo!</small>
+            </div>
+            <div class="col-12">
+              <label for="senha">
+                Senha
+              </label>
+              <div class="input-group input-group-sm">
+                <input id="senha" type="password" class="form-control">
+              </div>
+              <small data-invalid="senha" class="text-danger">Preencha este campo!</small>
+            </div>
+            <div class="col-12">
+               <div class="d-flex justify-content-center">
+                  <button id="btAcessar" class="btn btn-dark">
+                    <i class="fa-solid fa-arrow-right-to-bracket"></i> Acessar
+                  </button>
+               </div>
+            </div>
+           </div>
+        </div>
+      </div>  
+    </div>
+</div>
+
+@section events {
+     <script src="~/js/events/login.js"></script>
+}

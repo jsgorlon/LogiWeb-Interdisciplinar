@@ -1,6 +1,7 @@
-namespace logiWeb.Models;
+using logiWeb.Models; 
+namespace logiWeb.Models; 
 
-class Funcionario : Pessoa
+public class Funcionario : PessoaFisica 
 {
   
 }
