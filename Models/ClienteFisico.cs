@@ -3,10 +3,15 @@ using logiWeb.Models;
 
 namespace logiWeb.Models; 
 
-public abstract class ClienteFisico : PessoaFisica 
+public class ClienteFisico : PessoaFisica
 {
-  public ClienteFisico(string Nome, string Cpf, string Rg, DateOnly DataNasc)
-  {
-
-  }
+  // #TODO Verificar se há necessidade de manter método construdor
+  // public ClienteFisico(string Nome, string email, string cpf, string rg, DateOnly datanasc)
+  // {
+  //   Nome =  Nome;
+  //   Email = email;
+  //   Cpf = cpf;
+  //   Rg =  rg;
+  //   DataNasc = datanasc;
+  // }
 }
