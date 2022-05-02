@@ -5,10 +5,9 @@ namespace logiWeb.Models;
 
 public class Atendente : Funcionario 
 {
+  public bool CriarOrdem() 
+  {
 
-   public bool CriarOrdem() 
-   {
-
-     return true; 
-   }
+    return true; 
+  }
 }

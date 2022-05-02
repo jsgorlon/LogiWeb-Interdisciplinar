@@ -12,7 +12,7 @@ public class OperadorLogistico : Funcionario
      return true; 
    }
 
-   public bool RemoverEntrega(Entrega entrega)
+   public bool RemoverEntrega()
    {
      return true; 
    }
