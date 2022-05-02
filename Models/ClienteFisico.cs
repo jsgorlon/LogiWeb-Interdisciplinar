@@ -1,4 +1,3 @@
-
 using logiWeb.Models;
 
 namespace logiWeb.Models; 

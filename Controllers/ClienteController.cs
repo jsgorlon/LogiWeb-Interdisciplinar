@@ -5,28 +5,27 @@ using Microsoft.AspNetCore.Mvc;
 namespace logiWeb.Controllers; 
 public class ClienteController : Controller
 {
+    private ClienteRepository repository = new ClienteRepository();
+
     [HttpGet]
-    public ActionResult Index()
+    public JsonResult Index()
     {
         // #TODO retorna a visualização de ClientesFisicos apenas como um placeholder
-        ClienteRepository repository = new ClienteRepository();
-        List<ClienteFisico> clientes = repository.MostrarClientesFisicos();
-        return View(clientes);
+        List<ClienteFisico> clientes = this.repository.MostrarClientesFisicos();
+        return Json(clientes);
     }
 
     [HttpGet]
-    public ActionResult IndexClienteFisico()
+    public JsonResult IndexClientesFisico()
     {
-        ClienteRepository repository = new ClienteRepository();
-        List<ClienteFisico> clientes = repository.MostrarClientesFisicos();
-        return View(clientes);
+        List<ClienteFisico> clientes = this.repository.MostrarClientesFisicos();
+        return Json(clientes);
     }
 
-    public ActionResult IndexClienteJuridico()
+    public JsonResult IndexClientesJuridico()
     {
-        ClienteRepository repository = new ClienteRepository();
-        List<ClienteJuridico> clientes = repository.MostrarClientesJuridicos();
-        return View(clientes);
+        List<ClienteJuridico> clientes = this.repository.MostrarClientesJuridicos();
+        return Json(clientes);
     }
 
     [HttpGet]
@@ -38,7 +37,6 @@ public class ClienteController : Controller
     [HttpPost]
     public ActionResult Cadastrar(IFormCollection form)
     {
-        ClienteRepository repository = new ClienteRepository();
         if (form.ContainsKey("Cpf"))
         {
             ClienteFisico cliente = new ClienteFisico();
@@ -47,7 +45,7 @@ public class ClienteController : Controller
             cliente.Cpf = form["Cpf"];
             cliente.Rg = form["Rg"];
             cliente.DatNasc = DateOnly.Parse(form["DatNasc"]);
-            repository.CadastrarClienteFisico(cliente);
+            this.repository.CadastrarClienteFisico(cliente);
         }
         else
         {
@@ -56,7 +54,7 @@ public class ClienteController : Controller
             cliente.Email = form["Email"];
             cliente.Cnpj = form["Cnpj"];
             cliente.RazaoSocial = form["RazaoSocial"];
-            repository.CadastrarClienteJuridico(cliente);
+            this.repository.CadastrarClienteJuridico(cliente);
         }
         return RedirectToAction("Index");
     }
