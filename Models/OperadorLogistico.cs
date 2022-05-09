@@ -1,21 +1,17 @@
-
-using logiWeb.Models;
-
-namespace logiWeb.Models;
-
-public class OperadorLogistico : Funcionario 
+namespace logiWeb.Models
 {
-  // [Params Motorista motorista, Ordem ordem]
-   public bool CriarEntrega() 
-   {
+  public class OperadorLogistico : Funcionario 
+  {
+    // [Params Motorista motorista, Ordem ordem]
+    public bool CriarEntrega() 
+    {
 
-     return true; 
-   }
+      return true; 
+    }
 
-   public bool RemoverEntrega()
-   {
-     return true; 
-   }
-
-   
+    public bool RemoverEntrega()
+    {
+      return true; 
+    }
+  }
 }

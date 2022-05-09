@@ -1,13 +1,11 @@
-
-using logiWeb.Models;
-
-namespace logiWeb.Models;
-
-public class Atendente : Funcionario 
+namespace logiWeb.Models
 {
-  public bool CriarOrdem() 
+  public class Atendente : Funcionario 
   {
+    public bool CriarOrdem() 
+    {
 
-    return true; 
+      return true; 
+    }
   }
 }

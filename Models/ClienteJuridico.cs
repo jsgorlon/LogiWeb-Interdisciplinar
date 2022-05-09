@@ -1,12 +1,7 @@
-
-using logiWeb.Models;
-
-
-public class ClienteJuridico : PessoaJuridica 
+namespace logiWeb.Models
 {
-    // #TODO Verificar se há necessidade de manter método construdor
-    // public ClienteJuridico(string Nome, string Email, string Cnpj, string RazaoSocial)
-    // {
-
-    // }
+    public class ClienteJuridico : PessoaJuridica
+    {
+        
+    }
 }

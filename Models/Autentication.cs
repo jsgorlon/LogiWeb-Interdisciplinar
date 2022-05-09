@@ -1,14 +1,12 @@
-
-namespace logiWeb.Models; 
-
-using logiWeb.Models; 
-class Autentication 
+namespace logiWeb.Models
 {
-
-  public bool auth(string login, string senha)
+  class Autentication 
   {
-    
-    
-    return true; 
+    public bool auth(string login, string senha)
+    {
+      
+      
+      return true; 
+    }
   }
 }

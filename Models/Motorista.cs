@@ -1,15 +1,13 @@
-
-using logiWeb.Models;
-
-namespace logiWeb.Models;
-
-public class Motorista : Funcionario 
+namespace logiWeb.Models
 {
+  public class Motorista : Funcionario 
+  {
 
-    // [Params Ordem ordem Cliente cliente]
-   public bool AtualizarStatusOrdem() 
-   {
+      // [Params Ordem ordem Cliente cliente]
+    public bool AtualizarStatusOrdem() 
+    {
 
-     return true; 
-   }
+      return true; 
+    }
+  }
 }
