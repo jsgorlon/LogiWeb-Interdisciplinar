@@ -6,22 +6,33 @@ namespace logiWeb.Controllers;
 public class FuncionarioController : Controller
 {
     private IFuncionarioRepository repository;
+    private ICargoRepository cargoRepository;
 
-    public FuncionarioController(IFuncionarioRepository repository)
+    public FuncionarioController(IFuncionarioRepository repository, ICargoRepository cargoRepository)
     {
         this.repository = repository;
+        this.cargoRepository = cargoRepository;
     }
 
     [HttpGet]
-    public JsonResult Mostrar()
+    public JsonResult Index()
     {
         List<Funcionario> funcionarios = this.repository.Mostrar();
-        return Json(funcionarios);
+        List<Cargo> cargos = cargoRepository.Mostrar();
+        return Json(funcionarios, cargos);
+    }
+
+    public ActionResult FiltroPorCargo(int id_cargo)
+    {
+        ViewBag.Cargos = this.cargoRepository.Mostrar();
+        List<Funcionario> funcionarios = this.repository.MostrarPorCargo(id_cargo);
+        return View("index", Json(funcionarios));
     }
 
     [HttpGet]
     public ActionResult Cadastrar()
     {
+        ViewBag.Cargos = cargoRepository.Mostrar();
         return View();
     }
 
@@ -49,7 +60,7 @@ public class FuncionarioController : Controller
     [HttpPost]
     public ActionResult Atualizar(int id, Funcionario funcionario)
     {
-        this.repository.Atualizar(id, funcionario); //TODO 
+        this.repository.Atualizar(id, funcionario);
         return RedirectToAction("Mostrar");
     }
 }

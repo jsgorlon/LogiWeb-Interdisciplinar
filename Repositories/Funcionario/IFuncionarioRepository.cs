@@ -6,6 +6,7 @@ namespace logiWeb.Repositories
     {
         void Cadastrar(Funcionario funcionario);
         List<Funcionario> Mostrar();
+        List<Funcionario> MostrarPorCargo(int id);
         void Atualizar(int id, Funcionario funcionario);
         void Excluir(int id);
     }
