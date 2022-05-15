@@ -22,7 +22,7 @@
             <th>NASCIMENTO</th>
             <th>DATA CADASTRO</th>
         </tr>
-        @foreach(ClienteFisico c in Model)
+        @foreach(Cliente c in Model)
         {
         <tr>
             <td>@c.Id</td>
@@ -32,6 +32,7 @@
             <td>@c.Rg</td>
             <td>@c.DatNasc</td>
             <td>@c.DatCad</td>
+            <td>@c.Ativo</td>
         </tr>
         }
 </table>

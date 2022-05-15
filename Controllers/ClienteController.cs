@@ -5,27 +5,24 @@ using Microsoft.AspNetCore.Mvc;
 namespace logiWeb.Controllers; 
 public class ClienteController : Controller
 {
-    private ClienteRepository repository = new ClienteRepository();
+    private IClienteRepository repository;
+
+    public ClienteController(IClienteRepository repository)
+    {
+        this.repository = repository;
+    }
 
     [HttpGet]
     public JsonResult Index()
     {
-        // #TODO retorna a visualização de ClientesFisicos apenas como um placeholder
-        List<ClienteFisico> clientes = this.repository.MostrarClientesFisicos();
+        List<Cliente> clientes = this.repository.Mostrar();
         return Json(clientes);
     }
 
-    [HttpGet]
-    public JsonResult IndexClientesFisico()
+    public JsonResult MostrarPorCpf(string cpf)
     {
-        List<ClienteFisico> clientes = this.repository.MostrarClientesFisicos();
-        return Json(clientes);
-    }
-
-    public JsonResult IndexClientesJuridico()
-    {
-        List<ClienteJuridico> clientes = this.repository.MostrarClientesJuridicos();
-        return Json(clientes);
+        Cliente cliente = this.repository.MostrarPorCpf(cpf);
+        return Json(cliente);
     }
 
     [HttpGet]
@@ -35,27 +32,31 @@ public class ClienteController : Controller
     }
 
     [HttpPost]
-    public ActionResult Cadastrar(IFormCollection form)
+    public ActionResult Cadastrar(Cliente cliente)
     {
-        if (form.ContainsKey("Cpf"))
-        {
-            ClienteFisico cliente = new ClienteFisico();
-            cliente.Nome = form["Nome"];
-            cliente.Email = form["Email"];
-            cliente.Cpf = form["Cpf"];
-            cliente.Rg = form["Rg"];
-            cliente.DatNasc = DateOnly.Parse(form["DatNasc"]);
-            this.repository.CadastrarClienteFisico(cliente);
-        }
-        else
-        {
-            ClienteJuridico cliente = new ClienteJuridico();
-            cliente.Nome = form["Nome"];
-            cliente.Email = form["Email"];
-            cliente.Cnpj = form["Cnpj"];
-            cliente.RazaoSocial = form["RazaoSocial"];
-            this.repository.CadastrarClienteJuridico(cliente);
-        }
+        this.repository.Cadastrar(cliente);
+        return RedirectToAction("Index");
+    }
+
+    [HttpGet]
+    public JsonResult Atualizar(int id)
+    {
+        var cliente = this.repository.Mostrar(id);
+        return Json(cliente);
+    }
+
+    [HttpPost]
+    public ActionResult Atualizar(int id, Cliente cliente)
+    {
+        this.repository.Atualizar(id, cliente);
+        return RedirectToAction("Index");
+
+    }
+
+    [HttpDelete]
+    public ActionResult Excluir(int id)
+    {
+        this.repository.Excluir(id);
         return RedirectToAction("Index");
     }
 }

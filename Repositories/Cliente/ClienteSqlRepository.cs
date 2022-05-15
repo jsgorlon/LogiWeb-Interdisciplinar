@@ -4,195 +4,206 @@ using logiWeb.Models;
 namespace logiWeb.Repositories
 
 {
-    public class ClienteSqlRepository : DBContext, IClienteFisicoRepository, IClienteJuridicoRepository
+    public class ClienteSqlRepository : DBContext, IClienteRepository
     {
+        ///TODO Escreve Querys do Banco de Dados
         private SqlCommand cmd = new SqlCommand();
-    ///Métodos para Cliente Fisico
-        public void CadastrarClienteFisico(ClienteFisico cliente)
+        public void Cadastrar(Cliente cliente)
         {
-            cmd.Connection = connection;
-            cmd.CommandText = @"";
+            try
+            {
+                cmd.Connection = connection;
+                cmd.CommandText = @"";
 
-            cmd.ExecuteNonQuery();
+                cmd.Parameters.AddWithValue("@nome", cliente.Nome);
+                cmd.Parameters.AddWithValue("@cpf", cliente.Cpf);
+                cmd.Parameters.AddWithValue("@rg", cliente.Rg);
+                cmd.Parameters.AddWithValue("@dataNasc", cliente.DatNasc);
+                cmd.Parameters.AddWithValue("@email", cliente.Email);
+                cmd.Parameters.AddWithValue("@telefone", cliente.Telefone);
+
+                cmd.ExecuteNonQuery();
+            }
+            catch(Exception ex)
+            {
+
+            }
+            finally
+            {
+                Dispose();
+            }
+                
         }
 
-        public List<ClienteFisico> MostrarClienteFisico()
+        public List<Cliente> Mostrar()
         {
-            cmd.Connection = connection;
-            cmd.CommandText = @"SELECT c.id_pessoa, p.nome, p.email, p.data_cad, pf.cpf, pf.rg, pf.data_nasc
-                                FROM clientes AS c
-                                INNER JOIN pessoa_fisica AS pf ON c.id_pessoa = pf.id_pessoa
-                                INNER JOIN pessoas AS p ON c.id_pessoa = p.id
-            ";
-
-            SqlDataReader reader = cmd.ExecuteReader();
-
-            List<ClienteFisico> lista = new List<ClienteFisico>();
-
-            while (reader.Read())
+            try
             {
-                lista.Add(
-                    new ClienteFisico{
+                cmd.Connection = connection;
+                cmd.CommandText = @"SELECT c.id_pessoa, p.nome, p.email, p.data_cad, pf.cpf, pf.rg, pf.data_nasc
+                                    FROM clientes AS c
+                                    INNER JOIN pessoa_fisica AS pf ON c.id_pessoa = pf.id_pessoa
+                                    INNER JOIN pessoas AS p ON c.id_pessoa = p.id
+                                ";
+
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                List<Cliente> lista = new List<Cliente>();
+
+                while (reader.Read())
+                {
+                    lista.Add(
+                        new Cliente
+                        {
+                            Id = (int)reader["id_pessoa"],
+                            Nome = (string)reader["nome"],
+                            Cpf = (string)reader["cpf"],
+                            Rg = (string)reader["rg"],
+                            DatNasc = (DateOnly)reader["data_nasc"],
+                            Email = (string)reader["email"],
+                            Telefone = (string)reader["telefone"],
+                            DatCad = (DateTime)reader["dat_cad"]
+                        }
+                    );
+                }
+                return lista;
+            }
+            catch(Exception ex)
+            {
+                return null;
+            }
+            finally
+            {
+                Dispose();
+            }
+        }
+
+        public Cliente Mostrar(int id)
+        {
+            try
+            {
+                cmd.Connection = connection;
+                cmd.CommandText = @"SELECT p.id, p.nome, p.cpf, p.rg, p.data_nasc, p.email, p.data_cad, c.ativo
+                                    FROM pessoa AS p
+                                    INNER JOIN cliente AS c ON c.id_pessoa = p.id
+                                    WHERE p.id = @id
+                ";
+
+                cmd.Parameters.AddWithValue(@"id", id);
+                SqlDataReader reader = cmd.ExecuteReader();
+                if(reader.Read())
+                {
+                    return new Cliente 
+                    {
                         Id = (int)reader["id_pessoa"],
                         Nome = (string)reader["nome"],
-                        Email = (string)reader["email"],
-                        DatCad = (DateTime)reader["dat_cad"],
                         Cpf = (string)reader["cpf"],
                         Rg = (string)reader["rg"],
                         DatNasc = (DateOnly)reader["data_nasc"],
-                    }
-                );
-            }
-            return lista;
-        }
-
-        public ClienteFisico MostrarClienteFisico(int id)
-        {
-            cmd.Connection = connection;
-            cmd.CommandText = @"SELECT c.id_pessoa, p.nome, p.email, p.data_cad, pf.cpf, pf.rg, pf.data_nasc
-                                FROM clientes AS c
-                                INNER JOIN pessoa_fisica AS pf ON c.id_pessoa = pf.id_pessoa
-                                INNER JOIN pessoas AS p ON c.id_pessoa = p.id
-                                WHERE c.id_pessoa = @id
-            ";
-
-            cmd.Parameters.AddWithValue(@"id", id);
-            SqlDataReader reader = cmd.ExecuteReader();
-            if(reader.Read())
-            {
-                ClienteFisico cliente = new ClienteFisico{
-                    Id = (int)reader["id_pessoa"],
-                    Nome = (string)reader["nome"],
-                    Email = (string)reader["email"],
-                    DatCad = (DateTime)reader["dat_cad"],
-                    Cpf = (string)reader["cpf"],
-                    Rg = (string)reader["rg"],
-                    DatNasc = (DateOnly)reader["data_nasc"],
-                };
-
-                cmd.CommandText = @"SELECT id_pessoa, ddd, nr_telefone
-                                FROM telefones
-                                WHERE id_pessoa = @id
-                ";
-                cmd.Parameters.AddWithValue(@"id", id);
-                reader = cmd.ExecuteReader();
-                List<Telefone> lista = new List<Telefone>();
-                while (reader.Read())
+                        Email = (string)reader["email"],
+                        Telefone = (string)reader["telefone"],
+                        DatCad = (DateTime)reader["dat_cad"],
+                    };
+                }
+                else
                 {
-                    lista.Add(
-                        new Telefone{
-                            DDD = (string)reader["ddd"],
-                            Numero = (string)reader["nr_telefone"],
-                        }
-                    );
+                    return null;
                 }
             }
-            return null;
-        }
-        
-        public void AtualizarClienteFisico(int id, ClienteFisico cliente)
-        {
-            cmd.Connection = connection;
-            cmd.CommandText = @"UPDATE c.id_pessoa, p.nome, p.email, p.data_cad, pf.cpf, pf.rg, pf.data_nasc";
-        }
-
-        public void ExcluirClienteFisico(int id)
-        {
-            cmd.Connection = connection;
-            cmd.CommandText = @"";
-        }
-
-    /// Metodos para Cliente Juridico
-        public void CadastrarClienteJuridico(ClienteJuridico cliente)
-        {
-            cmd.Connection = connection;
-            cmd.CommandText = @"";
-
-            cmd.ExecuteNonQuery();
-        }
-
-        public List<ClienteJuridico> MostrarClienteJuridico()
-        {
-            cmd.Connection = connection;
-            cmd.CommandText = @"SELECT c.id_pessoa, p.nome, p.email, p.data_cad, pj.cnpj, pj.razao_social
-                                FROM clientes AS c
-                                INNER JOIN pessoa_juridica AS pj ON c.id_pessoa = pj.id_pessoa
-                                INNER JOIN pessoas AS p ON c.id_pessoa = p.id
-            ";
-
-            SqlDataReader reader = cmd.ExecuteReader();
-
-            List<ClienteJuridico> lista = new List<ClienteJuridico>();
-
-            while (reader.Read())
+            catch(Exception e)
             {
-                lista.Add(
-                    new ClienteJuridico{
+                return null;
+            }
+            finally
+            {
+                Dispose();
+            }
+        }
+
+        public Cliente MostrarPorCpf(string cpf)
+        {
+            try
+            {
+                cmd.Connection = connection;
+                cmd.CommandText = @"SELECT p.id, p.nome, p.cpf, p.rg, p.data_nasc, p.email, p.data_cad, c.ativo
+                                    FROM pessoa AS p
+                                    INNER JOIN cliente AS c ON c.id_pessoa = p.id
+                                    WHERE p.cpf = @cpf
+                ";
+
+                cmd.Parameters.AddWithValue(@"cpf", cpf);
+                SqlDataReader reader = cmd.ExecuteReader();
+                if(reader.Read())
+                {
+                    return new Cliente 
+                    {
                         Id = (int)reader["id_pessoa"],
                         Nome = (string)reader["nome"],
+                        Cpf = (string)reader["cpf"],
+                        Rg = (string)reader["rg"],
+                        DatNasc = (DateOnly)reader["data_nasc"],
                         Email = (string)reader["email"],
+                        Telefone = (string)reader["telefone"],
                         DatCad = (DateTime)reader["dat_cad"],
-                        Cnpj = (string)reader["cnpj"],
-                        RazaoSocial = (string)reader["razao_social"],
-                    }
-                );
-            }
-            return lista;
-        }
-
-        public ClienteJuridico MostrarClienteJuridico(int id)
-        {
-            cmd.Connection = connection;
-            cmd.CommandText = @"SELECT c.id_pessoa, p.nome, p.email, p.data_cad, pj.cnpj, pj.razao_social
-                                FROM clientes AS c
-                                INNER JOIN pessoa_juridica AS pj ON c.id_pessoa = pj.id_pessoa
-                                INNER JOIN pessoas AS p ON c.id_pessoa = p.id
-                                WHERE c.id_pessoa = @id
-            ";
-
-            cmd.Parameters.AddWithValue(@"id", id);
-            SqlDataReader reader = cmd.ExecuteReader();
-            if(reader.Read())
-            {
-                ClienteJuridico cliente = new ClienteJuridico{
-                    Id = (int)reader["id_pessoa"],
-                    Nome = (string)reader["nome"],
-                    Email = (string)reader["email"],
-                    DatCad = (DateTime)reader["dat_cad"],
-                    Cnpj = (string)reader["cpf"],
-                    RazaoSocial = (string)reader["rg"],
-                };
-
-                cmd.CommandText = @"SELECT id_pessoa, ddd, nr_telefone
-                                FROM telefones
-                                WHERE id_pessoa = @id
-                ";
-                cmd.Parameters.AddWithValue(@"id", id);
-                reader = cmd.ExecuteReader();
-                List<Telefone> lista = new List<Telefone>();
-                while (reader.Read())
-                {
-                    lista.Add(
-                        new Telefone{
-                            DDD = (string)reader["ddd"],
-                            Numero = (string)reader["nr_telefone"],
-                        }
-                    );
+                    };
                 }
+                return null;
             }
-            return null;
+            catch(Exception e)
+            {
+                return null;
+            }
+            finally
+            {
+                Dispose();
+            }
         }
         
-        public void AtualizarClienteJuridico(int id, ClienteJuridico cliente)
+        public void Atualizar(int id, Cliente cliente)
         {
-            cmd.Connection = connection;
-            cmd.CommandText = @"UPDATE c.id_pessoa, p.nome, p.email, p.data_cad, pj.cnpj, pj.razao_social";
+            try
+            {
+                cmd.Connection = connection;
+                cmd.CommandText = @"UPDATE c.id_pessoa, p.nome, p.email, p.data_cad, pf.cpf, pf.rg, pf.data_nasc";
+
+                cmd.Parameters.AddWithValue("@nome", cliente.Nome);
+                cmd.Parameters.AddWithValue("@cpf", cliente.Cpf);
+                cmd.Parameters.AddWithValue("@rg", cliente.Rg);
+                cmd.Parameters.AddWithValue("@dataNasc", cliente.DatNasc);
+                cmd.Parameters.AddWithValue("@email", cliente.Email);
+                cmd.Parameters.AddWithValue("@telefone", cliente.Telefone);
+
+                cmd.ExecuteNonQuery();
+            }
+            catch(Exception ex)
+            {
+
+            }
+            finally
+            {
+                Dispose();
+            }
         }
 
-        public void ExcluirClienteJuridico(int id)
+        public void Excluir(int id)
         {
-            cmd.Connection = connection;
-            cmd.CommandText = @"";
+            try
+            {
+                cmd.Connection = connection;
+                cmd.CommandText = @"";
+
+                cmd.Parameters.AddWithValue("@id", id);
+
+                cmd.ExecuteNonQuery();
+            }
+            catch(Exception ex)
+            {
+
+            }
+            finally
+            {
+                Dispose();
+            }
         }
     }
 }

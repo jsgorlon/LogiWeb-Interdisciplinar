@@ -1,3 +1,4 @@
+using logiWeb.Repositories;
 
 namespace logiWeb
 {
@@ -8,6 +9,9 @@ namespace logiWeb
             
             var builder = WebApplication.CreateBuilder(args);
             builder.Services.AddControllersWithViews();
+            builder.Services.AddTransient<IClienteRepository, ClienteSqlRepository> ();
+            builder.Services.AddTransient<IFuncionarioRepository, FuncionarioSqlRepository> ();
+
             var app = builder.Build();
             
             app.UseStaticFiles(); 
