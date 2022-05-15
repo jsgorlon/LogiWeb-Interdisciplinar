@@ -2,7 +2,6 @@ using System.Data.SqlClient;
 using logiWeb.Models;
 
 namespace logiWeb.Repositories
-
 {
     public class ClienteSqlRepository : DBContext, IClienteRepository
     {
