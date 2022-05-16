@@ -184,5 +184,131 @@ namespace logiWeb.Repositories
                 Dispose();
             }
         }
+
+        public void CadastrarOrdem(Ordem ordem)
+        {
+            try
+            {
+                 cmd.Connection = connection;
+                cmd.CommandText = @"INSERT INTO ORDENS (id_cliente, destino, volume, peso, observacao) 
+                                    VALUES (@id_cliente, @destino, @volume, @peso, @observacao)";
+
+                cmd.Parameters.AddWithValue("@id_cliente", ordem.IdCliente);
+                cmd.Parameters.AddWithValue("@destino", ordem.Destino);
+                cmd.Parameters.AddWithValue("@volume", ordem.Volume);
+                cmd.Parameters.AddWithValue("@peso", ordem.Peso);
+                cmd.Parameters.AddWithValue("@observacao", ordem.Observacao);
+            cmd.ExecuteNonQuery();
+            }
+              catch(Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                Dispose();
+            }
+        }
+
+        public void ExcluirOrdem(int id)
+        {
+            try
+            {
+                
+                cmd.Connection = connection;
+                cmd.CommandText = @"DELETE FROM ORDENS WHERE ID_ORDEM = @ID";
+
+                cmd.Parameters.AddWithValue("@ID", id);
+                cmd.ExecuteNonQuery();
+            }
+              catch(Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                Dispose();
+            }
+        }
+
+        public List<Ordem> MostrarOrdens()
+        {
+            try{
+                cmd.Connection = connection;
+                cmd.CommandText = @"SELECT O.ID_ORDEM, O.ID_CLIENTE, O.DESTINO, O.VOLUME, O.PESO, O.OBSERVACAO, P.NOME
+                                    FROM ORDENS O
+                                    INNER JOIN PESSOA P
+                                        ON O.ID_CLIENTE = P.ID 
+                                    
+                ";
+
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                List<Ordem> lista = new List<Ordem>();
+
+                while (reader.Read())
+                {
+                    lista.Add(
+                        new Ordem{
+                            Id = (int)reader["ID_ORDEM"],
+                            Destino = (string)reader["DESTINO"],
+                            Volume = (int)reader["VOLUME"],
+                            Peso = (decimal)reader["PESO"],
+                            Observacao = (string)reader["OBSERVACAO"],
+                            NomeCliente = (string)reader["NOME"],
+                        }
+                    );
+                }
+                return lista;
+            }catch(Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                Dispose();
+            }
+            
+        }
+
+        public Ordem MostrarOrdem(int id)
+        {
+            try
+            {
+                cmd.Connection = connection;
+                cmd.CommandText = @"SELECT O.ID_ORDEM, O.ID_CLIENTE, O.DESTINO, O.VOLUME, O.PESO, O.OBSERVACAO, P.NOME
+                                    FROM ORDENS O
+                                    INNER JOIN PESSOA P
+                                        ON O.ID_CLIENTE = P.ID 
+                                    WHERE ID_ORDEM = @ID";
+
+                cmd.Parameters.AddWithValue("@ID", id);
+                cmd.ExecuteNonQuery();
+
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                Ordem ordem = new Ordem();
+
+                while (reader.Read())
+                {
+                        
+                    ordem.Id = (int)reader["ID_ORDEM"];
+                    ordem.Destino = (string)reader["DESTINO"];
+                    ordem.Volume = (int)reader["VOLUME"];
+                    ordem.Peso = (decimal)reader["PESO"];
+                    ordem.Observacao = (string)reader["OBSERVACAO"];
+                    ordem.NomeCliente = (string)reader["NOME"];
+                }
+                return ordem;
+            }   
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                Dispose();
+            }
+        }
     }
 }
