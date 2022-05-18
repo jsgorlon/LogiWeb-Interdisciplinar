@@ -24,14 +24,14 @@ CREATE TABLE pessoas(
   telefone  VARCHAR(16)   NULL,
   email     VARCHAR(100)  NULL,
   dat_cad   DATETIME      NOT NULL DEFAULT GETDATE(),
-  ativo     BIT           NOT NULL DEFAULT 1,
   CONSTRAINT pkpessoas_id PRIMARY KEY(id),
   CONSTRAINT ukpessoas_cpf  UNIQUE(cpf)
 );
 
 CREATE TABLE clientes 
 (
-  id_pessoa     INT NOT NULL,
+  id_pessoa INT NOT NULL,
+  ativo     BIT NOT NULL DEFAULT 1,
   CONSTRAINT pkclientes_id_pessoa PRIMARY KEY(id_pessoa),
   CONSTRAINT fkclientes_id_pessoa FOREIGN KEY(id_pessoa) REFERENCES pessoas(id)
 );
@@ -53,6 +53,7 @@ CREATE TABLE funcionarios
   id_cargo  SMALLINT    NOT NULL,
   login     VARCHAR(30) NOT NULL, 
   senha     TEXT        NOT NULL,
+  ativo     BIT         NOT NULL DEFAULT 1,
   CONSTRAINT pkfuncionarios_id_pessoa PRIMARY KEY(id_pessoa),
   CONSTRAINT fkfuncionarios_id_pessoa FOREIGN KEY(id_pessoa) REFERENCES pessoas(id),
   CONSTRAINT ukfuncionarios_login UNIQUE(login)    
