@@ -12,8 +12,6 @@ DROP TABLE IF EXISTS enderecos;
 DROP TABLE IF EXISTS telefones;
 DROP TABLE IF EXISTS cidades;
 DROP TABLE IF EXISTS estados;
-DROP TABLE IF EXISTS pessoa_juridica;
-DROP TABLE IF EXISTS pessoa_fisica;
 DROP TABLE IF EXISTS pessoas;
 
 --- Criação de entidades fortes.
@@ -43,7 +41,7 @@ CREATE TABLE cargos
 (
   id        SMALLINT      IDENTITY, 
   nome      VARCHAR(80)   NOT NULL, 
-  descricao TEXT(350)     NULL,
+  descricao TEXT          NULL,
   salario   NUMERIC(8,2)  NOT NULL, 
   CONSTRAINT pkcargos_id      PRIMARY KEY(id),
   CONSTRAINT ukcargos_nome    UNIQUE(nome), 
@@ -55,7 +53,7 @@ CREATE TABLE funcionarios
   id_pessoa INT         NOT NULL, 
   id_cargo  SMALLINT    NOT NULL,
   login     VARCHAR(30) NOT NULL, 
-  senha     TEXT(15)    NOT NULL, 
+  senha     TEXT        NOT NULL, 
   ativo     BIT         NOT NULL DEFAUlT 1, 
   CONSTRAINT pkfuncionarios_id_pessoa PRIMARY KEY(id_pessoa),
   CONSTRAINT fkfuncionarios_id_pessoa FOREIGN KEY(id_pessoa) REFERENCES pessoas(id),
@@ -95,8 +93,7 @@ CREATE TABLE enderecos
   complemento VARCHAR(100)  NULL, 
   CONSTRAINT pkenderecos_id         PRIMARY KEY(id), 
   CONSTRAINT ukenderecos_cep_nr_casa UNIQUE(cep, nr_casa), 
-  CONSTRAINT fkenderecos_id_cidade FOREIGN KEY(id_cidade) REFERENCES cidades(id),
-  CONSTRAINT fkenderecos_id_pessoa FOREIGN KEY(id_pessoa) REFERENCES pessoas(id) 
+  CONSTRAINT fkenderecos_id_cidade FOREIGN KEY(id_cidade) REFERENCES cidades(id)
 );
 
 CREATE TABLE ordens
@@ -108,8 +105,8 @@ CREATE TABLE ordens
   qtd_itens       SMALLINT      NOT NULL,  
   peso            NUMERIC(15,4) NOT NULL, 
   CONSTRAINT pkordens_id              PRIMARY KEY(id),
-  CONSTRAINT fkordens_id_funcionario  FOREIGN KEY(id_funcionario) REFERENCES funcionarios(id),
-  CONSTRAINT fkordens_id_cliente      FOREIGN KEY(id_cliente)     REFERENCES clientes(id),
+  CONSTRAINT fkordens_id_funcionario  FOREIGN KEY(id_funcionario) REFERENCES funcionarios(id_pessoa),
+  CONSTRAINT fkordens_id_cliente      FOREIGN KEY(id_cliente)     REFERENCES clientes(id_pessoa),
   CONSTRAINT fkordens_id_endereco     FOREIGN KEY(id_endereco) REFERENCES enderecos(id),
   CONSTRAINT ckordens_peso            CHECK(peso>0),
   CONSTRAINT ckordens_qtd_itens       CHECK(qtd_itens>=1)
@@ -130,12 +127,11 @@ CREATE TABLE entregas
 
 CREATE TABLE status 
 (
-    id        SMALLINT    IDENTITY,
-    nome      VARCHAR(50) NOT NULL, 
-    descricao TEXT(350)   NULL, 
-    
-    CONSTRAINT pkstatus_id   PRIMARY KEY(id), 
-    CONSTRAINT ukstatus_nome UNIQUE(nome)
+  id        SMALLINT    IDENTITY,
+  nome      VARCHAR(50) NOT NULL, 
+  descricao TEXT   NULL, 
+  CONSTRAINT pkstatus_id   PRIMARY KEY(id),
+  CONSTRAINT ukstatus_nome UNIQUE(nome)
 ); 
 
 CREATE TABLE status_entrega
@@ -146,4 +142,4 @@ CREATE TABLE status_entrega
   CONSTRAINT pkstatus_entrega_id_status_id_entrega  PRIMARY KEY(id_status, id_entrega),
   CONSTRAINT fkstatus_entrega_id_status             FOREIGN KEY(id_status)  REFERENCES status(id),
   CONSTRAINT fkstatus_entrega_id_entrega            FOREIGN KEY(id_entrega) REFERENCES entregas(id)
-); 
+);
