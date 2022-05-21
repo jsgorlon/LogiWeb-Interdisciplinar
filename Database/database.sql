@@ -13,6 +13,7 @@ DROP TABLE IF EXISTS telefones;
 DROP TABLE IF EXISTS cidades;
 DROP TABLE IF EXISTS estados;
 DROP TABLE IF EXISTS pessoas;
+DROP TABLE IF EXISTS entregas_ordens;
 
 --- Criação de entidades fortes.
 CREATE TABLE pessoas(
@@ -115,7 +116,6 @@ CREATE TABLE ordens
 CREATE TABLE entregas 
 (
   id             INT  IDENTITY, 
-  id_ordem       INT  NOT NULL,  
   id_funcionario INT  NOT NULL,
   id_motorista   INT  NOT NULL,
   CONSTRAINT pkentregas_id              PRIMARY KEY(id), 
@@ -132,6 +132,15 @@ CREATE TABLE status
   CONSTRAINT pkstatus_id   PRIMARY KEY(id),
   CONSTRAINT ukstatus_nome UNIQUE(nome)
 ); 
+
+create table entregas_ordens(
+	ordem_id int not null,
+	entrega_id int not null,
+	status int not null,
+	constraint pk_entregas_ordens primary key(ordem_id, entrega_id),
+	constraint fk_entregas_ordens_ordens foreign key(ordem_id) references ordens(id),
+	constraint fk_entregas_ordens_entregas foreign key(entrega_id) references entregas(id)
+)
 
 CREATE TABLE status_entrega
 (
