@@ -104,6 +104,8 @@ CREATE TABLE ordens
   id_endereco     INT           NOT NULL,
   qtd_itens       SMALLINT      NOT NULL,  
   peso            NUMERIC(15,4) NOT NULL, 
+  volume          VARCHAR(15)   NOT NULL,
+  observacao      VARCHAR(100)  NOT NULL,
   CONSTRAINT pkordens_id              PRIMARY KEY(id),
   CONSTRAINT fkordens_id_funcionario  FOREIGN KEY(id_funcionario) REFERENCES funcionarios(id_pessoa),
   CONSTRAINT fkordens_id_cliente      FOREIGN KEY(id_cliente)     REFERENCES clientes(id_pessoa),

@@ -7,6 +7,7 @@ namespace logiWeb.Repositories
     {
         private SqlCommand cmd = new SqlCommand();
 
+        private IClienteRepository clienteRepository;
         public OrdemSqlRepository(IClienteRepository clienteRepository)
         {
             this.clienteRepository = clienteRepository;
@@ -26,19 +27,6 @@ namespace logiWeb.Repositories
                 cmd.Parameters.AddWithValue("@peso", ordem.Peso);
                 cmd.Parameters.AddWithValue("@observacao", ordem.Observacao);
                 cmd.ExecuteNonQuery();
-
-                cmd.CommandText = "select SCOPE_IDENTITY() as id";
-                SqlDataReader reader = cmd.ExecuteReader();
-
-
-                int idOrdem;
-
-                while (reader.Read())
-                {         
-                    id = (int)reader["ID"];
-                }
-
-
 
             }
               catch(Exception ex)
@@ -94,7 +82,7 @@ namespace logiWeb.Repositories
                             Volume = (int)reader["VOLUME"],
                             Peso = (decimal)reader["PESO"],
                             Observacao = (string)reader["OBSERVACAO"],
-                            Cliente.Nome = (string)reader["NOME"],
+                            //Cliente = new Cliente() (string)reader["NOME"],
                         }
                     );
                 }
@@ -137,7 +125,7 @@ namespace logiWeb.Repositories
                     ordem.Volume = (int)reader["VOLUME"];
                     ordem.Peso = (decimal)reader["PESO"];
                     ordem.Observacao = (string)reader["OBSERVACAO"];
-                    ordem.Cliente.Nome = (string)reader["NOME"],
+                    ordem.Cliente.Nome = (string)reader["NOME"];
                 }
                 return ordem;
             }   

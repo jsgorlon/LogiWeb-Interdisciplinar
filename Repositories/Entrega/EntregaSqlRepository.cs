@@ -9,17 +9,40 @@ namespace logiWeb.Repositories
         private IOrdemRepository ordemRepository;
         private IStatusRepository statusRepository;
 
+        public EntregaSqlRepository(IOrdemRepository ordemRepository,IStatusRepository statusRepository)
+        {
+            this.ordemRepository = ordemRepository;
+            this.statusRepository = statusRepository;
+        }
+
         public void Cadastrar(Entrega entrega)
         {
             try
             {
                 cmd.Connection = connection;
                 cmd.CommandText = @"INSERT INTO ENTREGAS (id_ordem, id_funcionario, id_motorista) 
-                                    VALUES (@id_ordem, @id_funcionario, @id_motorista)";
+                                    VALUES (@id_ordem, @id_funcionario, @id_motorista); ";
 
-                cmd.Parameters.AddWithValue("@id_ordem", ordem.IdOrdem);
-                cmd.Parameters.AddWithValue("@id_funcionario", ordem.IdFuncionario);
-                cmd.Parameters.AddWithValue("@id_motorista", ordem.IdMotorista);
+                cmd.Parameters.AddWithValue("@id_ordem", entrega.IdOrdem);
+                cmd.Parameters.AddWithValue("@id_funcionario", entrega.IdFuncionario);
+                cmd.Parameters.AddWithValue("@id_motorista", entrega.IdMotorista);
+                cmd.ExecuteNonQuery();
+
+                cmd.CommandText = "select SCOPE_IDENTITY() as id";
+                SqlDataReader reader = cmd.ExecuteReader();
+                int idEntrega;
+
+                while (reader.Read())
+                {         
+                    idEntrega = (int)reader["ID"];
+                }
+                //status padrao 1
+                 cmd.CommandText = @"INSERT INTO entregas_ordens (id_ordem, id_entrega, id_status) 
+                                    VALUES (@id_ordem, @id_entrega, 1); ";
+
+                cmd.Parameters.AddWithValue("@id_ordem", entrega.IdOrdem);
+               // cmd.Parameters.AddWithValue("@id_entrega",idEntrega);
+
                 cmd.ExecuteNonQuery();
 
             }
@@ -52,7 +75,7 @@ namespace logiWeb.Repositories
             }
         }
 
-        public List<Ordem> MostrarEntregas()
+        public List<Entrega> MostrarEntregas()
         {
             try{
                 cmd.Connection = connection;
@@ -74,18 +97,24 @@ namespace logiWeb.Repositories
 
                 SqlDataReader reader = cmd.ExecuteReader();
 
-                List<Ordem> lista = new List<Ordem>();
+                List<Entrega> lista = new List<Entrega>();
 
                 while (reader.Read())
                 {
                     lista.Add(
-                        new Ordem{
-                            Id = (int)reader["ID_ORDEM"],
-                            Destino = (string)reader["DESTINO"],
-                            Volume = (int)reader["VOLUME"],
-                            Peso = (decimal)reader["PESO"],
-                            Observacao = (string)reader["OBSERVACAO"],
-                            NomeCliente = (string)reader["NOME"],
+                        new Entrega{
+                            Id = (int)reader["ID"],
+                            IdOrdem = (int)reader["ID_ORDEM"],
+                            IdFuncionario = (int)reader["ID_FUNCIONARIO"],
+                            IdMotorista = (int)reader["ID_MOTORISTA"],
+                           // Funcionario.Nome = (string)reader["NOME_FUNCIONARIO"],
+                           // Motorista.Nome = (string)reader["NOME_MOTORISTA"],
+                          //  Ordem.Destino = (string)reader["DESTINO"],
+                          //  Ordem.Volume = (int)reader["VOLUME"],
+                        //    Ordem.Observacao = (string)reader["OBSERVACAO"],
+                        //    Ordem.Peso = (decimal)reader["PESO"],
+                        //    Ordem.Observacao = (string)reader["OBSERVACAO"],
+                         //   Ordem.NomeCliente = (string)reader["NOME"],
                         }
                     );
                 }
@@ -101,36 +130,51 @@ namespace logiWeb.Repositories
             
         }
 
-        public Ordem MostrarEntrega(int id)
+        public Entrega MostrarEntrega(int id)
         {
             try
             {
                 cmd.Connection = connection;
-                cmd.CommandText = @"SELECT O.ID_ORDEM, O.ID_CLIENTE, O.DESTINO, O.VOLUME, O.PESO, O.OBSERVACAO, P.NOME
+                cmd.CommandText = @"SELECT E.ID, E.ID_ORDEM, E.ID_FUNCIONARIO, E.ID_MOTORISTA, 
+                                    F.NOME_FUNCIONARIO, P.NOME_MOTORISTA,
+                                    O.DESTINO, O.VOLUME, O.PESO, O.OBSERVACAO, P.NOME
                                     FROM ORDENS O
+                                        ON E.ID_ORDEM = O.ID
+                                    INNER JOIN ORDENS F
+                                        ON E.ID_FUNCIONARIO = F.ID 
+                                    INNER JOIN PESSOAS F
+                                        ON E.ID_FUNCIONARIO = F.ID 
+                                    INNER JOIN PESSOAS M
+                                        ON E.ID_MOTORISTA = M.ID 
                                     INNER JOIN PESSOAS P
-                                        ON O.ID_CLIENTE = P.ID 
-                                    WHERE ID_ORDEM = @ID
-                                    AND  O.ATIVO > 0";
+                                        ON O.ID_CLIENTE = P.ID
+                                    WHERE E.ID = @ID_ENTREGA AND E.ATIVO > 0";
 
-                cmd.Parameters.AddWithValue("@ID", id);
+                cmd.Parameters.AddWithValue("@ID_ENTREGA", id);
                 cmd.ExecuteNonQuery();
 
                 SqlDataReader reader = cmd.ExecuteReader();
 
-                Ordem ordem = new Ordem();
+                Entrega entrega = new Entrega();
 
                 while (reader.Read())
                 {
                         
-                    ordem.Id = (int)reader["ID_ORDEM"];
-                    ordem.Destino = (string)reader["DESTINO"];
-                    ordem.Volume = (int)reader["VOLUME"];
-                    ordem.Peso = (decimal)reader["PESO"];
-                    ordem.Observacao = (string)reader["OBSERVACAO"];
-                    ordem.NomeCliente = (string)reader["NOME"];
+                        entrega.Id = (int)reader["ID"];
+                        entrega.IdOrdem = (int)reader["ID_ORDEM"];
+                        entrega.IdFuncionario = (int)reader["ID_FUNCIONARIO"];
+                        entrega.IdMotorista = (int)reader["ID_MOTORISTA"];
+                        entrega.Funcionario.Nome = (string)reader["NOME_FUNCIONARIO"];
+                        entrega.Motorista.Nome = (string)reader["NOME_MOTORISTA"];
+                        entrega.Ordem.Destino = (string)reader["DESTINO"];
+                        entrega.Ordem.Volume = (int)reader["VOLUME"];
+                        entrega.Ordem.Observacao = (string)reader["OBSERVACAO"];
+                        entrega.Ordem.Peso = (decimal)reader["PESO"];
+                        entrega.Ordem.Observacao = (string)reader["OBSERVACAO"];
+                        entrega.Ordem.Cliente.Nome = (string)reader["NOME"];
+                    
                 }
-                return ordem;
+                return entrega;
             }   
             catch(Exception ex)
             {

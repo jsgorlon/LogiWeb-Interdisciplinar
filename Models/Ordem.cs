@@ -5,9 +5,9 @@ namespace logiWeb.Models
         public int Id { get; set; }
         public int IdCliente { get; set; }
         public Cliente Cliente {get; set;} = new Cliente();
-        public string Destino { get; set; }
+        public string Destino { get; set; } = string.Empty;
         public int Volume { get; set; }
         public decimal Peso {get; set;}
-        public string Observacao { get; set; }
+        public string Observacao { get; set; } = string.Empty;
     }
 }

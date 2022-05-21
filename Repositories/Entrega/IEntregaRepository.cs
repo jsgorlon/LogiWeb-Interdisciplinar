@@ -5,9 +5,9 @@ namespace logiWeb.Repositories
     public interface IEntregaRepository
     {
         void Cadastrar(Entrega entrega);
-        List<Entrega> MostrarEntregas()
-        Entrega MostrarEntrega(int id)
+        List<Entrega> MostrarEntregas();
+        Entrega MostrarEntrega(int id);
         void Excluir(int id);
-        void AtualizarStatus(int idEntrega, int status);
+
     }
 }

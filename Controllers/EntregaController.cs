@@ -6,12 +6,15 @@ namespace logiWeb.Controllers;
 public class EntregaController : Controller
 {
     private IEntregaRepository repository;
+    private IOrdemRepository ordemRepository;
+
+  //  private IStatusRepository statusRepository;
 
     public EntregaController(IEntregaRepository repository, IOrdemRepository ordemRepository, IStatusRepository statusRepository)
     {
         this.repository = repository;
         this.ordemRepository = ordemRepository;
-        this.statusRepository = statusRepository;
+   //     this.statusRepository = statusRepository;
     }
 
     [HttpGet]
@@ -45,14 +48,14 @@ public class EntregaController : Controller
     [HttpGet]
     public ActionResult Atualizar()
     {
-        ViewBag.Status = statusRepository.MostrarStatus();
+        //ViewBag.Status = statusRepository.MostrarStatus();
         return View();
     }
 
     [HttpPost]
-    public ActionResult Atualizar(int idEntrega, int idStatus)
+    public ActionResult Atualizar(int idEntrega, int idOrdem, int idStatus)
     {
-        this.repository.AtualizarStatus(idEntrega, idStatus);
+       // this.repository.AtualizarStatus(idEntrega, idOrdem, idStatus);
         return RedirectToAction("Mostrar");
     }
 

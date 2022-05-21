@@ -6,6 +6,7 @@ namespace logiWeb.Controllers;
 public class OrdemController : Controller
 {
     private IOrdemRepository repository;
+    private IClienteRepository clienteRepository;
 
     public OrdemController(IOrdemRepository repository, IClienteRepository clienteRepository)
     {
