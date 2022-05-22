@@ -49,7 +49,8 @@ namespace logiWeb.Repositories
                         {
                             Id = (int)reader["id"],
                             Nome = (string)reader["nome"],
-                            Descricao = (string)reader["descricao"]
+                            Descricao = (string)reader["descricao"],
+                            Salario = (decimal)reader["salario"]
                         }
                     );
                 }
@@ -79,10 +80,11 @@ namespace logiWeb.Repositories
                 
                 if(reader.Read())
                 {
-                    return new Cargo                        {
+                    return new Cargo{
                             Id = (int)reader["id"],
                             Nome = (string)reader["nome"],
-                            Descricao = (string)reader["descricao"]
+                            Descricao = (string)reader["descricao"],
+                            Salario = (decimal)reader["salario"]
                         };
                 }
                 return null;

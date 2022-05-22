@@ -12,20 +12,39 @@ namespace logiWeb.Repositories
             try
             {
                 cmd.Connection = connection;
-                cmd.CommandText = @"";
-
-                cmd.Parameters.AddWithValue("@nome", cliente.Nome);
+                cmd.CommandText = @"SELECT id FROM pessoas WHERE cpf = @cpf";
                 cmd.Parameters.AddWithValue("@cpf", cliente.Cpf);
-                cmd.Parameters.AddWithValue("@rg", cliente.Rg);
-                cmd.Parameters.AddWithValue("@dataNasc", cliente.DatNasc);
-                cmd.Parameters.AddWithValue("@email", cliente.Email);
-                cmd.Parameters.AddWithValue("@telefone", cliente.Telefone);
+                SqlDataReader reader = cmd.ExecuteReader();
+                if (!reader.HasRows)
+                {
+                    cmd.CommandText = @"INSERT INTO clientes (nome, cpf, rg, data_nasc, telefone, email) 
+                                        VALUES (@nome, @cpf, @rg, @data_nasc, @telefone, @email)
+                                    ";
+                    cmd.Parameters.AddWithValue("@nome", cliente.Nome);
+                    cmd.Parameters.AddWithValue("@cpf", cliente.Cpf);
+                    cmd.Parameters.AddWithValue("@rg", cliente.Rg);
+                    cmd.Parameters.AddWithValue("@dataNasc", cliente.DatNasc);
+                    cmd.Parameters.AddWithValue("@email", cliente.Email);
+                    cmd.Parameters.AddWithValue("@telefone", cliente.Telefone);
 
-                cmd.ExecuteNonQuery();
+                    cmd.ExecuteNonQuery();
+                }
+
+                cmd.CommandText = @"SELECT id FROM pessoas WHERE cpf = @cpf";
+                cmd.Parameters.AddWithValue("@cpf", cliente.Cpf);
+
+                reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    int id_pessoa = (int)reader["id"];
+                    cmd.CommandText = @"INSERT INTO clientes (id_pessoa) VALUES (@id_pessoa)";
+                    cmd.Parameters.AddWithValue("@id_pessoa", id_pessoa);
+                    cmd.ExecuteNonQuery();
+                }
             }
             catch(Exception ex)
             {
-
+                throw ex;
             }
             finally
             {
@@ -39,10 +58,10 @@ namespace logiWeb.Repositories
             try
             {
                 cmd.Connection = connection;
-                cmd.CommandText = @"SELECT c.id_pessoa, p.nome, p.email, p.data_cad, pf.cpf, pf.rg, pf.data_nasc
-                                    FROM clientes AS c
-                                    INNER JOIN pessoa_fisica AS pf ON c.id_pessoa = pf.id_pessoa
-                                    INNER JOIN pessoas AS p ON c.id_pessoa = p.id
+                cmd.CommandText = @"SELECT p.id, p.nome, p.cpf, p.rg, p.data_nasc, p.email, p.telefone, p.data_cad, c.ativo
+                                    FROM pessoa AS p
+                                    INNER JOIN cliente AS c ON p.id = c.id_pessoa
+                                    WHERE c.ativo = 1
                                 ";
 
                 SqlDataReader reader = cmd.ExecuteReader();
@@ -61,7 +80,8 @@ namespace logiWeb.Repositories
                             DatNasc = (DateOnly)reader["data_nasc"],
                             Email = (string)reader["email"],
                             Telefone = (string)reader["telefone"],
-                            DatCad = (DateTime)reader["dat_cad"]
+                            DatCad = (DateTime)reader["dat_cad"],
+                            Ativo = true
                         }
                     );
                 }
@@ -69,7 +89,7 @@ namespace logiWeb.Repositories
             }
             catch(Exception ex)
             {
-                return null;
+                throw ex;
             }
             finally
             {
@@ -82,11 +102,11 @@ namespace logiWeb.Repositories
             try
             {
                 cmd.Connection = connection;
-                cmd.CommandText = @"SELECT p.id, p.nome, p.cpf, p.rg, p.data_nasc, p.email, p.data_cad, c.ativo
+                cmd.CommandText = @"SELECT p.id, p.nome, p.cpf, p.rg, p.data_nasc, p.email, p.telefone, p.data_cad, c.ativo
                                     FROM pessoa AS p
-                                    INNER JOIN cliente AS c ON c.id_pessoa = p.id
-                                    WHERE p.id = @id
-                ";
+                                    INNER JOIN cliente AS c ON p.id = c.id_pessoa
+                                    WHERE p.id = @id AND c.ativo = 1
+                                ";
 
                 cmd.Parameters.AddWithValue(@"id", id);
                 SqlDataReader reader = cmd.ExecuteReader();
@@ -102,6 +122,7 @@ namespace logiWeb.Repositories
                         Email = (string)reader["email"],
                         Telefone = (string)reader["telefone"],
                         DatCad = (DateTime)reader["dat_cad"],
+                        Ativo = true
                     };
                 }
                 else
@@ -109,9 +130,9 @@ namespace logiWeb.Repositories
                     return null;
                 }
             }
-            catch(Exception e)
+            catch(Exception ex)
             {
-                return null;
+                throw ex;
             }
             finally
             {
@@ -128,9 +149,9 @@ namespace logiWeb.Repositories
                                     FROM pessoa AS p
                                     INNER JOIN cliente AS c ON c.id_pessoa = p.id
                                     WHERE p.cpf = @cpf
-                ";
-
+                                ";
                 cmd.Parameters.AddWithValue(@"cpf", cpf);
+
                 SqlDataReader reader = cmd.ExecuteReader();
                 if(reader.Read())
                 {
@@ -144,13 +165,14 @@ namespace logiWeb.Repositories
                         Email = (string)reader["email"],
                         Telefone = (string)reader["telefone"],
                         DatCad = (DateTime)reader["dat_cad"],
+                        Ativo = true
                     };
                 }
                 return null;
             }
-            catch(Exception e)
+            catch(Exception ex)
             {
-                return null;
+                throw ex;
             }
             finally
             {
@@ -163,8 +185,11 @@ namespace logiWeb.Repositories
             try
             {
                 cmd.Connection = connection;
-                cmd.CommandText = @"UPDATE c.id_pessoa, p.nome, p.email, p.data_cad, pf.cpf, pf.rg, pf.data_nasc";
-
+                cmd.CommandText = @"UPDATE pessoas
+                                    SET nome = @nome, cpf = @cpf, rg = @rg, data_nasc = @dataNasc, telefone = @telefone, email = @email
+                                    WHERE id = @id
+                                ";
+                cmd.Parameters.AddWithValue("@id", id);
                 cmd.Parameters.AddWithValue("@nome", cliente.Nome);
                 cmd.Parameters.AddWithValue("@cpf", cliente.Cpf);
                 cmd.Parameters.AddWithValue("@rg", cliente.Rg);
@@ -176,7 +201,7 @@ namespace logiWeb.Repositories
             }
             catch(Exception ex)
             {
-
+                throw ex;
             }
             finally
             {
@@ -189,15 +214,17 @@ namespace logiWeb.Repositories
             try
             {
                 cmd.Connection = connection;
-                cmd.CommandText = @"";
-
+                cmd.CommandText = @"UPDATE clientes
+                                    SET ativo = 0
+                                    WHERE id_pessoa = id
+                                ";
                 cmd.Parameters.AddWithValue("@id", id);
 
                 cmd.ExecuteNonQuery();
             }
             catch(Exception ex)
             {
-
+                throw ex;
             }
             finally
             {
