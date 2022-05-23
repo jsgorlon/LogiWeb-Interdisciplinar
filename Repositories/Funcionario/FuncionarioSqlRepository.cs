@@ -24,8 +24,10 @@ namespace logiWeb.Repositories
                 SqlDataReader reader = cmd.ExecuteReader();
                 if (!reader.HasRows)
                 {
-                    cmd.CommandText = @"INSERT INTO Pessoas (nome, cpf, rg, data_nasc, telefone, email) 
-                                        VALUES (@nome, @cpf, @rg, @data_nasc, @telefone, @email)
+                    cmd.CommandText = @"INSERT INTO pessoas (nome, cpf, rg, data_nasc, telefone, email) 
+                                            VALUES (@nome, @cpf, @rg, @data_nasc, @telefone, @email);
+                                        INSERT INTO funcionarios (id_pessoa, id_cargo, login, senha)
+                                            VALUES (SCOPE_IDENTITY(), @id_cargo, @login, @senha);
                                     ";
                     cmd.Parameters.AddWithValue("@nome", funcionario.Nome);
                     cmd.Parameters.AddWithValue("@cpf", funcionario.Cpf);
@@ -33,25 +35,30 @@ namespace logiWeb.Repositories
                     cmd.Parameters.AddWithValue("@dataNasc", funcionario.DatNasc);
                     cmd.Parameters.AddWithValue("@email", funcionario.Email);
                     cmd.Parameters.AddWithValue("@telefone", funcionario.Telefone);
-
-                    cmd.ExecuteNonQuery();
-                }
-
-                cmd.CommandText = @"SELECT id FROM pessoas WHERE cpf = @cpf";
-                cmd.Parameters.AddWithValue("@cpf", funcionario.Cpf);
-
-                reader = cmd.ExecuteReader();
-                if (reader.Read())
-                {
-                    int id_pessoa = (int)reader["id"];
-                    cmd.CommandText = @"INSERT INTO funcionarios (id_pessoa, id_cargo, login, senha)
-                                        VALUES (@id_pessoa, @id_cargo, @login, @senha)";
-                    cmd.Parameters.AddWithValue("@id_pessoa", id_pessoa);
                     cmd.Parameters.AddWithValue("@id_cargo", funcionario.IdCargo);
                     cmd.Parameters.AddWithValue("@login", funcionario.Login);
                     cmd.Parameters.AddWithValue("@senha", funcionario.Senha);
 
                     cmd.ExecuteNonQuery();
+                }
+                else
+                {
+                    cmd.CommandText = @"SELECT id FROM pessoas WHERE cpf = @cpf";
+                    cmd.Parameters.AddWithValue("@cpf", funcionario.Cpf);
+
+                    reader = cmd.ExecuteReader();
+                    if (reader.Read())
+                    {
+                        int id_pessoa = (int)reader["id"];
+                        cmd.CommandText = @"INSERT INTO funcionarios (id_pessoa, id_cargo, login, senha)
+                                            VALUES (@id_pessoa, @id_cargo, @login, @senha)";
+                        cmd.Parameters.AddWithValue("@id_pessoa", id_pessoa);
+                        cmd.Parameters.AddWithValue("@id_cargo", funcionario.IdCargo);
+                        cmd.Parameters.AddWithValue("@login", funcionario.Login);
+                        cmd.Parameters.AddWithValue("@senha", funcionario.Senha);
+
+                        cmd.ExecuteNonQuery();
+                    }
                 }
             }
             catch (Exception ex)
