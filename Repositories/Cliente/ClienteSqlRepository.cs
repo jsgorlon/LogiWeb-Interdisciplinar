@@ -17,8 +17,9 @@ namespace logiWeb.Repositories
                 SqlDataReader reader = cmd.ExecuteReader();
                 if (!reader.HasRows)
                 {
-                    cmd.CommandText = @"INSERT INTO clientes (nome, cpf, rg, data_nasc, telefone, email) 
-                                        VALUES (@nome, @cpf, @rg, @data_nasc, @telefone, @email)
+                    cmd.CommandText = @"INSERT INTO pessoas (nome, cpf, rg, data_nasc, telefone, email) 
+                                            VALUES (@nome, @cpf, @rg, @data_nasc, @telefone, @email);
+                                        INSERT INTO clientes (id_pessoa) VALUES (SCOPE_IDENTITY());
                                     ";
                     cmd.Parameters.AddWithValue("@nome", cliente.Nome);
                     cmd.Parameters.AddWithValue("@cpf", cliente.Cpf);
@@ -29,17 +30,19 @@ namespace logiWeb.Repositories
 
                     cmd.ExecuteNonQuery();
                 }
-
-                cmd.CommandText = @"SELECT id FROM pessoas WHERE cpf = @cpf";
-                cmd.Parameters.AddWithValue("@cpf", cliente.Cpf);
-
-                reader = cmd.ExecuteReader();
-                if (reader.Read())
+                else
                 {
-                    int id_pessoa = (int)reader["id"];
-                    cmd.CommandText = @"INSERT INTO clientes (id_pessoa) VALUES (@id_pessoa)";
-                    cmd.Parameters.AddWithValue("@id_pessoa", id_pessoa);
-                    cmd.ExecuteNonQuery();
+                    cmd.CommandText = @"SELECT id FROM pessoas WHERE cpf = @cpf";
+                    cmd.Parameters.AddWithValue("@cpf", cliente.Cpf);
+
+                    reader = cmd.ExecuteReader();
+                    if (reader.Read())
+                    {
+                        int id_pessoa = (int)reader["id"];
+                        cmd.CommandText = @"INSERT INTO clientes (id_pessoa) VALUES (@id_pessoa)";
+                        cmd.Parameters.AddWithValue("@id_pessoa", id_pessoa);
+                        cmd.ExecuteNonQuery();
+                    }
                 }
             }
             catch(Exception ex)
