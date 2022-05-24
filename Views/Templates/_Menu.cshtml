@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    <link rel="shortcut icon" href="~/images/flaticon.svg" type="image/x-icon">
+    <link rel="stylesheet" href="~/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    @RenderSection("styles", required: false)
+    
+    <link rel="stylesheet" href="~/css/custom.css">
+</head>
+<body>
+    <header id="header">
+        <div class="container">
+                <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">
+                    <img src="~/images/logo.svg" class="mb-2" style="max-width: 150px; max-height:250px;" alt="Logo - LogiWeb" >
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll" aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarScroll">
+                    <ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll" style="--bs-scroll-height: 100px;">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="/ordem">Ordens</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/cliente">Clientes</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/funcionario" tabindex="-1" aria-disabled="true">Funcionários</a>
+                        </li>
+                    </ul>
+             
+                </div>
+            </div>
+            </nav>
+        </div>
+    </header>
+    <main id="main">
+        <div class="container">
+            @RenderBody()
+        </div>
+    </main>
+    
+    <footer id="footer" hidden>
+         <div class="d-flex bg-dark text-white">
+             <span id="time">
+
+             </span>
+             <b>
+                Projeto interdisciplinar
+             </b> 
+         </div>   
+    </footer>
+
+    @* Eventos javascript da View que será renderizada. *@
+    <script src="~/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/jquery-3.6.0.min.js"></script>
+    @RenderSection("events", required: false)
+</body>
+</html>
