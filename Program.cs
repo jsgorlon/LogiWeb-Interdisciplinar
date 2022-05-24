@@ -11,7 +11,8 @@ namespace logiWeb
             builder.Services.AddControllersWithViews();
             builder.Services.AddTransient<IClienteRepository, ClienteSqlRepository> ();
             builder.Services.AddTransient<IFuncionarioRepository, FuncionarioSqlRepository> ();
-
+            builder.Services.AddTransient<ICargoRepository, CargoSqlRepository> ();
+            
             var app = builder.Build();
             
             app.UseStaticFiles(); 
