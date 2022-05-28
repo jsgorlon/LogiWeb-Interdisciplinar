@@ -72,7 +72,7 @@ namespace logiWeb.Repositories
             try
             {
                 cmd.Connection = connection;
-                cmd.CommandText = @"SELECT f.id_pessoa, p.nome, p.cpf, p.rg, p.data_nasc, p.email, p.telefone, c.id, c.nome, c.descricao, c.salario, p.data_cad, f.ativo
+                cmd.CommandText = @"SELECT f.id_pessoa, p.nome, p.cpf, p.rg, p.data_nasc, p.email, p.telefone, c.id, c.nome, c.descricao, c.salario, p.dat_cad, f.ativo
                                     FROM funcionarios AS f
                                     JOIN pessoas AS p ON f.id_pessoa = p.id
                                     JOIN cargos AS c ON f.id_cargo = c.id
@@ -90,10 +90,10 @@ namespace logiWeb.Repositories
                             Nome = (string)reader["p.nome"],
                             Cpf = (string)reader["p.cpf"],
                             Rg = (string)reader["p.rg"],
-                            DatNasc = (DateOnly)reader["p.data_nasc"],
+                            DatNasc = DateOnly.FromDateTime((DateTime)reader["p.data_nasc"]),
                             Email = (string)reader["p.email"],
                             Telefone = (string)reader["p.telefone"],
-                            DatCad =  (DateTime)reader["p.data_cad"],
+                            DatCad =  (DateTime)reader["p.dat_cad"],
                             Ativo = true,
                             IdCargo = (int)reader["c.id"],
                             Cargo = cargos.FirstOrDefault<Cargo>(cargo => cargo.Id == (int)reader["c.id"], new Cargo())
@@ -117,7 +117,7 @@ namespace logiWeb.Repositories
             try
             {
                 cmd.Connection = connection;
-                cmd.CommandText = @"SELECT f.id_pessoa, p.nome, p.cpf, p.rg, p.data_nasc, p.email, p.telefone, c.nome, c.descricao, c.salario, p.data_cad, f.ativo
+                cmd.CommandText = @"SELECT f.id_pessoa, p.nome, p.cpf, p.rg, p.data_nasc, p.email, p.telefone, c.nome, c.descricao, c.salario, p.dat_cad, f.ativo
                                     FROM funcionarios AS f
                                     JOIN pessoas AS p ON f.id_pessoa = p.id
                                     JOIN cargos AS c ON f.id_cargo = c.id
@@ -136,10 +136,10 @@ namespace logiWeb.Repositories
                             Nome = (string)reader["p.nome"],
                             Cpf = (string)reader["p.cpf"],
                             Rg = (string)reader["p.rg"],
-                            DatNasc = (DateOnly)reader["p.data_nasc"],
+                            DatNasc = DateOnly.FromDateTime((DateTime)reader["p.data_nasc"]),
                             Email = (string)reader["p.email"],
                             Telefone = (string)reader["p.telefone"],
-                            DatCad =  (DateTime)reader["p.data_cad"],
+                            DatCad =  (DateTime)reader["p.dat_cad"],
                             Ativo = true,
                             IdCargo = id_cargo,
                             Cargo = cargo
@@ -163,7 +163,7 @@ namespace logiWeb.Repositories
             try
             {
                 cmd.Connection = connection;
-                cmd.CommandText = @"SELECT f.id_pessoa, p.nome, p.cpf, p.rg, p.data_nasc, p.email, p.telefone, c.id, c.nome, c.descricao, c.salario, p.data_cad, f.ativo
+                cmd.CommandText = @"SELECT f.id_pessoa, p.nome, p.cpf, p.rg, p.data_nasc, p.email, p.telefone, c.id, c.nome, c.descricao, c.salario, p.dat_cad, f.ativo
                                     FROM funcionarios AS f
                                     JOIN pessoas AS p ON f.id_pessoa = p.id
                                     JOIN cargos AS c ON f.id_cargo = c.id
@@ -180,10 +180,10 @@ namespace logiWeb.Repositories
                         Nome = (string)reader["p.nome"],
                         Cpf = (string)reader["p.cpf"],
                         Rg = (string)reader["p.rg"],
-                        DatNasc = (DateOnly)reader["p.data_nasc"],
+                        DatNasc = DateOnly.FromDateTime((DateTime)reader["p.data_nasc"]),
                         Email = (string)reader["p.email"],
                         Telefone = (string)reader["p.telefone"],
-                        DatCad =  (DateTime)reader["p.data_cad"],
+                        DatCad =  (DateTime)reader["p.dat_cad"],
                         Ativo = true,
                         IdCargo = (int)reader["c.id"],
                         Cargo = cargo

@@ -61,10 +61,10 @@ namespace logiWeb.Repositories
             try
             {
                 cmd.Connection = connection;
-                cmd.CommandText = @"SELECT p.id, p.nome, p.cpf, p.rg, p.data_nasc, p.email, p.telefone, p.data_cad, c.ativo
-                                    FROM pessoa AS p
-                                    INNER JOIN cliente AS c ON p.id = c.id_pessoa
-                                    WHERE c.ativo = 1
+                cmd.CommandText = @"SELECT id_pessoa, nome, cpf, rg, data_nasc, email, telefone, dat_cad, ativo
+                                    FROM clientes
+                                    INNER JOIN pessoas ON id_pessoa = id
+                                    WHERE ativo = 1
                                 ";
 
                 SqlDataReader reader = cmd.ExecuteReader();
@@ -80,7 +80,7 @@ namespace logiWeb.Repositories
                             Nome = (string)reader["nome"],
                             Cpf = (string)reader["cpf"],
                             Rg = (string)reader["rg"],
-                            DatNasc = (DateOnly)reader["data_nasc"],
+                            DatNasc = DateOnly.FromDateTime((DateTime)reader["data_nasc"]),
                             Email = (string)reader["email"],
                             Telefone = (string)reader["telefone"],
                             DatCad = (DateTime)reader["dat_cad"],
@@ -105,10 +105,10 @@ namespace logiWeb.Repositories
             try
             {
                 cmd.Connection = connection;
-                cmd.CommandText = @"SELECT p.id, p.nome, p.cpf, p.rg, p.data_nasc, p.email, p.telefone, p.data_cad, c.ativo
-                                    FROM pessoa AS p
-                                    INNER JOIN cliente AS c ON p.id = c.id_pessoa
-                                    WHERE p.id = @id AND c.ativo = 1
+                cmd.CommandText = @"SELECT id_pessoa, nome, cpf, rg, data_nasc, email, telefone, dat_cad, ativo
+                                    FROM clientes
+                                    INNER JOIN pessoas ON id_pessoa = id
+                                    WHERE id_pessoa = @id AND ativo = 1
                                 ";
 
                 cmd.Parameters.AddWithValue(@"id", id);
@@ -121,7 +121,7 @@ namespace logiWeb.Repositories
                         Nome = (string)reader["nome"],
                         Cpf = (string)reader["cpf"],
                         Rg = (string)reader["rg"],
-                        DatNasc = (DateOnly)reader["data_nasc"],
+                        DatNasc = DateOnly.FromDateTime((DateTime)reader["data_nasc"]),
                         Email = (string)reader["email"],
                         Telefone = (string)reader["telefone"],
                         DatCad = (DateTime)reader["dat_cad"],
@@ -148,10 +148,10 @@ namespace logiWeb.Repositories
             try
             {
                 cmd.Connection = connection;
-                cmd.CommandText = @"SELECT p.id, p.nome, p.cpf, p.rg, p.data_nasc, p.email, p.data_cad, c.ativo
-                                    FROM pessoa AS p
-                                    INNER JOIN cliente AS c ON c.id_pessoa = p.id
-                                    WHERE p.cpf = @cpf
+                cmd.CommandText = @"SELECT id_pessoa, nome, cpf, rg, data_nasc, email, telefone, dat_cad, ativo
+                                    FROM clientes
+                                    INNER JOIN pessoas ON id_pessoa = id
+                                    WHERE cpf = @cpf
                                 ";
                 cmd.Parameters.AddWithValue(@"cpf", cpf);
 
@@ -164,7 +164,7 @@ namespace logiWeb.Repositories
                         Nome = (string)reader["nome"],
                         Cpf = (string)reader["cpf"],
                         Rg = (string)reader["rg"],
-                        DatNasc = (DateOnly)reader["data_nasc"],
+                        DatNasc = DateOnly.FromDateTime((DateTime)reader["data_nasc"]),
                         Email = (string)reader["email"],
                         Telefone = (string)reader["telefone"],
                         DatCad = (DateTime)reader["dat_cad"],
