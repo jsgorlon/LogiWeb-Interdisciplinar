@@ -18,11 +18,14 @@ namespace logiWeb.Repositories
             try
             {
                 cmd.Connection = connection;
-                cmd.CommandText = @"INSERT INTO ORDENS (id_cliente, destino, volume, peso, observacao) 
-                                    VALUES (@id_cliente, @destino, @volume, @peso, @observacao);";
+                cmd.CommandText = @"INSERT INTO ORDENS (id_cliente, id_endereco, id_funcionario, qtd_itens, volume, peso, observacao)  
+                                    VALUES (@id_cliente, @id_endereco, @id_funcionario, @qtd_itens, @volume, @peso, @observacao);";
 
-                cmd.Parameters.AddWithValue("@id_cliente", ordem.IdCliente);
-                cmd.Parameters.AddWithValue("@destino", ordem.Destino);
+                cmd.Parameters.AddWithValue("@id_cliente", ordem.Cliente.Id);
+                cmd.Parameters.AddWithValue("@id_cliente", ordem.Endereco.Id);
+                cmd.Parameters.AddWithValue("@id_cliente", ordem.Funcionario.Id);
+                cmd.Parameters.AddWithValue("@id_cliente", ordem.Qtd_itens);
+                cmd.Parameters.AddWithValue("@destino", ordem.Endereco.Id);
                 cmd.Parameters.AddWithValue("@volume", ordem.Volume);
                 cmd.Parameters.AddWithValue("@peso", ordem.Peso);
                 cmd.Parameters.AddWithValue("@observacao", ordem.Observacao);
@@ -62,33 +65,53 @@ namespace logiWeb.Repositories
         {
             try{
                 cmd.Connection = connection;
-                cmd.CommandText = @"SELECT O.ID_ORDEM, O.ID_CLIENTE, O.DESTINO, O.VOLUME, O.PESO, O.OBSERVACAO, P.NOME
+                cmd.CommandText = @"SELECT O.ID, O.ID_CLIENTE, O.ID_FUNCIONARIO, O.id_endereco, 
+                                    O.VOLUME, O.PESO, O.OBSERVACAO, O.QTD_ITENS, P.NOME NOME_CLIENTE, F.NOME NOME_FUNCIONARIO,
+		                            O.ID_ENDERECO, EN.logradouro, EN.nr_casa, EN.complemento, EN.bairro, EN.cep, 
+		                            EN.ID_CIDADE, CID.nome NOME_CIDADE, 
+                                    CID.ID_ESTADO, EST.sigla_uf
                                     FROM ORDENS O
                                     INNER JOIN PESSOAS P
                                         ON O.ID_CLIENTE = P.ID 
-                                    WHERE O.ATIVO > 0
-                ";
+                                    INNER JOIN PESSOAS F
+                                        ON O.ID_FUNCIONARIO = F.ID 
+									INNER JOIN enderecos EN
+										ON O.id_endereco = EN.id
+									INNER JOIN cidades CID
+										ON EN.id_cidade = CID.id
+									INNER JOIN estados EST
+										ON CID.id_estado = EST.id
+                                    WHERE O.ATIVO > 0 ";
 
                 SqlDataReader reader = cmd.ExecuteReader();
 
                 List<Ordem> lista = new List<Ordem>();
-
+                Ordem item = new Ordem();
                 while (reader.Read())
                 {
-                    lista.Add(
-                        new Ordem{
-                            Id = (int)reader["ID_ORDEM"],
-                            Destino = (string)reader["DESTINO"],
-                            Volume = (int)reader["VOLUME"],
-                            Peso = (decimal)reader["PESO"],
-                            Observacao = (string)reader["OBSERVACAO"],
-                            //Cliente = new Cliente() (string)reader["NOME"],
-                        }
-                    );
+                    
+                    item.Id = Convert.ToInt32((int)reader["ID"]);
+                    item.Cliente.Id = Convert.ToInt32((int)reader["ID_CLIENTE"]);
+                    item.Cliente.Id = Convert.ToInt32((int)reader["ID_FUNCIONARIO"]);
+                    item.Endereco.Id = Convert.ToInt32((int)reader["id_endereco"]);
+                    item.Peso = (decimal)reader["PESO"];
+                    item.Observacao = (string)reader["OBSERVACAO"];
+                    item.Qtd_itens = Convert.ToInt32((int)reader["Qtd_itens"]);
+                    item.Cliente.Nome = (string)reader["NOME_CLIENTE"];
+                    item.Funcionario.Nome = (string)reader["NOME_FUNCIONARIO"];
+                    item.Endereco.Logradouro = (string)reader["logradouro"];
+                    item.Endereco.Nr_casa = (string)reader["nr_casa"];
+                    item.Endereco.Complemento = (string)reader["complemento"];
+                    item.Endereco.Bairro = (string)reader["bairro"];
+                    item.Endereco.Cep = (string)reader["cep"];
+                    item.Endereco.Cidade = (string)reader["nome_cidade"];
+                    item.Endereco.Uf = (string)reader["sigla_uf"];
+                    lista.Add(item);
                 }
                 return lista;
             }catch(Exception ex)
             {
+                Console.WriteLine("aqui " + ex.Message);
                 throw ex;
             }
             finally
@@ -103,13 +126,23 @@ namespace logiWeb.Repositories
             try
             {
                 cmd.Connection = connection;
-                cmd.CommandText = @"SELECT O.ID_ORDEM, O.ID_CLIENTE, O.DESTINO, O.VOLUME, O.PESO, O.OBSERVACAO, P.NOME
+                cmd.CommandText = @"SELECT O.ID, O.ID_CLIENTE, O.ID_FUNCIONARIO, O.id_endereco, 
+                                    O.VOLUME, O.PESO, O.OBSERVACAO, O.QTD_ITENS, P.NOME NOME_CLIENTE, F.NOME NOME_FUNCIONARIO,
+		                            O.ID_ENDERECO, EN.logradouro, EN.nr_casa, EN.complemento, EN.bairro, EN.cep, 
+		                            EN.ID_CIDADE, CID.nome NOME_CIDADE, 
+                                    CID.ID_ESTADO, EST.sigla_uf
                                     FROM ORDENS O
                                     INNER JOIN PESSOAS P
                                         ON O.ID_CLIENTE = P.ID 
-                                    WHERE ID_ORDEM = @ID
-                                    AND  O.ATIVO > 0";
-
+                                    INNER JOIN PESSOAS F
+                                        ON O.ID_FUNCIONARIO = F.ID 
+									INNER JOIN enderecos EN
+										ON O.id_endereco = EN.id
+									INNER JOIN cidades CID
+										ON EN.id_cidade = CID.id
+									INNER JOIN estados EST
+										ON CID.id_estado = EST.id
+                                    AND  O.ATIVO > 0 and o.id = @ID";
                 cmd.Parameters.AddWithValue("@ID", id);
                 cmd.ExecuteNonQuery();
 
@@ -120,12 +153,23 @@ namespace logiWeb.Repositories
                 while (reader.Read())
                 {
                         
-                    ordem.Id = (int)reader["ID_ORDEM"];
-                    ordem.Destino = (string)reader["DESTINO"];
-                    ordem.Volume = (int)reader["VOLUME"];
+                    ordem.Id = (int)reader["ID"];
+                    ordem.Cliente.Id = (int)reader["ID_CLIENTE"];
+                    ordem.Cliente.Id = (int)reader["ID_FUNCIONARIO"];
+                    ordem.Endereco.Id = (int)reader["id_endereco"];
+                    ordem.Volume = (string)reader["VOLUME"];
                     ordem.Peso = (decimal)reader["PESO"];
                     ordem.Observacao = (string)reader["OBSERVACAO"];
-                    ordem.Cliente.Nome = (string)reader["NOME"];
+                    ordem.Qtd_itens = (int)reader["Qtd_itens"];
+                    ordem.Cliente.Nome = (string)reader["NOME_CLIENTE"];
+                    ordem.Funcionario.Nome = (string)reader["NOME_FUNCIONARIO"];
+                    ordem.Endereco.Logradouro = (string)reader["logradouro"];
+                    ordem.Endereco.Nr_casa = (string)reader["nr_casa"];
+                    ordem.Endereco.Complemento = (string)reader["complemento"];
+                    ordem.Endereco.Bairro = (string)reader["bairro"];
+                    ordem.Endereco.Cep = (string)reader["cep"];
+                    ordem.Endereco.Cidade = (string)reader["nome_cidade"];
+                    ordem.Endereco.Uf = (string)reader["sigla_uf"];
                 }
                 return ordem;
             }   
@@ -138,5 +182,6 @@ namespace logiWeb.Repositories
                 Dispose();
             }
         }
+        
     }
 }

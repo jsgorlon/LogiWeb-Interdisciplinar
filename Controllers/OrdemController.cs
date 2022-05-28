@@ -1,6 +1,7 @@
 using logiWeb.Models;
 using logiWeb.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace logiWeb.Controllers; 
 public class OrdemController : Controller
@@ -15,16 +16,20 @@ public class OrdemController : Controller
     }
 
     [HttpGet]
-    public JsonResult Index()
+    public ActionResult Index()
     {
-        List<Ordem> ordem = this.repository.MostrarOrdens();
-        return Json(ordem);
+        List<Ordem> ordens = this.repository.MostrarOrdens();
+        string ordensJson  = JsonSerializer.Serialize(ordens);
+        Console.WriteLine(ordensJson);
+        return View();
     }
 
     [HttpGet]
     public ActionResult Cadastrar()
     {
-        ViewBag.Clientes = clienteRepository.Mostrar();
+        List<Cliente> clientes = clienteRepository.Mostrar();
+        string clientesJson  = JsonSerializer.Serialize(clientes);
+        Console.WriteLine(clientesJson);
         return View();
     }
 

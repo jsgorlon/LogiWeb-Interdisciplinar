@@ -1,0 +1,43 @@
+@using logiWeb.Models
+@{
+    Layout = "~/Views/Templates/_Layout.cshtml";
+    ViewBag.Title = "Cliente Pessoa Fisica"; 
+}
+
+<div>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/Cliente/Index">Cliente</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Novo Cliente</li>
+    </ol>
+</div>
+
+<form action="/Cliente/Cadastrar" method="POST">
+    <div>
+        <label>Nome</label>
+        <input type="text" class="form-control" name="Nome"/>
+    </div>
+
+    <div>
+        <label>Email</label>
+        <textarea name="Email" class="form-control"></textarea>
+    </div>
+
+    <div>
+        <label>Data de Nascimento</label>
+        <input type="date" name="DatNasc" class="form-control"></textarea>
+    </div>
+
+    <div class="row">
+        <div class="col-6">
+            <label>CPF</label>
+            <textarea class="form-control" id ="Cpf" name="Cpf"></textarea>
+        </div>
+
+        <div class="col-6">
+            <label>RG</label>
+            <textarea class="form-control" id ="Rg" name="Rg"></textarea>
+        </div>
+    </div>
+
+    <button class="btn btn-primary" style="margin-top: 20px">Cadastrar</button>
+</form>

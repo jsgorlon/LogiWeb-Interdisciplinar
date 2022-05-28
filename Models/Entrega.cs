@@ -9,5 +9,8 @@ namespace logiWeb.Models
         public Funcionario Funcionario {get; set;} = new Funcionario();
         public int IdMotorista { get; set; }
         public Funcionario Motorista {get; set;} = new Funcionario();
+        public int IdStatus { get; set; }
+        public Status Status {get; set;} = new Status();
+        public DateTime DataCadastro { get; set; } 
     }
 }
