@@ -19,43 +19,49 @@ namespace logiWeb.Repositories
             try
             {
                 cmd.Connection = connection;
-                cmd.CommandText = @"SELECT id FROM pessoas WHERE cpf = @cpf";
-                cmd.Parameters.AddWithValue("@cpf", funcionario.Cpf);
+                cmd.CommandText = @"SELECT id FROM pessoas WHERE cpf = @cpf1";
+                cmd.Parameters.AddWithValue("@cpf1", funcionario.Cpf);
                 SqlDataReader reader = cmd.ExecuteReader();
                 if (!reader.HasRows)
                 {
+                    reader.Close();
+                    reader.Dispose();
                     cmd.CommandText = @"INSERT INTO pessoas (nome, cpf, rg, data_nasc, telefone, email) 
-                                            VALUES (@nome, @cpf, @rg, @data_nasc, @telefone, @email);
+                                            VALUES (@nome, @cpf2, @rg, @data_nasc, @telefone, @email);
                                         INSERT INTO funcionarios (id_pessoa, id_cargo, login, senha)
-                                            VALUES (SCOPE_IDENTITY(), @id_cargo, @login, @senha);
+                                            VALUES (SCOPE_IDENTITY(), @id_cargo1, @login1, @senha1);
                                     ";
                     cmd.Parameters.AddWithValue("@nome", funcionario.Nome);
-                    cmd.Parameters.AddWithValue("@cpf", funcionario.Cpf);
+                    cmd.Parameters.AddWithValue("@cpf2", funcionario.Cpf);
                     cmd.Parameters.AddWithValue("@rg", funcionario.Rg);
-                    cmd.Parameters.AddWithValue("@dataNasc", funcionario.DatNasc);
+                    cmd.Parameters.AddWithValue("@data_nasc", funcionario.DatNasc);
                     cmd.Parameters.AddWithValue("@email", funcionario.Email);
                     cmd.Parameters.AddWithValue("@telefone", funcionario.Telefone);
-                    cmd.Parameters.AddWithValue("@id_cargo", funcionario.IdCargo);
-                    cmd.Parameters.AddWithValue("@login", funcionario.Login);
-                    cmd.Parameters.AddWithValue("@senha", funcionario.Senha);
+                    cmd.Parameters.AddWithValue("@id_cargo1", funcionario.IdCargo);
+                    cmd.Parameters.AddWithValue("@login1", funcionario.Login);
+                    cmd.Parameters.AddWithValue("@senha1", funcionario.Senha);
 
                     cmd.ExecuteNonQuery();
                 }
                 else
                 {
-                    cmd.CommandText = @"SELECT id FROM pessoas WHERE cpf = @cpf";
-                    cmd.Parameters.AddWithValue("@cpf", funcionario.Cpf);
+                    reader.Close();
+                    reader.Dispose();
+                    cmd.CommandText = @"SELECT id FROM pessoas WHERE cpf = @cpf3";
+                    cmd.Parameters.AddWithValue("@cpf3", funcionario.Cpf);
 
                     reader = cmd.ExecuteReader();
                     if (reader.Read())
                     {
                         int id_pessoa = (int)reader["id"];
+                        reader.Close();
+                        reader.Dispose();
                         cmd.CommandText = @"INSERT INTO funcionarios (id_pessoa, id_cargo, login, senha)
-                                            VALUES (@id_pessoa, @id_cargo, @login, @senha)";
+                                            VALUES (@id_pessoa, @id_cargo2, @login2, @senha2)";
                         cmd.Parameters.AddWithValue("@id_pessoa", id_pessoa);
-                        cmd.Parameters.AddWithValue("@id_cargo", funcionario.IdCargo);
-                        cmd.Parameters.AddWithValue("@login", funcionario.Login);
-                        cmd.Parameters.AddWithValue("@senha", funcionario.Senha);
+                        cmd.Parameters.AddWithValue("@id_cargo2", funcionario.IdCargo);
+                        cmd.Parameters.AddWithValue("@login2", funcionario.Login);
+                        cmd.Parameters.AddWithValue("@senha2", funcionario.Senha);
 
                         cmd.ExecuteNonQuery();
                     }
@@ -74,8 +80,8 @@ namespace logiWeb.Repositories
                 cmd.Connection = connection;
                 cmd.CommandText = @"SELECT f.id_pessoa, p.nome, p.cpf, p.rg, p.data_nasc, p.email, p.telefone, c.id, c.nome, c.descricao, c.salario, p.dat_cad, f.ativo
                                     FROM funcionarios AS f
-                                    JOIN pessoas AS p ON f.id_pessoa = p.id
-                                    JOIN cargos AS c ON f.id_cargo = c.id
+                                    JOIN pessoas AS p ON id_pessoa = p.id
+                                    JOIN cargos AS c ON id_cargo = c.id
                                     WHERE f.ativo = 1
                                 ";
 
@@ -86,17 +92,17 @@ namespace logiWeb.Repositories
                 {
                     lista.Add(
                         new Funcionario{
-                            Id = (int)reader["f.id_pessoa"],
-                            Nome = (string)reader["p.nome"],
-                            Cpf = (string)reader["p.cpf"],
-                            Rg = (string)reader["p.rg"],
-                            DatNasc = (DateTime)reader["p.data_nasc"],
-                            Email = (string)reader["p.email"],
-                            Telefone = (string)reader["p.telefone"],
-                            DatCad =  (DateTime)reader["p.dat_cad"],
+                            Id = (int)reader["id_pessoa"],
+                            Nome = (string)reader["nome"],
+                            Cpf = (string)reader["cpf"],
+                            Rg = (string)reader["rg"],
+                            DatNasc = (DateTime)reader["data_nasc"],
+                            Email = (string)reader["email"],
+                            Telefone = (string)reader["telefone"],
+                            DatCad =  (DateTime)reader["dat_cad"],
                             Ativo = true,
-                            IdCargo = (int)reader["c.id"],
-                            Cargo = cargos.FirstOrDefault<Cargo>(cargo => cargo.Id == (int)reader["c.id"], new Cargo())
+                            IdCargo = (short)reader["id"],
+                            Cargo = cargos.FirstOrDefault<Cargo>(cargo => cargo.Id == (short)reader["id"], new Cargo())
                         }
                     );
                 }
@@ -112,7 +118,7 @@ namespace logiWeb.Repositories
             }
         }
 
-        public List<Funcionario> MostrarPorCargo(int id_cargo)
+        public List<Funcionario> MostrarPorCargo(short id_cargo)
         {
             try
             {
@@ -132,14 +138,14 @@ namespace logiWeb.Repositories
                 {
                     lista.Add(
                         new Funcionario{
-                            Id = (int)reader["f.id_pessoa"],
-                            Nome = (string)reader["p.nome"],
-                            Cpf = (string)reader["p.cpf"],
-                            Rg = (string)reader["p.rg"],
-                            DatNasc = (DateTime)reader["p.data_nasc"],
-                            Email = (string)reader["p.email"],
-                            Telefone = (string)reader["p.telefone"],
-                            DatCad =  (DateTime)reader["p.dat_cad"],
+                            Id = (int)reader["id_pessoa"],
+                            Nome = (string)reader["nome"],
+                            Cpf = (string)reader["cpf"],
+                            Rg = (string)reader["rg"],
+                            DatNasc = (DateTime)reader["data_nasc"],
+                            Email = (string)reader["email"],
+                            Telefone = (string)reader["telefone"],
+                            DatCad =  (DateTime)reader["dat_cad"],
                             Ativo = true,
                             IdCargo = id_cargo,
                             Cargo = cargo
@@ -174,18 +180,18 @@ namespace logiWeb.Repositories
                 SqlDataReader reader = cmd.ExecuteReader();
                 if(reader.Read())
                 {
-                    Cargo cargo = cargoRepository.Mostrar((int)reader["c.id"]);
+                    Cargo cargo = cargoRepository.Mostrar((short)reader["c.id"]);
                     return new Funcionario{
-                        Id = (int)reader["f.id_pessoa"],
-                        Nome = (string)reader["p.nome"],
-                        Cpf = (string)reader["p.cpf"],
-                        Rg = (string)reader["p.rg"],
-                        DatNasc = (DateTime)reader["p.data_nasc"],
-                        Email = (string)reader["p.email"],
-                        Telefone = (string)reader["p.telefone"],
-                        DatCad =  (DateTime)reader["p.dat_cad"],
+                        Id = (int)reader["id_pessoa"],
+                        Nome = (string)reader["nome"],
+                        Cpf = (string)reader["cpf"],
+                        Rg = (string)reader["rg"],
+                        DatNasc = (DateTime)reader["data_nasc"],
+                        Email = (string)reader["email"],
+                        Telefone = (string)reader["telefone"],
+                        DatCad =  (DateTime)reader["dat_cad"],
                         Ativo = true,
-                        IdCargo = (int)reader["c.id"],
+                        IdCargo = (short)reader["id"],
                         Cargo = cargo
                     };
                 }
@@ -207,7 +213,7 @@ namespace logiWeb.Repositories
             {
                 cmd.Connection = connection;
                 cmd.CommandText = @"UPDATE pessoas
-                                    SET nome = @nome, cpf = @cpf, rg = @rg, data_nasc = @dataNasc, telefone = @telefone, email = @email
+                                    SET nome = @nome, cpf = @cpf, rg = @rg, data_nasc = @data_nasc, telefone = @telefone, email = @email
                                     WHERE id = @id;
                                     UPDATE funcionarios
                                     Set id_cargo = @id_cargo, login = @login, senha = @senha
@@ -217,7 +223,7 @@ namespace logiWeb.Repositories
                 cmd.Parameters.AddWithValue("@nome", funcionario.Nome);
                 cmd.Parameters.AddWithValue("@cpf", funcionario.Cpf);
                 cmd.Parameters.AddWithValue("@rg", funcionario.Rg);
-                cmd.Parameters.AddWithValue("@dataNasc", funcionario.DatNasc);
+                cmd.Parameters.AddWithValue("@data_nasc", funcionario.DatNasc);
                 cmd.Parameters.AddWithValue("@email", funcionario.Email);
                 cmd.Parameters.AddWithValue("@telefone", funcionario.Telefone);
                 cmd.Parameters.AddWithValue("@id_cargo", funcionario.IdCargo);

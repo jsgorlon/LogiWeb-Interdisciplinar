@@ -34,19 +34,19 @@ namespace logiWeb.Controllers
         }
 
         [HttpGet]
-        public JsonResult Atualizar(int id)
+        public JsonResult Atualizar(short id)
         {
             Cargo cargo = this.repository.Mostrar(id);
             return Json(cargo);
         }
 
-        public ActionResult Atualizar(int id, Cargo cargo)
+        public ActionResult Atualizar(short id, Cargo cargo)
         {
             this.repository.Atualizar(id, cargo);
             return RedirectToAction("Index");
         }
 
-        public ActionResult Excluir(int id)
+        public ActionResult Excluir(short id)
         {
             this.repository.Excluir(id);
             return RedirectToAction("Index");
