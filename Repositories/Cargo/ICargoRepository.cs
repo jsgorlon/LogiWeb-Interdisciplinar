@@ -5,9 +5,9 @@ namespace logiWeb.Repositories
     public interface ICargoRepository
     {
         void Cadastrar(Cargo cargo);
-        Cargo Mostrar(int id);
+        Cargo Mostrar(short id);
         List<Cargo> Mostrar();
-        void Atualizar(int id, Cargo cargo);
-        void Excluir(int id);
+        void Atualizar(short id, Cargo cargo);
+        void Excluir(short id);
     }
 }

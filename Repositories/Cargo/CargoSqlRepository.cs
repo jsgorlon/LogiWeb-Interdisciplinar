@@ -47,7 +47,7 @@ namespace logiWeb.Repositories
                     lista.Add(
                         new Cargo
                         {
-                            Id = (int)reader["id"],
+                            Id = (short)reader["id"],
                             Nome = (string)reader["nome"],
                             Descricao = (string)reader["descricao"],
                             Salario = (decimal)reader["salario"]
@@ -66,7 +66,7 @@ namespace logiWeb.Repositories
             }
         }
         
-        public Cargo Mostrar(int id)
+        public Cargo Mostrar(short id)
         {
             try
             {
@@ -81,7 +81,7 @@ namespace logiWeb.Repositories
                 if(reader.Read())
                 {
                     return new Cargo{
-                            Id = (int)reader["id"],
+                            Id = (short)reader["id"],
                             Nome = (string)reader["nome"],
                             Descricao = (string)reader["descricao"],
                             Salario = (decimal)reader["salario"]
@@ -100,7 +100,7 @@ namespace logiWeb.Repositories
         }
 
 
-        public void Atualizar(int id, Cargo cargo)
+        public void Atualizar(short id, Cargo cargo)
         {
             try
             {
@@ -126,7 +126,7 @@ namespace logiWeb.Repositories
             }
         }
 
-        public void Excluir(int id)
+        public void Excluir(short id)
         {
             try
             {

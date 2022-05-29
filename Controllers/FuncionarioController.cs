@@ -18,11 +18,11 @@ public class FuncionarioController : Controller
     public JsonResult Index()
     {
         List<Funcionario> funcionarios = this.repository.Mostrar();
-        List<Cargo> cargos = cargoRepository.Mostrar();
-        return Json(funcionarios, cargos);
+        ViewBag.Cargos = this.cargoRepository.Mostrar();
+        return Json(funcionarios);
     }
 
-    public ActionResult FiltroPorCargo(int id_cargo)
+    public ActionResult FiltroPorCargo(short id_cargo)
     {
         ViewBag.Cargos = this.cargoRepository.Mostrar();
         List<Funcionario> funcionarios = this.repository.MostrarPorCargo(id_cargo);
