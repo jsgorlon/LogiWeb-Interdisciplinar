@@ -90,13 +90,13 @@ namespace logiWeb.Repositories
                 while (reader.Read())
                 {
                     
-                    item.Id = Convert.ToInt32((int)reader["ID"]);
-                    item.Cliente.Id = Convert.ToInt32((int)reader["ID_CLIENTE"]);
-                    item.Cliente.Id = Convert.ToInt32((int)reader["ID_FUNCIONARIO"]);
-                    item.Endereco.Id = Convert.ToInt32((int)reader["id_endereco"]);
+                    item.Id = (int)reader["ID"];
+                    item.Cliente.Id = (int)reader["ID_CLIENTE"];
+                    item.Cliente.Id = (int)reader["ID_FUNCIONARIO"];
+                    item.Endereco.Id =(int)reader["id_endereco"];
                     item.Peso = (decimal)reader["PESO"];
                     item.Observacao = (string)reader["OBSERVACAO"];
-                    item.Qtd_itens = Convert.ToInt32((int)reader["Qtd_itens"]);
+                    item.Qtd_itens = (short)reader["Qtd_itens"];
                     item.Cliente.Nome = (string)reader["NOME_CLIENTE"];
                     item.Funcionario.Nome = (string)reader["NOME_FUNCIONARIO"];
                     item.Endereco.Logradouro = (string)reader["logradouro"];
@@ -160,7 +160,7 @@ namespace logiWeb.Repositories
                     ordem.Volume = (string)reader["VOLUME"];
                     ordem.Peso = (decimal)reader["PESO"];
                     ordem.Observacao = (string)reader["OBSERVACAO"];
-                    ordem.Qtd_itens = (int)reader["Qtd_itens"];
+                    ordem.Qtd_itens = (short)reader["Qtd_itens"];
                     ordem.Cliente.Nome = (string)reader["NOME_CLIENTE"];
                     ordem.Funcionario.Nome = (string)reader["NOME_FUNCIONARIO"];
                     ordem.Endereco.Logradouro = (string)reader["logradouro"];

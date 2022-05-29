@@ -21,7 +21,7 @@ namespace logiWeb.Repositories
                 {
                     lista.Add(
                         new Status{
-                            Id = (int)reader["ID_ORDEM"],
+                            Id = (short)reader["ID_ORDEM"],
                             Nome = (string)reader["NOME"],
                             Descricao = (string)reader["DESCRICAO"]
                         }

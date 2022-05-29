@@ -110,7 +110,7 @@ namespace logiWeb.Repositories
                     item.IdMotorista = (int)reader["ID_MOTORISTA"];
                     item.Funcionario.Nome = (string)reader["NOME_FUNCIONARIO"];
                     item.Motorista.Nome = (string)reader["NOME_MOTORISTA"];
-                    item.Status.Id = (int)reader["ID_STATUS"];
+                    item.Status.Id = (short)reader["ID_STATUS"];
                     item.DataCadastro = (DateTime)reader["DATA_CAD"];
                     item.Status.Nome = (string)reader["STATUS"];
                     item.Status.Descricao = (string)reader["DESCRICAO"];
@@ -162,7 +162,7 @@ namespace logiWeb.Repositories
                     entrega.IdMotorista = (int)reader["ID_MOTORISTA"];
                     entrega.Funcionario.Nome = (string)reader["NOME_FUNCIONARIO"];
                     entrega.Motorista.Nome = (string)reader["NOME_MOTORISTA"];
-                    entrega.Status.Id = (int)reader["ID_STATUS"];
+                    entrega.Status.Id = (short)reader["ID_STATUS"];
                     entrega.DataCadastro = (DateTime)reader["DATA_CAD"];
                     entrega.Status.Nome = (string)reader["STATUS"];
                     entrega.Status.Descricao = (string)reader["DESCRICAO"];               
@@ -233,7 +233,7 @@ namespace logiWeb.Repositories
                     entrega.Ordem.Volume = (string)reader["VOLUME"];
                     entrega.Ordem.Observacao = (string)reader["OBSERVACAO"];
                     entrega.Ordem.Peso = (decimal)reader["PESO"];
-                    entrega.Ordem.Qtd_itens =  (int)reader["qtd_itens"];
+                    entrega.Ordem.Qtd_itens =  (short)reader["qtd_itens"];
                     entrega.Ordem.Cliente.Nome = (string)reader["NOME_CLIENTE"];
                     entrega.Ordem.Cliente.Telefone = (string)reader["TELEFONE"];
                     entrega.Ordem.Endereco.Id = (int)reader["ID_ENDERECO"];
