@@ -6,7 +6,7 @@ namespace logiWeb.Models
         public string Nome { get; set; } = string.Empty;
         public string Cpf { get; set; } = string.Empty;
         public string Rg { get; set; } = string.Empty;
-        public DateOnly DatNasc { get; set; }
+        public DateTime DatNasc { get; set; }
         public string Email { get; set; } = string.Empty;
         public string Telefone { get; set; } = string.Empty;
         public DateTime DatCad { get; set; }
