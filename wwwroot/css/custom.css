@@ -24,3 +24,13 @@ input[type="color"]:focus,
 {
   padding: 0.3 !important;
 }
+
+.buttons-grid > button > i {
+  font-size: 18px !important;
+  transition: ease-in 0.5s;
+  color: #abb1b6!important;
+}
+.buttons-grid > button > i:hover {
+  color: #6c757d!important;
+}
+

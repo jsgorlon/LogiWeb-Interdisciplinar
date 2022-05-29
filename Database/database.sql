@@ -9,6 +9,7 @@ DROP TABLE IF EXISTS clientes;
 DROP TABLE IF EXISTS funcionarios;
 DROP TABLE IF EXISTS cargos;
 DROP TABLE IF EXISTS enderecos;
+DROP TABLE IF EXISTS telefones;
 DROP TABLE IF EXISTS cidades;
 DROP TABLE IF EXISTS estados;
 DROP TABLE IF EXISTS pessoas;
@@ -61,7 +62,7 @@ CREATE TABLE funcionarios
 
 CREATE TABLE estados 
 (
-  id       INT         IDENTITY,
+  id       INT         NOT NULL,
   nome     VARCHAR(75) NOT NULL,
   sigla_uf VARCHAR(2)  NOT NULL,
   
@@ -71,7 +72,7 @@ CREATE TABLE estados
 
 CREATE TABLE cidades 
 (
-  id        INT           NOT NULL,
+  id        INT           IDENTITY,
   nome      VARCHAR(120)  NOT NULL, 
   id_estado INT           NOT NULL,
   ibge      INT           NOT NULL, 
@@ -120,7 +121,7 @@ CREATE TABLE entregas
   id_funcionario INT  NOT NULL,
   id_motorista   INT  NOT NULL,
   CONSTRAINT pkentregas_id              PRIMARY KEY(id), 
-  CONSTRAINT fkentregas_id_ordem        FOREIGN KEY(id_ordem) REFERENCES ordens(id),
+
   CONSTRAINT fkentregas_id_funcionario  FOREIGN KEY(id_funcionario) REFERENCES funcionarios(id_pessoa),
   CONSTRAINT fkentregas_id_motorista    FOREIGN KEY(id_motorista) REFERENCES funcionarios(id_pessoa)
 ); 
@@ -135,21 +136,23 @@ CREATE TABLE status
 ); 
 
 create table entregas_ordens(
-  id         INT IDENTITY NOT NULL, 
-	ordem_id   INT NOT NULL,
-	entrega_id INT NOT NULL,
-	constraint pkentregas_ordens primary key(id),
-  constraint ukentregas_ordens_ordem_entrega_id primary key(ordem_id, entrega_id),
-	constraint fkentregas_ordens_ordens foreign key(ordem_id) references ordens(id),
-	constraint fkentregas_ordens_entregas foreign key(entrega_id) references entregas(id)
-);
+	ordem_id int not null,
+	entrega_id int not null,
+	status int not null,
+	constraint pk_entregas_ordens primary key(ordem_id, entrega_id),
+	constraint fk_entregas_ordens_ordens foreign key(ordem_id) references ordens(id),
+	constraint fk_entregas_ordens_entregas foreign key(entrega_id) references entregas(id)
+)
 
 CREATE TABLE status_entrega
 (
-  id_entrega_ordem   INT NOT NULL, 
-  id_status          INT NOT NULL, 
+  id_status  SMALLINT NOT NULL, 
+  id_entrega INT      NOT NULL, 
   data_cad   DATETIME     NOT NULL DEFAULT GETDATE(), 
-  CONSTRAINT pkstatus_entrega_id_entrega_ordem_staus  PRIMARY KEY(id_entrega_ordem, id_status),
-  CONSTRAINT fkstatus_entrega_id_status               FOREIGN KEY(id_status)  REFERENCES status(id),
-  CONSTRAINT fkstatus_entrega_id_entrega              FOREIGN KEY(id_entrega) REFERENCES entregas(id)
+  CONSTRAINT pkstatus_entrega_id_status_id_entrega  PRIMARY KEY(id_status, id_entrega),
+  CONSTRAINT fkstatus_entrega_id_status             FOREIGN KEY(id_status)  REFERENCES status(id),
+  CONSTRAINT fkstatus_entrega_id_entrega            FOREIGN KEY(id_entrega) REFERENCES entregas(id)
 );
+
+
+-- INSERTS 

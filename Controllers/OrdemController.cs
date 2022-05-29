@@ -14,12 +14,18 @@ public class OrdemController : Controller
         this.clienteRepository = clienteRepository;
     }
 
-    [HttpGet]
+    public ActionResult Index()
+    {
+        return View(); 
+    }
+
+    /*
+    [HttpPost]
     public JsonResult Index()
     {
         List<Ordem> ordem = this.repository.MostrarOrdens();
         return Json(ordem);
-    }
+    } */
 
     [HttpGet]
     public ActionResult Cadastrar()

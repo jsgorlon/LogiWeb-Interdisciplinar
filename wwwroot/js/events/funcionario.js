@@ -48,17 +48,14 @@ function buttons(id, rows)
 {
 
  const editar = `<button data-bs-toggle="Editar Cliente" data-bs-toggle="popover" class="p-0 m-0 btn btn-sm shadow-none" data-idcliente="${id}">
-                     <i class="fa-solid fa-square-pen text-secondary" 
-                        data-bs-toggle="tooltip" data-bs-placement="top" title="Editar"></i>
+                     <i class="fa-solid fa-square-pen"></i>
                  </button>`;
  const inactive = `<button data-bs-toggle="Inativar Cliente" data-bs-toggle="popover" class="p-0 m-0 btn btn-sm shadow-none" data-idcliente="${id}">
-                     <i class="fa-solid fa-circle-minus text-secondary"
-                     data-bs-toggle="tooltip" data-bs-placement="top" title="Inativar"></i>
+                     <i class="fa-solid fa-circle-minus"></i>
                    </button>`;
 
   const active = `<button data-bs-toggle="Inativar Cliente" data-bs-toggle="popover" class="p-0 m-0 btn btn-sm shadow-none" data-idcliente="${id}">
-                      <i class="fa-solid fa-circle-plus  text-secondary"
-                         data-bs-toggle="tooltip" data-bs-placement="top" title="Ativar"></i>
+                      <i class="fa-solid fa-circle-plus "></i>
                   </button>`;
 
 

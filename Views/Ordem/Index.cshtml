@@ -1,8 +1,6 @@
 @{
   Layout = "~/Views/Templates/_Menu.cshtml";
-  ViewBag.Title = "Funcionários"; 
-
-  Random number = new Random();
+  ViewBag.Title = "Clientes"; 
 }
 
 @section styles {
@@ -11,62 +9,76 @@
 }
 
 <style>
-  
+  body{
+    background: whitesmoke !important;
+  }
   [data-invalid]{
     visibility: hidden;
   }
 </style>
-<div class="container py-4">
- <label class="fw-bold">Funcionários</label>
+<div class="container py-4 bg-white shadow-sm">
+ 
  <div class="row py-4">
-
+      <div class="col-md-12 mb-3">
+          <div class="d-flex ">
+               <i class="fa-solid fa-filter" style="font-size:13px;"></i> Filtros
+          </div>
+          <hr class="text-secondary py-0 my-0">
+      </div>
       <div class="col-md-4">
           <label for="filtro_nome" class="fw-bold">Nome</label>
           <div class="input-group input-group-sm">
               <input type="text" id="filtro_nome" class="form-control form-control-sm">
           </div>
       </div>
-      <div class="col-md-5">
-          <label for="filtro_status" class="fw-bold">Status Funcionário</label>
+      <div class="col-md-4">
+          <label for="filtro_status" class="fw-bold">Status Cliente</label>
 
            <div class="d-flex justify-content-between">
-                <div class="d-flex grid grid-cols-4 gap-2">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="filter_ativos" >
-                        <label class="form-check-label" for="filter_ativos">
-                        Ativos
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="filter_inativo">
-                        <label class="form-check-label" for="filter_inativo">
-                        Inativos
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="filter_ambos" checked>
-                        <label class="form-check-label" for="filter_ambos">
-                        Ambos
-                        </label>
-                    </div>
+               <div class=></div>
+               <div class=""></div>
+          </div>
+          <div class="d-flex grid grid-cols-3 gap-2">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="filter_ativos" >
+                    <label class="form-check-label" for="filter_ativos">
+                       Ativos
+                    </label>
                 </div>
-                <button id="btPesquisar" class="btn btn-sm btn-primary">
-                     <i class="fa-solid fa-magnifying-glass"></i> Pesquisar
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="filter_inativo">
+                    <label class="form-check-label" for="filter_inativo">
+                       Inativos
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="filter_ambos" checked>
+                    <label class="form-check-label" for="filter_ambos">
+                       Ambos
+                    </label>
+                </div>
+          </div>
+      </div>
+      <div class="col-md-2">
+          <div class="d-flex h-100 flex-column justify-content-end align-items-bottom">
+              <button id="btPesquisar" class="btn btn-sm btn-primary">
+                  Pesquisar
               </button>
           </div>
-         
       </div>
-      
   </div>
   <div class="row py-5">
-      <div class="table-responsive">
-          <table data-pagination="true" class="border-0">
+        <div class="d-flex justify-content-between align-bottom">
+           <label for="table" class="fw-bold">Clientes</label>
+           <button id="btCadastrar" class="btn btn-sm btn-success rounded-pill">
+               Novo Cliente
+           </button>
+      </div>
+      <div class="table-responsive pt-2">
+          <table class="table table-stripped">
                 <thead>
                     <th data-field="nome_cpf">
-                        Nome 
-                    </th>
-                    <th data-field="cargo">
-                        Cargo 
+                        Nome & CPF 
                     </th>
                     <th data-field='id' data-width='150' data-formatter="buttons">
                         Ações
@@ -124,5 +136,5 @@
 @section events {
      <script src="~/lib/bootstrap-table/bootstrap-table.min.js"></script>
      <script src="~/lib/jquery-confirm/jquery-confirm.min.js"></script>
-     <script src="~/js/events/funcionario.js?=@number.Next(0,19999)"></script>
+     <script src="~/js/events/clientes.js"></script>
 }

@@ -4,7 +4,7 @@ namespace logiWeb.Repositories
 {
     public abstract class DBContext
     {
-        private readonly string strConn = @"Server=localhost;
+         private readonly string strConn = @"Server=localhost;
                                             Database=master;
                                             Initial Catalog=LogiTech;
                                           Trusted_Connection=True;";
