@@ -73,5 +73,13 @@ public class EntregaController : Controller
         this.repository.StatusEntrega(entrega);
         return RedirectToAction("Mostrar");
     }
+    [HttpGet]
+    public ActionResult Detalhe(int id)
+    {
+        Entrega entregas = this.repository.MostrarDetalheEntrega(id);
+        string entregasJson  = JsonSerializer.Serialize(entregas);
+        Console.WriteLine(entregasJson);
+        return View();
+    }
 
 }

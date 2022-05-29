@@ -178,12 +178,12 @@ namespace logiWeb.Repositories
                 Dispose();
             }
         }
-         public Entrega MostrarDetalheEntrega(int id)
+        public Entrega MostrarDetalheEntrega(int id)
         {
             try
             {
                 cmd.Connection = connection;
-                cmd.CommandText = @"SSELECT ent.id, ent.entrega_id, ent.ordem_id, ent.status,
+                cmd.CommandText = @"SELECT ent.id, ent.entrega_id, ent.ordem_id, ent.status,
                                     e.id_funcionario, e.id_motorista,
                                     p.nome nome_motorista,
                                     f.nome nome_funcionario,
