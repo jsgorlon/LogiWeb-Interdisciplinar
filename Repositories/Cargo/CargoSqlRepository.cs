@@ -36,7 +36,7 @@ namespace logiWeb.Repositories
             try
             {
                 cmd.Connection = connection;
-                cmd.CommandText = "SELECT * FROM Cargos";
+                cmd.CommandText = "SELECT * FROM Cargos ORDER BY nome";
 
                 SqlDataReader reader = cmd.ExecuteReader();
 

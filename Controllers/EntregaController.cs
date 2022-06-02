@@ -16,8 +16,13 @@ public class EntregaController : Controller
         this.statusRepository = statusRepository;
     }
 
-    [HttpGet]
     public ActionResult Index()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    public ActionResult Entregas()
     {
         List<Entrega> entregas = this.repository.MostrarEntregas();
         string entregasJson  = JsonSerializer.Serialize(entregas);

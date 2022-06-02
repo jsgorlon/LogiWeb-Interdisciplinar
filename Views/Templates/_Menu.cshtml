@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    <link rel="shortcut icon" href="~/images/flaticon.svg" type="image/x-icon">
+    <link rel="stylesheet" href="~/css/bootstrap.min.css">
+    <link rel="stylesheet" href="~/lib/notify/notify.min.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    @RenderSection("styles", required: false)
+    
+    <link rel="stylesheet" href="~/css/custom.css">
+
+    <style>
+        body{
+            
+            background: linear-gradient(
+                to top,
+                 white 0%,
+                white 50%,
+                #89542e 50%,
+                #89542e 100%
+               
+            ) !important;
+        }
+        
+        .bootstrap-table .fixed-table-container .table thead{
+            border-bottom: 1px solid #3333;
+        }
+        .table-bordered>:not(caption)>*, .table-bordered>:not(caption)>*>* {
+           border-width: 0px !important;
+           border: none !important; 
+        }
+        .bootstrap-table .fixed-table-container .table thead th .th-inner{
+            padding: 5px !important;
+            background: transparent;
+            color: #a1a1a1; 
+        }
+
+        .bg-brow {
+            background-color: #89542E !important;
+            color: white !important;
+            font-weight: bold;
+        }
+
+        tbody > tr {
+            transition: ease-in .3s;
+            border-radius: 15px !important;
+            opacity: 0.8;
+        }
+        tbody > tr:hover{
+            opacity: 1;
+            box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+        }
+        .table-hover>tbody>tr:hover{
+            background-color: white !important;
+        }
+
+        .page-list > .btn-group > .btn {
+            padding: 3px !important; 
+        }
+    </style>
+  
+</head>
+<body>
+    <header id="header">
+        <div class="container bg-transaparent">
+                <nav class="navbar navbar-expand-lg bg-transaparent">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">
+                    <img src="~/images/logo_white.svg" class="mb-2" style="max-width: 150px; max-height:250px;" alt="Logo - LogiWeb" >
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll" aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarScroll">
+                    <ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll" style="--bs-scroll-height: 100px;">
+                        <li class="nav-item">
+                            <a class="nav-link text-white" aria-current="page" href="/ordem">Ordens</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="/cliente">Clientes</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="/funcionario" tabindex="-1" aria-disabled="true">Funcionários</a>
+                        </li>
+                    </ul>
+             
+                </div>
+            </div>
+            </nav>
+        </div>
+    </header>
+    <main id="main">
+        <div class="container shadow rounded bg-white my-3">
+            @RenderBody()
+        </div>
+    </main>
+    
+    <footer id="footer" hidden>
+         <div class="d-flex bg-dark text-white">
+             <span id="time">
+
+             </span>
+             <b>
+                Projeto interdisciplinar
+             </b> 
+         </div>   
+    </footer>
+
+    @* Eventos javascript da View que será renderizada. *@
+    <script src="~/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/jquery-3.6.0.min.js"></script>
+    <script src="~/js/jquery.mask.min.js"></script>
+    <script src="~/lib/notify/notify.min.js"></script>
+    <script src="~/js/globals.js"></script>
+    <script>
+        $(document).ready(_=>{
+            $(`[href='${window.location.pathname}']`).addClass('bg-brow  rounded-pill');
+            $.ajaxSetup({
+                dataType: 'JSON', 
+                type: 'POST',
+            });
+        });
+    </script>
+    @RenderSection("events", required: false)
+</body>
+</html>

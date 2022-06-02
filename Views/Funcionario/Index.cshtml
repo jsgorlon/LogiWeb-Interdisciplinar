@@ -1,6 +1,6 @@
 @{
   Layout = "~/Views/Templates/_Menu.cshtml";
-  ViewBag.Title = "Ordens"; 
+  ViewBag.Title = "Funcionários"; 
 
   Random number = new Random();
 }
@@ -17,7 +17,7 @@
   }
 </style>
 <div class="container py-4">
- <label class="fw-bold">Ordem</label>
+ <label class="fw-bold">Funcionários</label>
  <div class="row py-4">
 
       <div class="col-md-4">
@@ -59,6 +59,11 @@
       
   </div>
   <div class="row py-5">
+       <div class="d-flex justify-content-end py-1">
+            <button id="btCadastrar" class="btn btn-sm btn-success rounded-pill">
+               <i class="fa-solid fa-circle-plus"></i>  Novo Funcionário 
+            </button>
+       </div>
       <div class="table-responsive">
           <table data-pagination="true" class="border-0">
                 <thead>
@@ -78,7 +83,7 @@
 </div>
 
 
-<template id="template_cad_cliente">
+<template id="template_cad_funcionario">
     <div class="container">
         <div class="row">
                 <div class="col-md-6 mb-2">
@@ -88,7 +93,7 @@
                     </div>
                 </div>
                 <div class="col-md-6 mb-2">
-                    <label for="telefone">Telefone</label>
+                    <label for="telefone">Celular</label>
                     <div class="input-group input-group-sm">
                         <input type="text" class="form-control form-control-sm" id="telefone">
                     </div>
@@ -96,7 +101,7 @@
                 <div class="col-md-12 mb-2">
                     <label for="nome">E-mail</label>
                     <div class="input-group input-group-sm">
-                        <input type="text" class="form-control form-control-sm" id="telefone">
+                        <input type="text" class="form-control form-control-sm" id="email">
                     </div>
                 </div>
                 <div class="col-md-4 mb-2">
@@ -115,6 +120,23 @@
                     <label for="rg">RG</label>
                     <div class="input-group input-group-sm">
                         <input type="text" class="form-control form-control-sm" id="rg">
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <label for="cargo">Cargo <span class="text-danger">*</span></label>
+                     <div class="input-group input-group-sm">
+                        <select id="cargo"   class="form-select ">
+                            <option value="">Selecione</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <label for="senha">Senha <span class="text-danger">*</span></label>
+                     <div class="input-group input-group-sm">
+                         <input type="password" class="form-control form-control-sm" id="senha">
+                         <div class="input-group-prepend " style="cursor:pointer;" onclick="showPass(this)" data-visible='on'>
+                            <i class="fa-solid fa-eye-slash ms-1" id="eye_icon"></i>
+                         </div>
                     </div>
                 </div>
         </div>

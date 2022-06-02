@@ -13,9 +13,13 @@ public class FuncionarioController : Controller
         this.repository = repository;
         this.cargoRepository = cargoRepository;
     }
+     public ActionResult Index()
+     {
+        return View(); 
+     }
 
     [HttpGet]
-    public JsonResult Index()
+    public JsonResult Todos()
     {
         List<Funcionario> funcionarios = this.repository.Mostrar();
         ViewBag.Cargos = this.cargoRepository.Mostrar();
@@ -43,13 +47,6 @@ public class FuncionarioController : Controller
     {
         ViewBag.Cargos = this.cargoRepository.Mostrar();
         List<Funcionario> funcionarios = this.repository.MostrarPorCpf(cpf);
-        return View();
-    }
-
-    [HttpGet]
-    public ActionResult Cadastrar()
-    {
-        ViewBag.Cargos = cargoRepository.Mostrar();
         return View();
     }
 

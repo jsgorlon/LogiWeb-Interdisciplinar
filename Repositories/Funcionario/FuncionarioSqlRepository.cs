@@ -10,7 +10,7 @@ namespace logiWeb.Repositories
 
         public FuncionarioSqlRepository(ICargoRepository cargoRepository)
         {
-            this.cargoRepository = cargoRepository;
+          this.cargoRepository = cargoRepository;
         }
         
 

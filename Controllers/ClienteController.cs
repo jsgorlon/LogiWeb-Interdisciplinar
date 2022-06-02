@@ -13,7 +13,15 @@ public class ClienteController : Controller
     }
 
     [HttpGet]
-    public JsonResult Index()
+    public ActionResult Index()
+    {
+
+        return View();
+    } 
+
+
+    [HttpGet]
+    public JsonResult Clientes()
     {
         List<Cliente> clientes = this.repository.Mostrar();
         return Json(clientes);

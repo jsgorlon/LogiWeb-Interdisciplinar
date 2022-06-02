@@ -4,10 +4,13 @@ namespace logiWeb.Repositories
 {
     public abstract class DBContext
     {
-        private readonly string strConn = @"Data Source=DESKTOP-973N7TE\SQLEXPRESS;
+        /*private readonly string strConn = @"Data Source=DESKTOP-973N7TE\SQLEXPRESS;
          Initial Catalog=Logitech;
-         Integrated Security=true";
-
+         Integrated Security=true"; */
+        private readonly string strConn = @"Server=localhost;
+                                            Database=master;
+                                            Initial Catalog=LogiWeb;
+                                          Trusted_Connection=True;";
         protected SqlConnection connection;
 
         public DBContext()
