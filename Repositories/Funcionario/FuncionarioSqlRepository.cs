@@ -164,6 +164,98 @@ namespace logiWeb.Repositories
             }
         }
 
+        public List<Funcionario> MostrarPorCpf(string cpf)
+        {
+            try
+            {
+                cmd.Connection = connection;
+                cmd.CommandText = @"SELECT f.id_pessoa, p.nome, p.cpf, p.rg, p.data_nasc, p.email, p.telefone, c.id, c.nome, c.descricao, c.salario, p.dat_cad, f.ativo
+                                    FROM funcionarios AS f
+                                    JOIN pessoas AS p ON id_pessoa = p.id
+                                    JOIN cargos AS c ON id_cargo = c.id
+                                    WHERE cpf LIKE @cpf AND f.ativo = 1
+                                ";
+                cmd.Parameters.AddWithValue(@"cpf", string.Format("%{0}%",cpf));
+
+                SqlDataReader reader = cmd.ExecuteReader();
+                List<Funcionario> lista = new List<Funcionario>();
+                List<Cargo> cargos = cargoRepository.Mostrar();
+                while(reader.Read())
+                {
+                    lista.Add(
+                        new Funcionario{
+                            Id = (int)reader["id_pessoa"],
+                            Nome = (string)reader["nome"],
+                            Cpf = (string)reader["cpf"],
+                            Rg = (string)reader["rg"],
+                            DatNasc = (DateTime)reader["data_nasc"],
+                            Email = (string)reader["email"],
+                            Telefone = (string)reader["telefone"],
+                            DatCad =  (DateTime)reader["dat_cad"],
+                            Ativo = true,
+                            IdCargo = (short)reader["id"],
+                            Cargo = cargos.FirstOrDefault<Cargo>(cargo => cargo.Id == (short)reader["id"], new Cargo())
+                        }
+                    );
+                }
+                return lista;
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                Dispose();
+            }
+        }
+
+        public List<Funcionario> MostrarPorNome(string nome)
+        {
+            try
+            {
+                cmd.Connection = connection;
+                cmd.CommandText = @"SELECT f.id_pessoa, p.nome, p.cpf, p.rg, p.data_nasc, p.email, p.telefone, c.id, c.nome, c.descricao, c.salario, p.dat_cad, f.ativo
+                                    FROM funcionarios AS f
+                                    JOIN pessoas AS p ON id_pessoa = p.id
+                                    JOIN cargos AS c ON id_cargo = c.id
+                                    WHERE p.nome LIKE @nome AND f.ativo = 1
+                                ";
+                cmd.Parameters.AddWithValue(@"nome", string.Format("%{0}%",nome));
+                
+                SqlDataReader reader = cmd.ExecuteReader();
+                List<Funcionario> lista = new List<Funcionario>();
+                List<Cargo> cargos = cargoRepository.Mostrar();
+                while(reader.Read())
+                {
+                    lista.Add(
+                        new Funcionario{
+                            Id = (int)reader["id_pessoa"],
+                            Nome = (string)reader["nome"],
+                            Cpf = (string)reader["cpf"],
+                            Rg = (string)reader["rg"],
+                            DatNasc = (DateTime)reader["data_nasc"],
+                            Email = (string)reader["email"],
+                            Telefone = (string)reader["telefone"],
+                            DatCad =  (DateTime)reader["dat_cad"],
+                            Ativo = true,
+                            IdCargo = (short)reader["id"],
+                            Cargo = cargos.FirstOrDefault<Cargo>(cargo => cargo.Id == (short)reader["id"], new Cargo())
+                        }
+                    );
+                }
+                return lista;
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                Dispose();
+            }
+        }
+
         public Funcionario Mostrar(int id)
         {
             try
@@ -173,7 +265,7 @@ namespace logiWeb.Repositories
                                     FROM funcionarios AS f
                                     JOIN pessoas AS p ON f.id_pessoa = p.id
                                     JOIN cargos AS c ON f.id_cargo = c.id
-                                    WHERE f.id_pessoa = @id and f.ativo = 1
+                                    WHERE f.id_pessoa = @id AND f.ativo = 1
                                 ";
                 cmd.Parameters.AddWithValue("@id", id);
 

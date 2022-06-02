@@ -149,7 +149,7 @@ namespace logiWeb.Repositories
             }
         }
 
-        public Cliente MostrarPorCpf(string cpf)
+        public List<Cliente> MostrarPorCpf(string cpf)
         {
             try
             {
@@ -157,27 +157,75 @@ namespace logiWeb.Repositories
                 cmd.CommandText = @"SELECT id_pessoa, nome, cpf, rg, data_nasc, email, telefone, dat_cad, ativo
                                     FROM clientes
                                     INNER JOIN pessoas ON id_pessoa = id
-                                    WHERE cpf = @cpf
+                                    WHERE cpf LIKE @nome_ou_cpf and ativo = 1
                                 ";
-                cmd.Parameters.AddWithValue(@"cpf", cpf);
+                cmd.Parameters.AddWithValue(@"nome_ou_cpf", string.Format("%{0}%", cpf));
 
                 SqlDataReader reader = cmd.ExecuteReader();
-                if(reader.Read())
+                List<Cliente> lista = new List<Cliente>();
+
+                while (reader.Read())
                 {
-                    return new Cliente 
-                    {
-                        Id = (int)reader["id_pessoa"],
-                        Nome = (string)reader["nome"],
-                        Cpf = (string)reader["cpf"],
-                        Rg = (string)reader["rg"],
-                        DatNasc = (DateTime)reader["data_nasc"],
-                        Email = (string)reader["email"],
-                        Telefone = (string)reader["telefone"],
-                        DatCad = (DateTime)reader["dat_cad"],
-                        Ativo = true
-                    };
+                    lista.Add(
+                        new Cliente
+                        {
+                            Id = (int)reader["id_pessoa"],
+                            Nome = (string)reader["nome"],
+                            Cpf = (string)reader["cpf"],
+                            Rg = (string)reader["rg"],
+                            DatNasc = (DateTime)reader["data_nasc"],
+                            Email = (string)reader["email"],
+                            Telefone = (string)reader["telefone"],
+                            DatCad = (DateTime)reader["dat_cad"],
+                            Ativo = true
+                        }
+                    );
                 }
-                return null;
+                return lista;
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                Dispose();
+            }
+        }
+
+        public List<Cliente> MostrarPorNome(string nome)
+        {
+            try
+            {
+                cmd.Connection = connection;
+                cmd.CommandText = @"SELECT id_pessoa, nome, cpf, rg, data_nasc, email, telefone, dat_cad, ativo
+                                    FROM clientes
+                                    INNER JOIN pessoas ON id_pessoa = id
+                                    WHERE nome LIKE @nome and ativo = 1
+                                ";
+                cmd.Parameters.AddWithValue(@"nome", string.Format("%{0}%", nome));
+
+                SqlDataReader reader = cmd.ExecuteReader();
+                List<Cliente> lista = new List<Cliente>();
+
+                while (reader.Read())
+                {
+                    lista.Add(
+                        new Cliente
+                        {
+                            Id = (int)reader["id_pessoa"],
+                            Nome = (string)reader["nome"],
+                            Cpf = (string)reader["cpf"],
+                            Rg = (string)reader["rg"],
+                            DatNasc = (DateTime)reader["data_nasc"],
+                            Email = (string)reader["email"],
+                            Telefone = (string)reader["telefone"],
+                            DatCad = (DateTime)reader["dat_cad"],
+                            Ativo = true
+                        }
+                    );
+                }
+                return lista;
             }
             catch(Exception ex)
             {

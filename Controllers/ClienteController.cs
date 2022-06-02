@@ -19,10 +19,18 @@ public class ClienteController : Controller
         return Json(clientes);
     }
 
+    [HttpGet]
     public ActionResult MostrarPorCpf(string cpf)
     {
-        Cliente cliente = this.repository.MostrarPorCpf(cpf);
-        return View("Index", Json(cliente));
+        List<Cliente> clientes = this.repository.MostrarPorCpf(cpf);
+        return View();
+    }
+
+    [HttpGet]
+    public ActionResult MostrarPorNome(string nome)
+    {
+        List<Cliente> clientes = this.repository.MostrarPorNome(nome);
+        return View();
     }
 
     [HttpGet]

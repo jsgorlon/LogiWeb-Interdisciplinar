@@ -7,7 +7,8 @@ namespace logiWeb.Repositories
         void Cadastrar(Cliente cliente);
         List<Cliente> Mostrar();
         Cliente Mostrar(int id);
-        Cliente MostrarPorCpf(string cpf);
+        List<Cliente> MostrarPorCpf(string cpf);
+        List<Cliente> MostrarPorNome(string nome);
         void Atualizar(int id, Cliente cliente);
         void Excluir(int id);
     }

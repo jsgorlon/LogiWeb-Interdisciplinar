@@ -22,11 +22,28 @@ public class FuncionarioController : Controller
         return Json(funcionarios);
     }
 
-    public ActionResult FiltroPorCargo(short id_cargo)
+    [HttpGet]
+    public ActionResult MostrarPorCargo(short id_cargo)
     {
         ViewBag.Cargos = this.cargoRepository.Mostrar();
         List<Funcionario> funcionarios = this.repository.MostrarPorCargo(id_cargo);
-        return View("index", Json(funcionarios));
+        return View();
+    }
+
+    [HttpGet]
+    public ActionResult MostrarPorCpf(string cpf)
+    {
+        ViewBag.Cargos = this.cargoRepository.Mostrar();
+        List<Funcionario> funcionarios = this.repository.MostrarPorCpf(cpf);
+        return View();
+    }
+
+    [HttpGet]
+    public ActionResult MostrarPorNome(string cpf)
+    {
+        ViewBag.Cargos = this.cargoRepository.Mostrar();
+        List<Funcionario> funcionarios = this.repository.MostrarPorCpf(cpf);
+        return View();
     }
 
     [HttpGet]
