@@ -10,5 +10,6 @@ namespace logiWeb.Repositories
         void Excluir(int id);
         void StatusOrdem(Ordem ordem);
         void StatusEntrega(Entrega entrega);
+        Entrega MostrarDetalheEntrega(int id);
     }
 }

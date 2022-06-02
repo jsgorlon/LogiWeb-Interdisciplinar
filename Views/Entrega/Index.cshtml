@@ -22,19 +22,7 @@
             <th>NASCIMENTO</th>
             <th>DATA CADASTRO</th>
         </tr>
-        @foreach(Cliente c in Model)
-        {
-        <tr>
-            <td>@c.Id</td>
-            <td>@c.Nome</td>
-            <td>@c.Email</td>
-            <td>@c.Cpf</td>
-            <td>@c.Rg</td>
-            <td>@c.DatNasc</td>
-            <td>@c.DatCad</td>
-            <td>@c.Ativo</td>
-        </tr>
-        }
+       
 </table>
 
 <a href="/Cliente/Cadastrar" class="btn btn-primary">Adicionar</a>

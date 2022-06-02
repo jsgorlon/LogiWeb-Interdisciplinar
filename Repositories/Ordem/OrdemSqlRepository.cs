@@ -15,6 +15,7 @@ namespace logiWeb.Repositories
 
         public void Cadastrar(Ordem ordem)
         {
+            Console.WriteLine("chegamos", ordem);
             try
             {
                 cmd.Connection = connection;
@@ -22,10 +23,9 @@ namespace logiWeb.Repositories
                                     VALUES (@id_cliente, @id_endereco, @id_funcionario, @qtd_itens, @volume, @peso, @observacao);";
 
                 cmd.Parameters.AddWithValue("@id_cliente", ordem.Cliente.Id);
-                cmd.Parameters.AddWithValue("@id_cliente", ordem.Endereco.Id);
-                cmd.Parameters.AddWithValue("@id_cliente", ordem.Funcionario.Id);
-                cmd.Parameters.AddWithValue("@id_cliente", ordem.Qtd_itens);
-                cmd.Parameters.AddWithValue("@destino", ordem.Endereco.Id);
+                cmd.Parameters.AddWithValue("@id_endereco", ordem.Endereco.Id);
+                cmd.Parameters.AddWithValue("@id_funcionario", ordem.Funcionario.Id);
+                cmd.Parameters.AddWithValue("@qtd_itens", ordem.Qtd_itens);
                 cmd.Parameters.AddWithValue("@volume", ordem.Volume);
                 cmd.Parameters.AddWithValue("@peso", ordem.Peso);
                 cmd.Parameters.AddWithValue("@observacao", ordem.Observacao);
