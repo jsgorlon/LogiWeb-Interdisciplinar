@@ -17,17 +17,25 @@
   }
 </style>
 <div class="container py-4">
- <label class="fw-bold">Funcionários</label>
+ <label  class="fw-bold">Funcionários</label>
  <div class="row py-4">
 
       <div class="col-md-4">
-          <label for="filtro_nome" class="fw-bold">Nome</label>
+          <label for="filtro_nome" >Nome</label>
           <div class="input-group input-group-sm">
               <input type="text" id="filtro_nome" class="form-control form-control-sm">
           </div>
       </div>
-      <div class="col-md-5">
-          <label for="filtro_status" class="fw-bold">Status Funcionário</label>
+        <div class="col-md-3">
+            <label for="filter_cargo">Cargo</label>
+                <div class="input-group input-group-sm">
+                <select id="filter_cargo"   class="form-select ">
+                    <option value="">TODOS</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-4">
+          <label for="filtro_status">Status Funcionário</label>
 
            <div class="d-flex justify-content-between">
                 <div class="d-flex grid grid-cols-4 gap-2">
@@ -52,7 +60,7 @@
                 </div>
                 <button id="btPesquisar" class="btn btn-sm btn-primary">
                      <i class="fa-solid fa-magnifying-glass"></i> Pesquisar
-              </button>
+               </button>
           </div>
          
       </div>
@@ -89,7 +97,7 @@
                 <div class="col-md-6 mb-2">
                     <label for="nome">Nome <span class="text-danger">*</span></label>
                     <div class="input-group input-group-sm">
-                        <input type="text" class="form-control form-control-sm" id="nome">
+                        <input type="text" class="form-control form-control-sm" id="nome" maxlength="80">
                     </div>
                 </div>
                 <div class="col-md-6 mb-2">
@@ -101,7 +109,7 @@
                 <div class="col-md-12 mb-2">
                     <label for="nome">E-mail</label>
                     <div class="input-group input-group-sm">
-                        <input type="text" class="form-control form-control-sm" id="email">
+                        <input type="text" class="form-control form-control-sm" id="email" maxlength="80">
                     </div>
                 </div>
                 <div class="col-md-4 mb-2">
@@ -122,21 +130,27 @@
                         <input type="text" class="form-control form-control-sm" id="rg">
                     </div>
                 </div>
-                <div class="col-md-5">
+                <div class="col-md-6">
+                     <label for="login">Login <span class="text-danger">*</span></label>
+                     <div class="input-group input-group-sm">
+                        <input type="text" class="form-control form-control-sm" id="login" maxlength="15">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label for="senha">Senha <span class="text-danger">*</span></label>
+                     <div class="input-group input-group-sm">
+                         <input type="password" class="form-control form-control-sm" id="senha" maxlength="8">
+                         <div class="input-group-prepend " style="cursor:pointer;" onclick="showPass(this)" data-visible='on'>
+                            <i class="fa-solid fa-eye-slash ms-1" id="eye_icon"></i>
+                         </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
                     <label for="cargo">Cargo <span class="text-danger">*</span></label>
                      <div class="input-group input-group-sm">
                         <select id="cargo"   class="form-select ">
                             <option value="">Selecione</option>
                         </select>
-                    </div>
-                </div>
-                <div class="col-md-5">
-                    <label for="senha">Senha <span class="text-danger">*</span></label>
-                     <div class="input-group input-group-sm">
-                         <input type="password" class="form-control form-control-sm" id="senha">
-                         <div class="input-group-prepend " style="cursor:pointer;" onclick="showPass(this)" data-visible='on'>
-                            <i class="fa-solid fa-eye-slash ms-1" id="eye_icon"></i>
-                         </div>
                     </div>
                 </div>
         </div>

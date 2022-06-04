@@ -20,7 +20,7 @@ CREATE TABLE pessoas(
   id        INT           IDENTITY, 
   nome      VARCHAR(80)   NOT NULL,
   cpf       VARCHAR(11)   NOT NULL,
-  rg        VARCHAR(9)    NOT NULL,
+  rg        VARCHAR(9)        NULL,
   data_nasc DATE          NOT NULL,
   telefone  VARCHAR(16)   NULL,
   email     VARCHAR(100)  NULL,
@@ -156,8 +156,13 @@ CREATE TABLE status_entrega
 
 
 -- INSERTS 
-
 INSERT INTO cargos(nome, descricao, salario)
      VALUES ('Operador de Cargas', 'Responsável pelas cargas e os motoristas.', 2000), 
 	          ('Atendente', 'Responsável pelo atendimento ao cliente.',           1500),
 			      ('Motorista', 'Responsável pela entrega de mercadorias.',           1500);
+
+            
+INSERT INTO status(nome, descricao)
+     VALUES ('CRIADO', 'Ordem criada pela atendente.'), 
+	          ('SEPARAÇÃO', 'Ordem esperando para ser atribuida a um motorista.'),
+			      ('SAIU PARA ENTREGA','Ordem atribuida para um motorista.');

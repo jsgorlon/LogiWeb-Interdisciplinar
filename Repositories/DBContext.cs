@@ -10,7 +10,8 @@ namespace logiWeb.Repositories
         private readonly string strConn = @"Server=localhost;
                                             Database=master;
                                             Initial Catalog=LogiWeb;
-                                          Trusted_Connection=True;";
+                                          Trusted_Connection=True;
+                                          MultipleActiveResultSets=True";
         protected SqlConnection connection;
 
         public DBContext()

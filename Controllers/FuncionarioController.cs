@@ -22,7 +22,6 @@ public class FuncionarioController : Controller
     public JsonResult Todos()
     {
         List<Funcionario> funcionarios = this.repository.Mostrar();
-        ViewBag.Cargos = this.cargoRepository.Mostrar();
         return Json(funcionarios);
     }
 
@@ -51,10 +50,14 @@ public class FuncionarioController : Controller
     }
 
     [HttpPost]
-    public ActionResult Cadastrar(Funcionario funcionario)
+    public JsonResult Cadastrar(Funcionario funcionario)
     {
         this.repository.Cadastrar(funcionario);
-        return RedirectToAction("Mostrar");
+        
+        List<Funcionario> funcionarios = this.repository.Mostrar();
+        
+        return Json(funcionarios);
+        //return this.Todos();
     }
 
     

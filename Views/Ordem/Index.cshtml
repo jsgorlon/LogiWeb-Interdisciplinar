@@ -26,44 +26,19 @@
               <input type="text" id="filtro_nome" class="form-control form-control-sm">
           </div>
       </div>
-      <div class="col-md-5">
-          <label for="filtro_status" class="fw-bold">Status Funcionário</label>
-
-           <div class="d-flex justify-content-between">
-                <div class="d-flex grid grid-cols-4 gap-2">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="filter_ativos" >
-                        <label class="form-check-label" for="filter_ativos">
-                        Ativos
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="filter_inativo">
-                        <label class="form-check-label" for="filter_inativo">
-                        Inativos
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="filter_ambos" checked>
-                        <label class="form-check-label" for="filter_ambos">
-                        Ambos
-                        </label>
-                    </div>
-                </div>
-                <button id="btPesquisar" class="btn btn-sm btn-primary">
-                     <i class="fa-solid fa-magnifying-glass"></i> Pesquisar
-              </button>
-          </div>
-         
-      </div>
       
   </div>
   <div class="row py-5">
+      <div class="d-flex justify-content-end py-1">
+            <button id="btCadastrar" class="btn btn-sm btn-success rounded-pill">
+               <i class="fa-solid fa-circle-plus"></i>  Nova Ordem 
+            </button>
+       </div>
       <div class="table-responsive">
           <table data-pagination="true" class="border-0">
                 <thead>
                     <th data-field="nome_cpf">
-                        Nome 
+                        Status 
                     </th>
                     <th data-field="cargo">
                         Cargo 

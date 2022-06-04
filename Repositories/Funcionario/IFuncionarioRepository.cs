@@ -4,7 +4,7 @@ namespace logiWeb.Repositories
 {
     public interface IFuncionarioRepository
     {
-        void Cadastrar(Funcionario funcionario);
+        bool Cadastrar(Funcionario funcionario);
         List<Funcionario> Mostrar();
         Funcionario Mostrar(int id);
         List<Funcionario> MostrarPorCargo(short id);

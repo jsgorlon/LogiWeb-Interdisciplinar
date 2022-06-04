@@ -13,7 +13,7 @@ namespace logiWeb.Repositories
             {
                 cmd.Connection = connection;
                 cmd.CommandText = @"INSERT INTO Cargos (nome, descricao, salario)
-                                    VALUES (@nome, @descricao, @salario)";
+                                    VALUES (@nome, @descricao, @salario);";
                 
                 cmd.Parameters.AddWithValue("@nome", cargo.Nome);
                 cmd.Parameters.AddWithValue("@descricao", cargo.Descricao);
@@ -36,7 +36,7 @@ namespace logiWeb.Repositories
             try
             {
                 cmd.Connection = connection;
-                cmd.CommandText = "SELECT * FROM Cargos ORDER BY nome";
+                cmd.CommandText = "SELECT * FROM Cargos ORDER BY nome;";
 
                 SqlDataReader reader = cmd.ExecuteReader();
 
@@ -72,7 +72,7 @@ namespace logiWeb.Repositories
             {
                 cmd.Connection = connection;
                 cmd.CommandText = @"SELECT * FROM Cargos
-                                    WHERE id = @id";
+                                    WHERE id = @id;";
                 
                 cmd.Parameters.AddWithValue("@id", id);
 
@@ -107,7 +107,7 @@ namespace logiWeb.Repositories
                 cmd.Connection = connection;
                 cmd.CommandText = @"UPDATE Cargos
                                 SET nome = @nome, descricao = @descricao, salario = @salario
-                                WHERE id = @id";
+                                WHERE id = @id;";
                 
                 cmd.Parameters.AddWithValue("@nome", cargo.Nome);
                 cmd.Parameters.AddWithValue("@descricao", cargo.Descricao);
@@ -131,7 +131,7 @@ namespace logiWeb.Repositories
             try
             {
                 cmd.Connection = connection;
-                cmd.CommandText = @"DELETE FROM Cargos Where id = @id";
+                cmd.CommandText = @"DELETE FROM Cargos Where id = @id;";
                 cmd.Parameters.AddWithValue("@id", id);
                 cmd.ExecuteNonQuery();
             }

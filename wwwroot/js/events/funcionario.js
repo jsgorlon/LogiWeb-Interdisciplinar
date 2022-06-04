@@ -1,4 +1,20 @@
 
+
+class Funcionario {
+     constructor(){
+        this.Nome = $("#nome").val(); 
+        this.Telefone = $("#telefone").val().replaceAll(/[^0-9]/gi,''); 
+        this.Email = $("#email").val().trim(); 
+        this.DatNasc = $("#dat_nasc").val(); 
+        this.Cpf = $("#cpf").val().replaceAll(/[^0-9]/gi,''); 
+        this.Rg = $("#rg").val().replaceAll(/[^0-9]/gi,''); 
+        this.IdCargo = $("#cargo").val(); 
+        this.Senha = $("#senha").val(); 
+        this.Login = $("#login").val(); 
+        this.Ativo = true; 
+     }
+}
+
 let dialogFuncionario = $.confirm({
     title: `Novo Funcionario`, 
     content: $("#template_cad_funcionario").html(),
@@ -27,8 +43,26 @@ let dialogFuncionario = $.confirm({
                 btnClass: 'btn btn-sm btn-success btCadastrar', 
                 action: () => {
                     
-                    validarCampos(); 
-                    return false;
+                   let {campos_validos } = validarCampos(); 
+                    
+                   if(!campos_validos)
+                     return false;
+                   
+                   let funcionario = new Funcionario(); 
+
+                   $.ajax({
+                       url: '/funcionario/cadastrar', 
+                       type: 'POST',
+                       dataType: 'JSON',
+                       data: funcionario, 
+                       success: data => {
+                        //obterFuncionarios(); 
+
+                        alert_success("Funcionário cadastrado com sucesso!");
+                       }
+                   });
+                    
+                   return false; 
                 }
             }
         }
@@ -51,7 +85,7 @@ $(document).ready(_=>{
 
     $('#btCadastrar').click(_=>dialogFuncionario.cadastrar());
 
-    
+    obterCargos('filter_cargo', 'todos');
 });
 
 
@@ -105,14 +139,14 @@ function showPass(el){
     }
 }
 
-function obterCargos(selectId){
+function obterCargos(selectId, ig = 'selecione'){
    return $.ajax({
         type: 'GET',
         url: '/cargo',
         dataType: 'JSON',
         success: data => {
             let newOption = (label, value = '') =>  `<option value='${value}'>${label.toLocaleUpperCase()}</option>`;
-            let html = newOption('selecione');
+            let html = newOption(ig);
 
             data.map(cargo => html += newOption(cargo.nome, cargo.id));
 
@@ -143,6 +177,7 @@ function validarCampos(){
     let rg = $("#rg"); 
     let cargo = $("#cargo"); 
     let senha = $("#senha"); 
+    let login = $("#login"); 
 
     let msg = ''; 
     
@@ -159,16 +194,35 @@ function validarCampos(){
         },
         {
             campo: email, 
-            valido: email.val() != '' ? validateEmail(email) : true,
+            valido: email.val().trim().length > 0 ? validateEmail(email) : true,
             msg: 'E-mail inválido.'
         },
         {
             campo: dat_nasc, 
-            valido: dat_nasc.val() != '' ? validateEmail(email) : true,
+            valido: dat_nasc.val() != '', 
             msg: 'Data de Nascimento inválida.'
         },
-
-    ]
+        {
+            campo: cpf, 
+            valido: cpf_valido(cpf.val()), 
+            msg: 'CPF inválido.'
+        },
+        {
+            campo: cargo, 
+            valido: cargo.val() != '', 
+            msg: 'Cargo inválido.'
+        },
+        {
+            campo: login, 
+            valido: login.val() != '', 
+            msg: 'Login inválido.'
+        },
+        {
+            campo: senha, 
+            valido: senha.val() != '', 
+            msg: 'Senha inválido.'
+        }
+    ];
 
 
 
@@ -181,5 +235,9 @@ function validarCampos(){
     });
 
     if(msg != '')
-        alert_error(msg);
+       alert_error('Preencha corretamente os campos inválidos.');
+
+    return {
+        campos_validos: msg == ''
+    }
 }

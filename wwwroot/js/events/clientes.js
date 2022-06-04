@@ -1,5 +1,19 @@
 
-let dialogCadastrar = $.dialog({
+class Cliente {
+    constructor(){
+       this.Nome = $("#nome").val(); 
+       this.Telefone = $("#telefone").val().replaceAll(/[^0-9]/gi,''); 
+       this.Email = $("#email").val().trim(); 
+       this.DatNasc = $("#dat_nasc").val(); 
+       this.Cpf = $("#cpf").val().replaceAll(/[^0-9]/gi,''); 
+       this.Rg = $("#rg").val().replaceAll(/[^0-9]/gi,''); 
+       this.Ativo = true; 
+    }
+}
+
+
+
+let dialogCadastrar = $.confirm({
     title: `Novo cliente`, 
     content: $("#template_cad_cliente").html(),
     lazyOpen: true,
@@ -17,12 +31,46 @@ let dialogCadastrar = $.dialog({
             }
         }
     },
+    onOpenBefore: () => {
+
+        $("#cpf").mask('000.000.000-00');
+        $('#rg').mask('99.999.999-9'); 
+        $('#telefone').mask('(00) 00000-0000'); 
+    },
     onClose: function(){
         this.id_cliente = null; 
     }, 
     cadastrar: function(){
         this.title = `<span style="font-size:18px !important;" class="fw-bold">Novo Cliente</span>`;
+        this.buttons = {
+            cadastrar: {
+                text: 'Cadastrar',
+                btnClass: 'btn btn-sm btn-success btCadastrar', 
+                action: () => {
+                    
+                   let {campos_validos } = validarCampos(); 
+                    
+                   if(!campos_validos)
+                     return false;
+                   
+                   let cliente = new Cliente(); 
 
+                   $.ajax({
+                       url: '/cliente/cadastrar', 
+                       type: 'POST',
+                       dataType: 'JSON',
+                       data: cliente, 
+                       success: data => {
+                        //obterFuncionarios(); 
+
+                        alert_success("Cliente cadastrado com sucesso!");
+                       }
+                   });
+                    
+                   return false; 
+                }
+            }
+        }
         this.open(); 
     },
     editar: function(id_cliente){
@@ -35,7 +83,7 @@ $(document).ready(_=>{
 
     $('table').bootstrapTable({});
 
-    $('table').bootstrapTable('load', generateUsers());
+    $('table').bootstrapTable('load', {});
 
     $("[data-bs-toggle='popover']").popover({content: 'body', trigger: 'hover'});
 
@@ -67,18 +115,59 @@ function buttons(id, rows)
 }
 
 
-function generateUsers(){
+function validarCampos(){
+    let nome = $("#nome"); 
+    let telefone = $("#telefone"); 
+    let email = $("#email"); 
+    let dat_nasc = $("#dat_nasc"); 
+    let cpf = $("#cpf"); 
+ 
+   
 
-    let users = [];
-    for(let i = 0; i <= 300; i++){
-        var active = Math.random() < 0.5;
-       users.push({
-        id: i, 
-        nome_cpf: `Nome completo da pessoa ${1} -  <b>111.111.111-1${i}</b>`,
-        active: active, 
-        status: active ? `<span class="badge badge-success rounded-pill bg-success">ATIVO</span>` : `<span class="badge badge-success rounded-pill bg-danger">INATIVO</span>`
-       });
+    let msg = ''; 
+    
+    let validacoes = [
+        {
+            campo: nome, 
+            valido: nome.val() != '',
+            msg: 'Nome inválido.'
+        },
+        {
+            campo: telefone, 
+            valido: telefone.val() != '' ? telefone.val().replaceAll(/[^0-9]/gi,'').length > 7 : true,
+            msg: 'O telefone precisa ter no mínimo 8 digitos.'
+        },
+        {
+            campo: email, 
+            valido: email.val().trim().length > 0 ? validateEmail(email) : true,
+            msg: 'E-mail inválido.'
+        },
+        {
+            campo: dat_nasc, 
+            valido: dat_nasc.val() != '', 
+            msg: 'Data de Nascimento inválida.'
+        },
+        {
+            campo: cpf, 
+            valido: cpf_valido(cpf.val()), 
+            msg: 'CPF inválido.'
+        }
+    ];
+
+
+
+    validacoes.map(field => {
+        if(!field.valido)
+        {
+            msg += field.msg + '<br>'; 
+            field.campo.addClass('is-invalid');
+        }
+    });
+
+    if(msg != '')
+       alert_error('Preencha corretamente os campos inválidos.');
+
+    return {
+        campos_validos: msg == ''
     }
-
-    return users; 
 }

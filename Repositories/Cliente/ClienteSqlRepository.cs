@@ -5,30 +5,32 @@ namespace logiWeb.Repositories
 {
     public class ClienteSqlRepository : DBContext, IClienteRepository
     {
-        ///TODO Escreve Querys do Banco de Dados
+      
         private SqlCommand cmd = new SqlCommand();
         public void Cadastrar(Cliente cliente)
         {
             try
             {
                 cmd.Connection = connection;
-                cmd.CommandText = @"SELECT id FROM pessoas WHERE cpf = @cpf1";
+                cmd.CommandText = @"SELECT id FROM pessoas WHERE cpf = @cpf1;";
                 cmd.Parameters.AddWithValue("@cpf1", cliente.Cpf);
+
                 SqlDataReader reader = cmd.ExecuteReader();
+
                 if (!reader.HasRows)
                 {
                     reader.Close();
                     reader.Dispose();
                     cmd.CommandText = @"INSERT INTO pessoas (nome, cpf, rg, data_nasc, telefone, email) 
                                             VALUES (@nome, @cpf2, @rg, @data_nasc, @telefone, @email);
-                                        INSERT INTO clientes (id_pessoa) VALUES (SCOPE_IDENTITY());
-                                    ";
-                    cmd.Parameters.AddWithValue("@nome", cliente.Nome);
-                    cmd.Parameters.AddWithValue("@cpf2", cliente.Cpf);
-                    cmd.Parameters.AddWithValue("@rg", cliente.Rg);
+                                        INSERT INTO clientes (id_pessoa) VALUES (SCOPE_IDENTITY());";
+
+                    cmd.Parameters.AddWithValue("@nome",      cliente.Nome);
+                    cmd.Parameters.AddWithValue("@cpf2",      cliente.Cpf);
+                    cmd.Parameters.AddWithValue("@rg",        cliente.Rg);
                     cmd.Parameters.AddWithValue("@data_nasc", cliente.DatNasc);
-                    cmd.Parameters.AddWithValue("@email", cliente.Email);
-                    cmd.Parameters.AddWithValue("@telefone", cliente.Telefone);
+                    cmd.Parameters.AddWithValue("@email",     cliente.Email);
+                    cmd.Parameters.AddWithValue("@telefone",  cliente.Telefone);
 
                     cmd.ExecuteNonQuery();
                 }
@@ -70,8 +72,7 @@ namespace logiWeb.Repositories
                 cmd.CommandText = @"SELECT id_pessoa, nome, cpf, rg, data_nasc, email, telefone, dat_cad, ativo
                                     FROM clientes
                                     INNER JOIN pessoas ON id_pessoa = id
-                                    WHERE ativo = 1
-                                ";
+                                    WHERE ativo = 1";
 
                 SqlDataReader reader = cmd.ExecuteReader();
 
@@ -112,13 +113,15 @@ namespace logiWeb.Repositories
             {
                 cmd.Connection = connection;
                 cmd.CommandText = @"SELECT id_pessoa, nome, cpf, rg, data_nasc, email, telefone, dat_cad, ativo
-                                    FROM clientes
-                                    INNER JOIN pessoas ON id_pessoa = id
-                                    WHERE id_pessoa = @id AND ativo = 1
-                                ";
+                                      FROM clientes
+                                INNER JOIN pessoas ON id_pessoa = id
+                                     WHERE id_pessoa = @id 
+                                       AND ativo = 1";
 
-                cmd.Parameters.AddWithValue(@"id", id);
+                cmd.Parameters.AddWithValue("@id", id);
+
                 SqlDataReader reader = cmd.ExecuteReader();
+
                 if(reader.Read())
                 {
                     return new Cliente 
@@ -157,8 +160,8 @@ namespace logiWeb.Repositories
                 cmd.CommandText = @"SELECT id_pessoa, nome, cpf, rg, data_nasc, email, telefone, dat_cad, ativo
                                     FROM clientes
                                     INNER JOIN pessoas ON id_pessoa = id
-                                    WHERE cpf LIKE @nome_ou_cpf and ativo = 1
-                                ";
+                                    WHERE cpf LIKE @nome_ou_cpf and ativo = 1";
+                                    
                 cmd.Parameters.AddWithValue(@"nome_ou_cpf", string.Format("%{0}%", cpf));
 
                 SqlDataReader reader = cmd.ExecuteReader();
@@ -273,8 +276,7 @@ namespace logiWeb.Repositories
                 cmd.Connection = connection;
                 cmd.CommandText = @"UPDATE clientes
                                     SET ativo = 0
-                                    WHERE id_pessoa = id
-                                ";
+                                    WHERE id_pessoa = @id";
                 cmd.Parameters.AddWithValue("@id", id);
 
                 cmd.ExecuteNonQuery();

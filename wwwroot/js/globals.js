@@ -116,5 +116,8 @@ jQuery.fn.spinner = function (options = {}) {
 
 
     $(document).ready(_=>{
-      $('input, select').on('focus', el => el.removeClass('is-invalid'))
+      $('input, select').on('blur focus', function(){
+        $(this).removeClass('is-invalid');
+        console.log($(this));
+      });
     });
