@@ -57,6 +57,7 @@ CREATE TABLE funcionarios
   ativo     BIT         NOT NULL DEFAULT 1,
   CONSTRAINT pkfuncionarios_id_pessoa PRIMARY KEY(id_pessoa),
   CONSTRAINT fkfuncionarios_id_pessoa FOREIGN KEY(id_pessoa) REFERENCES pessoas(id),
+  CONSTRAINT fkfuncionarios_id_cargo FOREIGN KEY(id_cargo) REFERENCES cargos(id),
   CONSTRAINT ukfuncionarios_login UNIQUE(login)    
 );
 
@@ -136,12 +137,13 @@ CREATE TABLE status
 ); 
 
 create table entregas_ordens(
-	ordem_id int not null,
-	entrega_id int not null,
-	status int not null,
+	ordem_id    int       not null,
+	entrega_id  int       not null,
+	status_id   SMALLINT  not null, --Esse status vai estar ligado a id da tabela status
 	constraint pk_entregas_ordens primary key(ordem_id, entrega_id),
 	constraint fk_entregas_ordens_ordens foreign key(ordem_id) references ordens(id),
 	constraint fk_entregas_ordens_entregas foreign key(entrega_id) references entregas(id)
+  --CONSTRAINT fk_entregas_ordens_status FOREIGN KEY(status) REFERENCES status(id) Declaraçào da fk referenciando status(id)
 )
 
 CREATE TABLE status_entrega

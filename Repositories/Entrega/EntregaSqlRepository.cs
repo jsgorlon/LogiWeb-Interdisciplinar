@@ -43,7 +43,7 @@ namespace logiWeb.Repositories
 
                 foreach (var idOrd in idOrdem)
                 {
-                    cmd.CommandText = @"INSERT INTO entregas_ordens (ordem_id, entrega_id, status) 
+                    cmd.CommandText = @"INSERT INTO entregas_ordens (ordem_id, entrega_id, status_id) 
                                         VALUES (@id_ordem,  @id_entrega , 1); ";
                     cmd.Parameters.AddWithValue("@id_ordem", idOrd);
                     cmd.Parameters.AddWithValue("@id_entrega", idEntrega);
@@ -183,7 +183,7 @@ namespace logiWeb.Repositories
             try
             {
                 cmd.Connection = connection;
-                cmd.CommandText = @"SELECT ent.id, ent.entrega_id, ent.ordem_id, ent.status,
+                cmd.CommandText = @"SELECT ent.id, ent.entrega_id, ent.ordem_id, ent.status_id,
                                     e.id_funcionario, e.id_motorista,
                                     p.nome nome_motorista,
                                     f.nome nome_funcionario,
