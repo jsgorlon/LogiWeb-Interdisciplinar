@@ -143,7 +143,7 @@ create table entregas_ordens(
 	constraint pk_entregas_ordens primary key(ordem_id, entrega_id),
 	constraint fk_entregas_ordens_ordens foreign key(ordem_id) references ordens(id),
 	constraint fk_entregas_ordens_entregas foreign key(entrega_id) references entregas(id),
-  constraint fk_entregas_ordens_status_id foreign key(status_id) references status(id) Declaraçào da fk referenciando status(id)
+  constraint fk_entregas_ordens_status_id foreign key(status_id) references status(id)
 )
 
 CREATE TABLE status_entrega
