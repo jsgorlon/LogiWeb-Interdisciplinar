@@ -139,11 +139,11 @@ CREATE TABLE status
 create table entregas_ordens(
 	ordem_id    int       not null,
 	entrega_id  int       not null,
-	status_id   SMALLINT  not null, --Esse status vai estar ligado a id da tabela status
+	status_id   SMALLINT  not null,
 	constraint pk_entregas_ordens primary key(ordem_id, entrega_id),
 	constraint fk_entregas_ordens_ordens foreign key(ordem_id) references ordens(id),
-	constraint fk_entregas_ordens_entregas foreign key(entrega_id) references entregas(id)
-  --CONSTRAINT fk_entregas_ordens_status FOREIGN KEY(status) REFERENCES status(id) Declaraçào da fk referenciando status(id)
+	constraint fk_entregas_ordens_entregas foreign key(entrega_id) references entregas(id),
+  constraint fk_entregas_ordens_status_id foreign key(status) references status(id) Declaraçào da fk referenciando status(id)
 )
 
 CREATE TABLE status_entrega
