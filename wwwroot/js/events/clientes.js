@@ -22,15 +22,6 @@ let dialogCadastrar = $.confirm({
     type: 'green', 
     columnClass: 'col-12 col-md-7 col-lg-6', 
     draggable: false, 
-    buttons: {
-        cadastrar: {
-            text: 'Cadastrar',
-            btnClass: 'btn btn-sm btn-success', 
-            action: () => {
-                alert('Requisição realizada.');
-            }
-        }
-    },
     onOpenBefore: () => {
 
         $("#cpf").mask('000.000.000-00');

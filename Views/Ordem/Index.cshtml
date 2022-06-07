@@ -20,13 +20,25 @@
  <label class="fw-bold">Ordem</label>
  <div class="row py-4">
 
-      <div class="col-md-4">
-          <label for="filtro_nome" class="fw-bold">Nome</label>
-          <div class="input-group input-group-sm">
-              <input type="text" id="filtro_nome" class="form-control form-control-sm">
-          </div>
-      </div>
-      
+       <div class="col-md-3">
+            <label for="filter_motorista">Motorista</label>
+                <div class="input-group input-group-sm">
+                <select id="filter_motorista" class="form-select ">
+                    <option value="">SELECIONE</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <label for="created_at">Data de Criação</label>
+            <div class="input-group input-group-sm">
+                <input type="date" class="form-control form-control-sm">  
+                <div class="input-group-prepend border-0 m-0 p-0 bg-transparent ps-2">
+                    <button id="btPesquisar" class="btn btn-sm btn-primary">
+                     <i class="fa-solid fa-magnifying-glass"></i> Pesquisar
+                    </button>  
+                </div>
+            </div>
+        </div>
   </div>
   <div class="row py-5">
       <div class="d-flex justify-content-end py-1">
@@ -99,5 +111,5 @@
 @section events {
      <script src="~/lib/bootstrap-table/bootstrap-table.min.js"></script>
      <script src="~/lib/jquery-confirm/jquery-confirm.min.js"></script>
-     <script src="~/js/events/funcionario.js?=@number.Next(0,19999)"></script>
+     <script src="~/js/events/ordem.js?=@number.Next(0,19999)"></script>
 }
