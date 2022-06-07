@@ -19,9 +19,9 @@ public class FuncionarioController : Controller
      }
 
     [HttpGet]
-    public JsonResult Todos()
+    public JsonResult Todos(string? nome, int? id_cargo, int? status)
     {
-        List<Funcionario> funcionarios = this.repository.Mostrar();
+        List<Funcionario> funcionarios = this.repository.Mostrar(nome, id_cargo, status);
         return Json(funcionarios);
     }
 
@@ -50,34 +50,20 @@ public class FuncionarioController : Controller
     }
 
     [HttpPost]
-    public JsonResult Cadastrar(Funcionario funcionario)
-    {
-        this.repository.Cadastrar(funcionario);
-        
-        List<Funcionario> funcionarios = this.repository.Mostrar();
-        
-        return Json(funcionarios);
-        //return this.Todos();
+    public string Cadastrar(Funcionario funcionario)
+    {   
+      return this.repository.Cadastrar(funcionario);
     }
 
     
-    public ActionResult Excluir(int id)
+    public void AlterarStatus(int id, int status)
     {
-        this.repository.Excluir(id);
-        return RedirectToAction("Mostrar");
-    }
-
-    [HttpGet]
-    public JsonResult Atualizar(int id)
-    {
-        var funcionario = this.repository.Mostrar();
-        return Json(funcionario);
+      this.repository.AlterarStatus(id, status);
     }
 
     [HttpPost]
-    public ActionResult Atualizar(int id, Funcionario funcionario)
+    public string Atualizar(int id, Funcionario funcionario)
     {
-        this.repository.Atualizar(id, funcionario);
-        return RedirectToAction("Mostrar");
+     return this.repository.Atualizar(id, funcionario);
     }
 }

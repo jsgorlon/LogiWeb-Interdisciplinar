@@ -4,13 +4,13 @@ namespace logiWeb.Repositories
 {
     public interface IFuncionarioRepository
     {
-        bool Cadastrar(Funcionario funcionario);
-        List<Funcionario> Mostrar();
+        string Cadastrar(Funcionario funcionario);
+        List<Funcionario> Mostrar(string? nome, int? id_cargo, int? status);
         Funcionario Mostrar(int id);
         List<Funcionario> MostrarPorCargo(short id);
         List<Funcionario> MostrarPorCpf(string cpf);
         List<Funcionario> MostrarPorNome(string nome);
-        void Atualizar(int id, Funcionario funcionario);
-        void Excluir(int id);
+        string Atualizar(int id, Funcionario funcionario);
+        void AlterarStatus(int id, int status);
     }
 }

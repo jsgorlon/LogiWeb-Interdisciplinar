@@ -1,4 +1,5 @@
 using logiWeb.Repositories;
+using logiWeb.Middlewares; 
 
 namespace logiWeb
 {
@@ -8,6 +9,8 @@ namespace logiWeb
         {
             
             var builder = WebApplication.CreateBuilder(args);
+            builder.Services.AddSession(); 
+
             builder.Services.AddControllersWithViews();
             builder.Services.AddTransient<IClienteRepository, ClienteSqlRepository> ();
             builder.Services.AddTransient<IFuncionarioRepository, FuncionarioSqlRepository> ();
@@ -17,8 +20,13 @@ namespace logiWeb
             builder.Services.AddTransient<IEntregaRepository, EntregaSqlRepository> ();
             var app = builder.Build();
             
+            app.UseSession();
+            
+            app.UseMiddleware<AuthenticationMiddleware>();
+            
             app.UseStaticFiles(); 
-            app.MapDefaultControllerRoute();
+            
+            app.MapControllerRoute(name: "default", pattern: "{controller=Login}/{action=Index}/");
             app.Run();
         }
     }

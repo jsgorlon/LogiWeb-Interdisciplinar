@@ -22,8 +22,8 @@ CREATE TABLE pessoas(
   cpf       VARCHAR(11)   NOT NULL,
   rg        VARCHAR(9)        NULL,
   data_nasc DATE          NOT NULL,
-  telefone  VARCHAR(16)   NULL,
-  email     VARCHAR(100)  NULL,
+  telefone  VARCHAR(16)       NULL,
+  email     VARCHAR(100)      NULL,
   dat_cad   DATETIME      NOT NULL DEFAULT GETDATE(),
   CONSTRAINT pkpessoas_id PRIMARY KEY(id),
   CONSTRAINT ukpessoas_cpf  UNIQUE(cpf)
@@ -58,7 +58,7 @@ CREATE TABLE funcionarios
   CONSTRAINT pkfuncionarios_id_pessoa PRIMARY KEY(id_pessoa),
   CONSTRAINT fkfuncionarios_id_pessoa FOREIGN KEY(id_pessoa) REFERENCES pessoas(id),
   CONSTRAINT fkfuncionarios_id_cargo FOREIGN KEY(id_cargo) REFERENCES cargos(id),
-  CONSTRAINT ukfuncionarios_login UNIQUE(login)    
+  CONSTRAINT ukfuncionarios_login    UNIQUE(login)    
 );
 
 CREATE TABLE estados 

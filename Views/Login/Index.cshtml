@@ -1,3 +1,4 @@
+
 @{
   Layout = "~/Views/Templates/_Layout.cshtml";
   ViewBag.Title = "Página de login"; 
@@ -38,9 +39,9 @@
               </label>
               <div class="input-group input-group-sm">
                 <input id="senha" type="password" class="form-control" maxlength="8">
-                <div class="input-group-text p-0 m-0 bg-transparent border-0">
-                  <i class="fa-solid fa-eye"></i>
-                </div>
+                 <div class="input-group-prepend " style="cursor:pointer;" onclick="showPass(this)" data-visible='on'>
+                    <i class="fa-solid fa-eye-slash ms-1" id="eye_icon"></i>
+                 </div>
               </div>
               <small data-invalid="senha" class="text-danger">Preencha este campo!</small>
             </div>
@@ -58,5 +59,6 @@
 </div>
 
 @section events {
+     <script src="~/js/globals.js?=@number.Next(0,19999)"></script>
      <script src="~/js/events/login.js?=@number.Next(0,19999)"></script>
 }

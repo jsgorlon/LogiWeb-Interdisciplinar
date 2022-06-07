@@ -1,5 +1,5 @@
 
-
+let funcionarios = []; 
 class Funcionario {
      constructor(){
         this.Nome = $("#nome").val(); 
@@ -27,11 +27,28 @@ let dialogFuncionario = $.confirm({
     onClose: function(){
         this.id_funcionario = null; 
     }, 
-    onOpenBefore: () => {
-        obterCargos('cargo');
+    onOpenBefore: function(){
+        obterCargos('cargo','selecione');
         $("#cpf").mask('000.000.000-00');
         $('#rg').mask('99.999.999-9'); 
-        $('#telefone').mask('(00) 00000-0000'); 
+        $('#telefone').mask('(00) 00000-0000');  
+    },
+    onOpen: function(){
+        let id_funcionario = this.id_funcionario; 
+
+        if(id_funcionario)
+        {
+           let funcionario = funcionarios.find(user => user.Id == id_funcionario);
+    
+            $("#nome").val(funcionario.Nome); 
+            $("#telefone").val(funcionario.Telefone); 
+            $("#email").val(funcionario.Email); 
+            $("#dat_nasc").val(funcionario.DatNasc.replace("T00:00:00",'')); 
+            $("#cpf").val(funcionario.Cpf); 
+            $("#rg").val(funcionario.Rg); 
+            $("#login").val(funcionario.Login); 
+            $("#cargo").val(funcionario.IdCargo); 
+        }
     },
     cadastrar: function(){
         
@@ -41,13 +58,15 @@ let dialogFuncionario = $.confirm({
             cadastrar: {
                 text: 'Cadastrar',
                 btnClass: 'btn btn-sm btn-success btCadastrar', 
-                action: () => {
-                    
+                action: function(){
+                    let dialog = this; 
                    let {campos_validos } = validarCampos(); 
                     
                    if(!campos_validos)
                      return false;
-                   
+                
+                   $(".btCadastrar").spinner();
+
                    let funcionario = new Funcionario(); 
 
                    $.ajax({
@@ -55,10 +74,12 @@ let dialogFuncionario = $.confirm({
                        type: 'POST',
                        dataType: 'JSON',
                        data: funcionario, 
-                       success: data => {
-                        //obterFuncionarios(); 
-
-                        alert_success("Funcionário cadastrado com sucesso!");
+                       complete: data => {
+                        $(".btCadastrar").spinner({submete: false});
+                           console.log(data);
+                          eval(data.responseText);
+                          obterFuncionarios(); 
+                          
                        }
                    });
                     
@@ -70,8 +91,39 @@ let dialogFuncionario = $.confirm({
         this.open(); 
     },
     editar: function(id_funcionario){
+        
+        console.log(id_funcionario);
         this.title = `<span style="font-size:18px !important;" class="fw-bold">Edição do Funcionario</span>`;
         this.id_funcionario = id_funcionario; 
+        this.buttons = {
+            salvar: {
+                text: 'Salvar',
+                btnClass: 'btn btn-sm btn-success btAtualizar', 
+                action: () => {
+                    
+                   let {campos_validos } = validarCampos(); 
+                    
+                   if(!campos_validos)
+                     return false;
+                   
+                   let funcionario = new Funcionario(); 
+
+                   $.ajax({
+                       url: '/funcionario/atualizar', 
+                       type: 'POST',
+                       dataType: 'JSON',
+                       data: funcionario, 
+                       complete: data => {
+                          
+                          eval(data.responseText);
+                          obterFuncionarios(); 
+                       }
+                   });
+                    
+                   return false; 
+                }
+            }
+        }
         this.open(); 
     }
 });
@@ -79,27 +131,31 @@ $(document).ready(_=>{
 
     $('table').bootstrapTable({});
 
-    $('table').bootstrapTable('load', {});
+    
 
     $("[data-bs-toggle='popover']").popover({content: 'body', trigger: 'hover'});
 
     $('#btCadastrar').click(_=>dialogFuncionario.cadastrar());
 
     obterCargos('filter_cargo', 'todos');
+    obterFuncionarios(); 
+
+
+    $("#btPesquisar").click(_=>obterFuncionarios(true));
 });
 
 
 function buttons(id, rows) 
 {
 
- const editar = `<button data-bs-toggle="Editar Cliente" data-bs-toggle="popover" class="p-0 m-0 btn btn-sm shadow-none" data-idcliente="${id}">
+ const editar = `<button onclick="editar(this)" data-bs-content="Editar Funcionário" data-bs-toggle="popover" class="p-0 m-0 btn btn-sm shadow-none" data-idfuncionario="${id}">
                      <i class="fa-solid fa-square-pen"></i>
                  </button>`;
- const inactive = `<button data-bs-toggle="Inativar Cliente" data-bs-toggle="popover" class="p-0 m-0 btn btn-sm shadow-none" data-idcliente="${id}">
+ const inactive = `<button data-bs-content="Inativar Funcionário" id="active_inactive_${id}" onclick="inativarAtivar(this);" data-bs-toggle="popover"  data-active="${rows.active}" class="p-0 m-0 btn btn-sm shadow-none" data-idfuncionario="${id}">
                      <i class="fa-solid fa-circle-minus"></i>
                    </button>`;
 
-  const active = `<button data-bs-toggle="Inativar Cliente" data-bs-toggle="popover" class="p-0 m-0 btn btn-sm shadow-none" data-idcliente="${id}">
+  const active = `<button data-bs-content="Ativar Funcionário" id="active_inactive_${id}" onclick="inativarAtivar(this);" data-bs-toggle="popover" data-active="${rows.active}" class="p-0 m-0 btn btn-sm shadow-none" data-idfuncionario="${id}">
                       <i class="fa-solid fa-circle-plus "></i>
                   </button>`;
 
@@ -108,22 +164,41 @@ function buttons(id, rows)
  return `<div class="d-flex justify-content-end gap-1 buttons-grid">${editar} ${rows.active ? inactive : active}</div>`;
 }
 
-
-function generateUsers(){
-
-    let users = [];
-    for(let i = 0; i <= 300; i++){
-        var active = Math.random() < 0.5;
-       users.push({
-        id: i, 
-        nome_cpf: `Nome completo da pessoa ${1} -  <b>111.111.111-1${i}</b>`,
-        active: active, 
-        status: active ? `<span class="badge badge-success rounded-pill bg-success">ATIVO</span>` : `<span class="badge badge-success rounded-pill bg-danger">INATIVO</span>`
-       });
-    }
-
-    return users; 
+function editar(button){
+    dialogFuncionario.editar(button.dataset.idfuncionario); 
 }
+
+function inativarAtivar(button){
+
+ $(".popover").popover('dispose');
+
+  let id_funcionario =   button.dataset.idfuncionario; 
+
+   $("button").attr('disabled', true);
+   $("#"+button.id).spinner();
+
+   let funcionario = funcionarios.find(user=> user.Id == id_funcionario);
+  
+   funcionario.Ativo = !funcionario.Ativo; 
+   
+   delete funcionario.Id; 
+
+   $.ajax({
+    url: '/funcionario/AlterarStatus', 
+    type: 'POST',
+    dataType: 'JSON',
+    data: {
+        id: id_funcionario, 
+        status: funcionario.Ativo ? 1 : 0
+    }, 
+    complete: data => {
+       $("button").attr('disabled', false);
+       obterFuncionarios();
+       alert_success(`Usuário ${funcionario.Ativo ? 'ativado' : 'inativado'} com sucesso!`);
+    }
+});
+}
+
 
 function showPass(el){
 
@@ -139,31 +214,73 @@ function showPass(el){
     }
 }
 
-function obterCargos(selectId, ig = 'selecione'){
+function obterCargos(selectId, ig = 'selecione', id_select = 0){
    return $.ajax({
         type: 'GET',
         url: '/cargo',
         dataType: 'JSON',
         success: data => {
-            let newOption = (label, value = '') =>  `<option value='${value}'>${label.toLocaleUpperCase()}</option>`;
+            let newOption = (label, value = '') =>  `<option ${value == id_select ? 'selected' : ''} value='${value}'>${label.toLocaleUpperCase()}</option>`;
             let html = newOption(ig);
 
             data.map(cargo => html += newOption(cargo.nome, cargo.id));
-
-            console.log(html);
             $('#'+selectId).html(html);
         }
     });
 }
 
 
-function obterFuncionarios(){
-    return $.ajax({
+function obterFuncionarios(loadingButton = false){
+
+
+    if(loadingButton){
+        $("#btPesquisar").spinner();
+    }
+
+    let status = $("[name='flexRadioDefault']:checked").val();
+    $.ajax({
          type: 'GET',
          url: '/funcionario/todos',
          dataType: 'JSON',
+         data: {
+            nome: $("#filtro_nome").val(), 
+            id_cargo: $("#filter_cargo").val() ?? null,   
+            status: status == 'A' ? null : status 
+         },
          success: data => {
-             console.log(data);
+
+             let users = [];
+
+             data.map(user => {
+                users.push({
+                    id: user.id, 
+                    nome_cpf: `${user.nome} - <b>${formataCPF(user.cpf)}</b>`,
+                    cargo: user.cargo.nome,
+                    active: user.ativo, 
+                    status: user.ativo ? `<span class="badge badge-success rounded-pill bg-success">ATIVO</span>` : `<span class="badge badge-success rounded-pill bg-danger">INATIVO</span>`
+                   });
+             
+                funcionarios.push({
+                    Id: user.id,
+                    Nome: user.nome,  
+                    Telefone: user.telefone, 
+                    Email: user.email, 
+                    DatNasc: user.datNasc, 
+                    Cpf: user.cpf, 
+                    Rg: user.rg, 
+                    IdCargo: user.cargo.id, 
+                    Senha: user.senha,  
+                    Login: user.login, 
+                    Ativo: user.ativo 
+                });
+             });
+
+             $('table').bootstrapTable('load', users);
+
+             $("[data-bs-toggle='popover']").popover({content: 'body', trigger: 'hover'});
+            
+             if(loadingButton)
+                $("#btPesquisar").spinner({submete: false});
          }
      });
 }
@@ -192,11 +309,11 @@ function validarCampos(){
             valido: telefone.val() != '' ? telefone.val().replaceAll(/[^0-9]/gi,'').length > 7 : true,
             msg: 'O telefone precisa ter no mínimo 8 digitos.'
         },
-        {
+        /*{
             campo: email, 
-            valido: email.val().trim().length > 0 ? validateEmail(email) : true,
+            valido: email.val().trim().length > 0 ?  : true,
             msg: 'E-mail inválido.'
-        },
+        }, */
         {
             campo: dat_nasc, 
             valido: dat_nasc.val() != '', 
@@ -241,3 +358,12 @@ function validarCampos(){
         campos_validos: msg == ''
     }
 }
+
+
+function formataCPF(cpf){
+    //retira os caracteres indesejados...
+    cpf = cpf.replace(/[^\d]/g, "");
+    
+    //realizar a formatação...
+      return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+  }
