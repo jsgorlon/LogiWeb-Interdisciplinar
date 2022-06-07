@@ -108,6 +108,8 @@ let dialogFuncionario = $.confirm({
                    
                    let funcionario = new Funcionario(); 
 
+                   funcionario["id"] = id_funcionario; 
+
                    $.ajax({
                        url: '/funcionario/atualizar', 
                        type: 'POST',
@@ -248,18 +250,19 @@ function obterFuncionarios(loadingButton = false){
             status: status == 'A' ? null : status 
          },
          success: data => {
-
+            funcionarios = []; 
              let users = [];
 
              data.map(user => {
                 users.push({
                     id: user.id, 
-                    nome_cpf: `${user.nome} - <b>${formataCPF(user.cpf)}</b>`,
+                    nome_cpf: `${user.nome} - <b>${formataCPF(user.cpf)}</b> ${user.ativo ? '' : "<span class='text-white rounded-pill bg-danger fw-bold px-2' style='font-size:13px;'>INATIVO</span>"}`,
                     cargo: user.cargo.nome,
                     active: user.ativo, 
                     status: user.ativo ? `<span class="badge badge-success rounded-pill bg-success">ATIVO</span>` : `<span class="badge badge-success rounded-pill bg-danger">INATIVO</span>`
                    });
-             
+                
+
                 funcionarios.push({
                     Id: user.id,
                     Nome: user.nome,  
@@ -269,6 +272,7 @@ function obterFuncionarios(loadingButton = false){
                     Cpf: user.cpf, 
                     Rg: user.rg, 
                     IdCargo: user.cargo.id, 
+                    cargo: user.cargo, 
                     Senha: user.senha,  
                     Login: user.login, 
                     Ativo: user.ativo 

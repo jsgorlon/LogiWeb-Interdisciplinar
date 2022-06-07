@@ -79,7 +79,7 @@ namespace logiWeb.Repositories
                 
                 cmd.Dispose();
 
-                return "alert_success('Funcionário cadastrado com sucesso!');";
+                return "alert_success('Funcionário cadastrado com sucesso!');dialog.close();";
             }
             catch (Exception ex)
             {
@@ -139,6 +139,7 @@ namespace logiWeb.Repositories
                                                 DatNasc  = (DateTime)reader["data_nasc"],
                                                 Email    = (string)reader["email"],
                                                 Telefone = (string)reader["telefone"],
+                                                Login =  (string)reader["login"],
                                                 DatCad   = (DateTime)reader["dat_cad"],
                                                 Ativo    =  (bool)reader["ativo"],
                                                 IdCargo  = (short)reader["id_cargo"],
@@ -324,6 +325,7 @@ namespace logiWeb.Repositories
                         Email = (string)reader["email"],
                         Telefone = (string)reader["telefone"],
                         DatCad =  (DateTime)reader["dat_cad"],
+                        Login =  (string)reader["login"],
                         Ativo = true,
                         IdCargo = (short)reader["id"],
                         Cargo = cargo
@@ -356,22 +358,27 @@ namespace logiWeb.Repositories
                                            data_nasc = @data_nasc, 
                                            telefone = @telefone, 
                                            email = @email
-                                     WHERE id = @id;
-                                    UPDATE funcionarios
-                                       SET id_cargo = @id_cargo, login = @login, senha = @senha
-                                     WHERE id_pessoa = @id;
-                                ";
+                                     WHERE id = @id;";
                 cmd.Parameters.Clear();
                 cmd.Parameters.AddWithValue("@id", id);
-                cmd.Parameters.AddWithValue("@nome", funcionario.Nome);
-                cmd.Parameters.AddWithValue("@cpf", funcionario.Cpf);
-                cmd.Parameters.AddWithValue("@data_nasc", funcionario.DatNasc);
+                cmd.Parameters.AddWithValue("@nome",     funcionario.Nome);
+                cmd.Parameters.AddWithValue("@cpf",      funcionario.Cpf);
+                cmd.Parameters.AddWithValue("@data_nasc",funcionario.DatNasc);
                 cmd.Parameters.AddWithValue("@rg",       funcionario.Rg       ?? DBNull.Value.ToString());
                 cmd.Parameters.AddWithValue("@email",    funcionario.Email    ?? DBNull.Value.ToString());
                 cmd.Parameters.AddWithValue("@telefone", funcionario.Telefone ?? DBNull.Value.ToString());
+                
+                cmd.ExecuteNonQuery();
+
+
+                cmd.CommandText = @"UPDATE funcionarios
+                                       SET id_cargo = @id_cargo, login = @login, senha = @senha
+                                     WHERE id_pessoa = @id;";
+                cmd.Parameters.Clear();
+                cmd.Parameters.AddWithValue("@id", id);
                 cmd.Parameters.AddWithValue("@id_cargo", funcionario.IdCargo);
-                cmd.Parameters.AddWithValue("@login", funcionario.Login);
-                cmd.Parameters.AddWithValue("@senha", funcionario.Senha);
+                cmd.Parameters.AddWithValue("@login",    funcionario.Login);
+                cmd.Parameters.AddWithValue("@senha",    funcionario.Senha);
                 cmd.ExecuteNonQuery();
 
                 return "alert_success('Dados atualizados com sucesso!');";
