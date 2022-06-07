@@ -23,7 +23,6 @@ public class AuthenticationMiddleware {
            if(privateRoute.Contains(context.Request.Path.ToString()) && context.Session.Get("Auth") == null)
                context.Response.Redirect("/");
 
-
          await _next(context);
         }
         finally
