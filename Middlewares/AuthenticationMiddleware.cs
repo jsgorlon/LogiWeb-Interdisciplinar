@@ -17,21 +17,22 @@ public class AuthenticationMiddleware {
     {
         try
         {
-
           
-           // if(context.Session != null && context.Session.GetString("Authenticate") != null)
-           //    context.Response.Redirect("/");
+           List<string> privateRoute = new List<string>{"/ordem","/funcionario","/cliente"};
+
+           if(privateRoute.Contains(context.Request.Path.ToString()) && context.Session.Get("Auth") == null)
+               context.Response.Redirect("/");
 
 
          await _next(context);
         }
         finally
         {
-            _logger.LogInformation(
+           /* _logger.LogInformation(
                 "Request {method} {url} => {statusCode}",
                 context.Request?.Method,
                 context.Request?.Path.Value,
-                context.Response?.StatusCode);
+                context.Response?.StatusCode); */
         }
     }
 }

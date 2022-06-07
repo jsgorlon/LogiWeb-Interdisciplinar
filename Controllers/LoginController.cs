@@ -1,14 +1,25 @@
+using logiWeb.Models;
+using logiWeb.Repositories;
+using Microsoft.AspNetCore.Mvc;
 
 namespace logiWeb.Controllers; 
 
-using Microsoft.AspNetCore.Mvc; 
-
 public class LoginController : Controller 
 {
+    private IAuthenticationRepository repository;
+
+     public LoginController(IAuthenticationRepository repository)
+    {
+        this.repository = repository;
+    }
 
     [HttpGet]
     public ActionResult Index() 
     {
+
+      if(HttpContext.Session.Get("Auth") != null)
+        HttpContext.Response.Redirect("/ordem");
+
       return View(); 
     }
 
@@ -16,7 +27,18 @@ public class LoginController : Controller
     public string Autenticar(string Login, string Senha)
     { 
       
+      if(repository.GetUser(Login, Senha))
+      {
+        HttpContext.Session.SetString("Auth", "True"); 
+        return "window.location.href = '/ordem';";
+      } 
       
-      return Login;
+      return "$('#msg_usuario_senha_invalidos').css('visibility','visible');";
+    }
+
+    public void Logout(){
+
+       HttpContext.Session.Clear(); 
+       HttpContext.Response.Redirect("/");
     }
 }

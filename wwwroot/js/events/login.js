@@ -30,8 +30,8 @@
         Login: login, 
         Senha: senha, 
       },
-      success: data => {
-
+      complete: data => {
+        eval(data.responseText);
       }
     });
 
@@ -40,6 +40,7 @@
 
   $('input').on('focus', function(){
     $(this).removeClass('is-invalid');
+    $('#msg_usuario_senha_invalidos').css('visibility','hidden');
   });
 
 })();

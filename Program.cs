@@ -18,6 +18,7 @@ namespace logiWeb
             builder.Services.AddTransient<IStatusRepository, StatusSqlRepository> ();
             builder.Services.AddTransient<IOrdemRepository, OrdemSqlRepository> ();
             builder.Services.AddTransient<IEntregaRepository, EntregaSqlRepository> ();
+            builder.Services.AddTransient<IAuthenticationRepository, IAuthenticationSqlRepository> ();
             var app = builder.Build();
             
             app.UseSession();
