@@ -27,6 +27,20 @@ function alert_warning(title = '', body = ''){
       })
 }
 
+function ajaxResponse(data){
+
+  let messages = "";
+
+  if(data.message)
+    data.message.map(m => messages += m+"<br>"); 
+
+  if(data.error)
+    alert_error('Atenção:', messages);
+  else 
+    alert_success('', messages);
+
+}
+
 
 function cpf_valido(cpf){
   cpf = cpf.replaceAll(/[^0-9]/gi,'');

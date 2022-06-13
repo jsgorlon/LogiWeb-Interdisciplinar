@@ -22,7 +22,12 @@ namespace logiWeb.Repositories
 
         public void Dispose()
         {
+          if(connection != null)
             connection.Close();
+        }
+
+        ~DBContext(){
+            Dispose(); 
         }
     }
 }

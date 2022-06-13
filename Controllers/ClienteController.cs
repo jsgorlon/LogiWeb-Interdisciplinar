@@ -1,7 +1,7 @@
 using logiWeb.Models;
 using logiWeb.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using System.Text.Json;
+
 namespace logiWeb.Controllers; 
 public class ClienteController : Controller
 {
@@ -21,9 +21,9 @@ public class ClienteController : Controller
 
 
     [HttpGet]
-    public JsonResult Clientes()
+    public JsonResult Todos(string? nome, int? status)
     {
-        List<Cliente> clientes = this.repository.Mostrar();
+        var clientes = this.repository.Mostrar(nome, status);
         return Json(clientes);
     }
 
@@ -31,31 +31,24 @@ public class ClienteController : Controller
     [HttpPost]
     public JsonResult Cadastrar(Cliente cliente)
     {
-        this.repository.Cadastrar(cliente);
-        return Json(new {
-            error = false, 
-        });
+        var ClienteCadastrado = this.repository.Cadastrar(cliente);
+        return Json(ClienteCadastrado);
     }
 
-    [HttpGet]
-    public JsonResult Atualizar(int id)
+   
+
+    [HttpPost]
+    public JsonResult Atualizar(int id, Cliente cliente)
     {
-        var cliente = this.repository.Mostrar(id);
-        return Json(cliente);
+        var cliente_atualizado = this.repository.Atualizar(id, cliente);
+        return Json(cliente_atualizado);
+
     }
 
     [HttpPost]
-    public ActionResult Atualizar(int id, Cliente cliente)
+    public JsonResult AlterarStatus(int id, int status)
     {
-        this.repository.Atualizar(id, cliente);
-        return RedirectToAction("Index");
-
-    }
-
-    [HttpDelete]
-    public ActionResult Excluir(int id)
-    {
-        this.repository.Excluir(id);
-        return RedirectToAction("Index");
+        var cliente_atualizado = this.repository.AlterarStatus(id, status);
+        return Json(cliente_atualizado);
     }
 }

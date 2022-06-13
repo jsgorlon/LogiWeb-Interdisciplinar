@@ -14,7 +14,7 @@ class Cliente {
 
 
 
-let dialogCadastrar = $.confirm({
+let dialogCliente = $.confirm({
     title: `Novo cliente`, 
     content: $("#template_cad_cliente").html(),
     lazyOpen: true,
@@ -28,11 +28,25 @@ let dialogCadastrar = $.confirm({
             $(this).removeClass('is-invalid');
         });
     },
-    onOpenBefore: () => {
+    onClose: function(){
+      this.id_cliente = null; 
+    },
+    onOpenBefore: function(){
 
         $("#cpf").mask('000.000.000-00');
         $('#rg').mask('99.999.999-9'); 
         $('#telefone').mask('(00) 00000-0000'); 
+
+        if(this.id_cliente){
+            let cliente = clientes.find(user => user.Id == this.id_cliente);
+    
+            $("#nome").val(cliente.Nome); 
+            $("#telefone").val(cliente.Telefone); 
+            $("#email").val(cliente.Email); 
+            $("#dat_nasc").val(cliente.DatNasc.replace("T00:00:00",'')); 
+            $("#cpf").val(cliente.Cpf); 
+            $("#rg").val(cliente.Rg); 
+        }
     },
     onClose: function(){
         this.id_cliente = null; 
@@ -43,7 +57,7 @@ let dialogCadastrar = $.confirm({
             cadastrar: {
                 text: 'Cadastrar',
                 btnClass: 'btn btn-sm btn-success btCadastrar', 
-                action: () => {
+                action: function(){
                     
                    let {campos_validos } = validarCampos(); 
                     
@@ -58,9 +72,13 @@ let dialogCadastrar = $.confirm({
                        dataType: 'JSON',
                        data: cliente, 
                        success: data => {
-                        //obterFuncionarios(); 
+                        ajaxResponse(data);
 
-                        alert_success("Cliente cadastrado com sucesso!");
+                        obterClientes(); 
+                        if(data.error)
+                            return false; 
+                        else 
+                            this.close(); 
                        }
                    });
                     
@@ -73,6 +91,42 @@ let dialogCadastrar = $.confirm({
     editar: function(id_cliente){
         this.title = `<span style="font-size:18px !important;" class="fw-bold">Edição do Cliente</span>`;
         this.id_cliente = id_cliente; 
+        this.buttons = {
+            salvar: {
+                text: 'Salvar',
+                btnClass: 'btn btn-sm btn-success btAtualizar', 
+                action: function(){
+                    
+                   let {campos_validos } = validarCampos(); 
+                    
+                   if(!campos_validos)
+                     return false;
+                   
+                   let cliente = new Cliente(); 
+
+                   cliente["id"] = id_cliente; 
+
+                   $.ajax({
+                       url: '/cliente/atualizar', 
+                       type: 'POST',
+                       dataType: 'JSON',
+                       data: cliente, 
+                       success: data => {
+                          
+                            ajaxResponse(data);
+
+                            obterClientes(); 
+                            if(data.error)
+                                return false; 
+                            else 
+                                this.close(); 
+                       }
+                   });
+                    
+                   return false; 
+                }
+            }
+        }
         this.open(); 
     }
 });
@@ -84,26 +138,30 @@ $(document).ready(_=>{
 
     $("[data-bs-toggle='popover']").popover({content: 'body', trigger: 'hover'});
 
-    $('#btCadastrar').click(_=>dialogCadastrar.cadastrar());
+    $('#btCadastrar').click(_=>dialogCliente.cadastrar());
 
+    obterClientes(); 
+
+
+    $("#btPesquisar").click(_=>obterClientes(true));
 });
 
 
 function buttons(id, rows) 
 {
 
- const editar = `<button data-bs-toggle="Editar Cliente" data-bs-toggle="popover" class="p-0 m-0 btn btn-sm shadow-none" data-idcliente="${id}">
+ const editar = `<button onclick="editar_cliente(this)" class="p-0 m-0 btn btn-sm shadow-none" data-idcliente="${id}">
                      <i class="fa-solid fa-square-pen text-secondary" 
-                        data-bs-toggle="tooltip" data-bs-placement="top" title="Editar"></i>
+                        data-bs-toggle="popover" data-bs-placement="top" data-bs-content="Editar Cliente"></i>
                  </button>`;
- const inactive = `<button data-bs-toggle="Inativar Cliente" data-bs-toggle="popover" class="p-0 m-0 btn btn-sm shadow-none" data-idcliente="${id}">
+ const inactive = `<button onclick="alterar_status(this)" id="alterar_status_${id}" class="p-0 m-0 btn btn-sm shadow-none" data-idcliente="${id}">
                      <i class="fa-solid fa-circle-minus text-secondary"
-                     data-bs-toggle="tooltip" data-bs-placement="top" title="Inativar"></i>
+                     data-bs-toggle="popover" data-bs-placement="top" data-bs-content="Inativar Cliente"></i>
                    </button>`;
 
-  const active = `<button data-bs-toggle="Inativar Cliente" data-bs-toggle="popover" class="p-0 m-0 btn btn-sm shadow-none" data-idcliente="${id}">
+  const active = `<button onclick="alterar_status(this)" id="alterar_status_${id}" class="p-0 m-0 btn btn-sm shadow-none" data-idcliente="${id}">
                       <i class="fa-solid fa-circle-plus  text-secondary"
-                         data-bs-toggle="tooltip" data-bs-placement="top" title="Ativar"></i>
+                         data-bs-toggle="popover" data-bs-placement="top" data-bs-content="Ativar Cliente"></i>
                   </button>`;
 
 
@@ -136,7 +194,7 @@ function validarCampos(){
         },
         {
             campo: email, 
-            valido: email.val().trim().length > 0 ? validateEmail(email) : true,
+            valido: true,
             msg: 'E-mail inválido.'
         },
         {
@@ -177,7 +235,7 @@ function formataCPF(cpf){
       return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
 }
 
-function obterFuncionarios(loadingButton = false){
+function obterClientes(loadingButton = false){
 
 
     if(loadingButton){
@@ -194,16 +252,22 @@ function obterFuncionarios(loadingButton = false){
             status: status == 'A' ? null : status 
          },
          success: data => {
-            funcionarios = []; 
+         
              let users = [];
+              clientes = []; 
 
-             data.map(user => {
+             let clientes_cadastrados = data.item.clientes; 
+
+       
+             clientes_cadastrados.map(user => {
+                let dat_cad = user.datCad.split('T')[0].split('-').reverse().join('/'); 
                 users.push({
-                    id: user.id, 
-                    nome_cpf: `${user.nome} - <b>${formataCPF(user.cpf)}</b> ${user.ativo ? '' : "<span class='text-white rounded-pill bg-danger fw-bold px-2' style='font-size:13px;'>INATIVO</span>"}`,
-                    active: user.ativo, 
-                    status: user.ativo ? `<span class="badge badge-success rounded-pill bg-success">ATIVO</span>` : `<span class="badge badge-success rounded-pill bg-danger">INATIVO</span>`
-                   });
+                        id: user.id, 
+                        nome_cpf: `${user.nome} - <b>${formataCPF(user.cpf)}</b>`,
+                        active: user.ativo, 
+                        dat_cad, 
+                        status: user.ativo ? `<span class="badge badge-success rounded-pill bg-success">ATIVO</span>` : `<span class="badge badge-success rounded-pill bg-danger">INATIVO</span>`
+                    });
                 
 
                    clientes.push({
@@ -214,6 +278,7 @@ function obterFuncionarios(loadingButton = false){
                         DatNasc: user.datNasc, 
                         Cpf: user.cpf, 
                         Rg: user.rg, 
+                        Ativo: user.ativo 
                    });
              });
 
@@ -225,4 +290,39 @@ function obterFuncionarios(loadingButton = false){
                 $("#btPesquisar").spinner({submete: false});
          }
      });
+}
+
+function editar_cliente(button){
+    dialogCliente.editar(button.dataset.idcliente); 
+}
+
+function alterar_status(button){
+    $(".popover").popover('dispose');
+
+  let id_cliente =   button.dataset.idcliente; 
+
+   $("button").attr('disabled', true);
+   $("#"+button.id).spinner();
+
+   let cliente = clientes.find(user=> user.Id == id_cliente);
+  
+   cliente.Ativo = !cliente.Ativo; 
+   
+   delete cliente.Id; 
+
+   $.ajax({
+    url: '/cliente/AlterarStatus', 
+    type: 'POST',
+    dataType: 'JSON',
+    data: {
+        id: id_cliente, 
+        status: cliente.Ativo ? 1 : 0
+    }, 
+    success: data => {
+       $("button").attr('disabled', false);
+       
+       ajaxResponse(data); 
+       obterClientes();
+    }
+});
 }

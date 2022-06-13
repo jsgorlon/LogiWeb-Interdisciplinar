@@ -22,15 +22,14 @@ public class OrdemController : Controller
     [HttpGet]
     public JsonResult Ordem(string? nome)
     {
-        List<Ordem> ordens = this.repository.MostrarOrdens(nome);
+        List<Ordem> ordens = this.repository.MostrarOrdens();
         return Json(ordens);
     }
 
     [HttpGet]
     public ActionResult Cadastrar()
     {
-        List<Cliente> clientes = clienteRepository.Mostrar();
-
+        
         return View();
     }
 

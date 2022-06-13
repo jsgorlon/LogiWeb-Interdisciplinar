@@ -51,7 +51,9 @@ namespace logiWeb.Repositories
                 }
                 else {
                     cmd.Connection = connection; 
-                    cmd.CommandText = @"SELECT id_pessoa FROM funcionarios WHERE funcionarios.id_pessoa = @id_pessoa";
+                    cmd.CommandText = @"SELECT funcionarios.id_pessoa 
+                                          FROM funcionarios 
+                                         WHERE funcionarios.id_pessoa = @id_pessoa";
                     cmd.Parameters.Clear(); 
                     cmd.Parameters.AddWithValue("@id_pessoa", id_pessoa);
 
@@ -361,7 +363,7 @@ namespace logiWeb.Repositories
                                      WHERE id = @id;";
                 cmd.Parameters.Clear();
                 cmd.Parameters.AddWithValue("@id", id);
-                cmd.Parameters.AddWithValue("@nome",     funcionario.Nome);
+                cmd.Parameters.AddWithValue("@nome",     funcionario.Nome.ToUpper());
                 cmd.Parameters.AddWithValue("@cpf",      funcionario.Cpf);
                 cmd.Parameters.AddWithValue("@data_nasc",funcionario.DatNasc);
                 cmd.Parameters.AddWithValue("@rg",       funcionario.Rg       ?? DBNull.Value.ToString());

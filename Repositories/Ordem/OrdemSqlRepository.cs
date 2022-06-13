@@ -15,7 +15,7 @@ namespace logiWeb.Repositories
 
         public string Cadastrar(Ordem ordem)
         {
-            Console.WriteLine("chegamos", ordem);
+       
             try
             {
                 cmd.Connection = connection;
@@ -61,7 +61,7 @@ namespace logiWeb.Repositories
             }
         }
 
-        public List<Ordem> MostrarOrdens(string? nome)
+        public List<Ordem> MostrarOrdens()
         {
             try{
                 
@@ -83,11 +83,11 @@ namespace logiWeb.Repositories
 										ON EN.id_cidade = CID.id
 									INNER JOIN estados EST
 										ON CID.id_estado = EST.id
-                                    WHERE O.ATIVO > 0 ";
-                if(!String.IsNullOrEmpty(nome)){
+                                    --WHERE O.ATIVO > 0 ";
+                /* if(!String.IsNullOrEmpty(nome)){
                     cmd.CommandText += " AND upper(p.nome) LIKE upper(@nome) ; ";
                     cmd.Parameters.AddWithValue("@nome", nome);
-                }
+                } */
                     
                 SqlDataReader reader = cmd.ExecuteReader();
 

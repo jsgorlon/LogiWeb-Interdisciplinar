@@ -1,6 +1,7 @@
 @{
-  Layout = "~/Views/Templates/_Menu.cshtml";
   ViewBag.Title = "Clientes"; 
+  Layout = "~/Views/Templates/_Menu.cshtml";
+  Random number = new Random();
 }
 
 @section styles {
@@ -71,10 +72,13 @@
                     <th data-field="nome_cpf">
                         Nome & CPF 
                     </th>
-                    <th data-field="status"  data-width='100'>
+                    <th data-field="dat_cad">
+                       Cadastrado Em
+                    </th>
+                    <th data-field="status">
                        Status 
                     </th>
-                    <th data-field='id' data-width='150' data-formatter="buttons">
+                    <th data-field='id'  data-formatter="buttons">
                         Ações
                     </th>
                 </thead>
@@ -130,5 +134,5 @@
 @section events {
      <script src="~/lib/bootstrap-table/bootstrap-table.min.js"></script>
      <script src="~/lib/jquery-confirm/jquery-confirm.min.js"></script>
-     <script src="~/js/events/clientes.js"></script>
+     <script src="~/js/events/clientes.js?=@number.Next(0,19999)"></script>
 }

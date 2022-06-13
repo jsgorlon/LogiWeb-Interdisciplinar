@@ -1,15 +1,13 @@
 using logiWeb.Models;
+using logiWeb.Helpers; 
 
 namespace logiWeb.Repositories
 {
     public interface IClienteRepository
     {
-        void Cadastrar(Cliente cliente);
-        List<Cliente> Mostrar();
-        Cliente Mostrar(int id);
-        List<Cliente> MostrarPorCpf(string cpf);
-        List<Cliente> MostrarPorNome(string nome);
-        void Atualizar(int id, Cliente cliente);
-        void Excluir(int id);
+        AjaxResponse Cadastrar(Cliente cliente);
+        AjaxResponse Mostrar(string? nome, int? status);
+        AjaxResponse Atualizar(int id, Cliente cliente);
+        AjaxResponse AlterarStatus(int id, int status);
     }
 }
