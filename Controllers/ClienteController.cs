@@ -1,7 +1,7 @@
 using logiWeb.Models;
 using logiWeb.Repositories;
 using Microsoft.AspNetCore.Mvc;
-
+using System.Text.Json;
 namespace logiWeb.Controllers; 
 public class ClienteController : Controller
 {

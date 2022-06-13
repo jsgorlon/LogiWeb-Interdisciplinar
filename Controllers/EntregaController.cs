@@ -25,15 +25,14 @@ public class EntregaController : Controller
     public ActionResult Entregas()
     {
         List<Entrega> entregas = this.repository.MostrarEntregas();
-        string entregasJson  = JsonSerializer.Serialize(entregas);
-        Console.WriteLine(entregasJson);
+
         return View();
     }
 
     [HttpGet]
     public ActionResult Cadastrar()
     {
-        ViewBag.Ordens = ordemRepository.MostrarOrdens();
+       // ViewBag.Ordens = ordemRepository.MostrarOrdens();
         return View();
     }
 

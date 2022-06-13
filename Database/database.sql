@@ -107,6 +107,7 @@ CREATE TABLE ordens
   peso            NUMERIC(15,4) NOT NULL, 
   volume          VARCHAR(15)   NOT NULL,
   observacao      VARCHAR(100)  NOT NULL,
+  ativo     BIT NOT NULL DEFAULT 1,
   CONSTRAINT pkordens_id              PRIMARY KEY(id),
   CONSTRAINT fkordens_id_funcionario  FOREIGN KEY(id_funcionario) REFERENCES funcionarios(id_pessoa),
   CONSTRAINT fkordens_id_cliente      FOREIGN KEY(id_cliente)     REFERENCES clientes(id_pessoa),
@@ -121,8 +122,8 @@ CREATE TABLE entregas
   id             INT  IDENTITY, 
   id_funcionario INT  NOT NULL,
   id_motorista   INT  NOT NULL,
+  ativo     BIT NOT NULL DEFAULT 1,
   CONSTRAINT pkentregas_id              PRIMARY KEY(id), 
-
   CONSTRAINT fkentregas_id_funcionario  FOREIGN KEY(id_funcionario) REFERENCES funcionarios(id_pessoa),
   CONSTRAINT fkentregas_id_motorista    FOREIGN KEY(id_motorista) REFERENCES funcionarios(id_pessoa)
 ); 
@@ -164,7 +165,14 @@ INSERT INTO cargos(nome, descricao, salario)
 			      ('Motorista', 'Responsável pela entrega de mercadorias.',           1500);
 
             
-INSERT INTO status(nome, descricao)
-     VALUES ('CRIADO', 'Ordem criada pela atendente.'), 
-	          ('SEPARAÇÃO', 'Ordem esperando para ser atribuida a um motorista.'),
-			      ('SAIU PARA ENTREGA','Ordem atribuida para um motorista.');
+insert into status values ('Pendente', 'Objeto não foi alocado em uma entrega'),
+	('Aguardando', 'Objeto está em uma entrega, aguardando a mesma ser iniciada'),
+	('A caminho', 'Objeto está em uma entrega, aguardando a mesma ser finalizada'),
+	('Entregue', 'Objeto foi entregue'),
+	('Destinatário Ausente', 'Objeto não foi entregue pois destinatário nao se encontrava'),
+	('Cancelado', 'Cancelado'),
+	('Entrega em andamentos', 'As ordens estão sendo entregues pelo motoristas'),
+	('Entrega finalizada com sucesso', 'A entrega foi concluída e todas ordens foram entregues'),
+	('Entrega finalizada com observações', 'A entrega foi concluída porém, algumas ordens não puderam ser entregues'),
+	('Entrega em aguardo', 'Por problemas no veículo ou com o motorista a entrega está em aguardo'),
+	('Entrega cancelada', 'A entrega foi cancelada');
