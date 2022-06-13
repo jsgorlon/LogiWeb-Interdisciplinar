@@ -27,31 +27,14 @@ public class ClienteController : Controller
         return Json(clientes);
     }
 
-    [HttpGet]
-    public ActionResult MostrarPorCpf(string cpf)
-    {
-        List<Cliente> clientes = this.repository.MostrarPorCpf(cpf);
-        return View();
-    }
-
-    [HttpGet]
-    public ActionResult MostrarPorNome(string nome)
-    {
-        List<Cliente> clientes = this.repository.MostrarPorNome(nome);
-        return View();
-    }
-
-    [HttpGet]
-    public ActionResult Cadastrar()
-    {
-        return View();
-    }
 
     [HttpPost]
-    public ActionResult Cadastrar(Cliente cliente)
+    public JsonResult Cadastrar(Cliente cliente)
     {
         this.repository.Cadastrar(cliente);
-        return RedirectToAction("Index");
+        return Json(new {
+            error = false, 
+        });
     }
 
     [HttpGet]

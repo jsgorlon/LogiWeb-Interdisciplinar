@@ -11,47 +11,56 @@ namespace logiWeb.Repositories
         {
             try
             {
+           
                 cmd.Connection = connection;
-                cmd.CommandText = @"SELECT id FROM pessoas WHERE cpf = @cpf1;";
-                cmd.Parameters.AddWithValue("@cpf1", cliente.Cpf);
+                cmd.CommandText = @"SELECT pessoas.id 
+                                      FROM pessoas 
+                                     WHERE cpf = @cpf;";
 
+                cmd.Parameters.AddWithValue("@cpf", cliente.Cpf);
                 SqlDataReader reader = cmd.ExecuteReader();
 
-                if (!reader.HasRows)
+                int id_pessoa = reader.Read() ? (int)reader["id"] : 0;
+                
+                reader.Dispose(); 
+                
+                string errorMsg = ""; 
+                
+                if (id_pessoa == 0)
                 {
-                    reader.Close();
-                    reader.Dispose();
+                    
+                    cmd.Connection = connection;
                     cmd.CommandText = @"INSERT INTO pessoas (nome, cpf, rg, data_nasc, telefone, email) 
-                                            VALUES (@nome, @cpf2, @rg, @data_nasc, @telefone, @email);
-                                        INSERT INTO clientes (id_pessoa) VALUES (SCOPE_IDENTITY());";
-
-                    cmd.Parameters.AddWithValue("@nome",      cliente.Nome);
-                    cmd.Parameters.AddWithValue("@cpf2",      cliente.Cpf);
-                    cmd.Parameters.AddWithValue("@rg",        cliente.Rg);
+                                            VALUES (@nome, @cpf, @rg, @data_nasc, @telefone, @email);
+                                            SELECT SCOPE_IDENTITY();";
+                    cmd.Parameters.Clear();
+                    cmd.Parameters.AddWithValue("@nome",      cliente.Nome.ToUpper());
+                    cmd.Parameters.AddWithValue("@cpf",       cliente.Cpf);
                     cmd.Parameters.AddWithValue("@data_nasc", cliente.DatNasc);
-                    cmd.Parameters.AddWithValue("@email",     cliente.Email);
-                    cmd.Parameters.AddWithValue("@telefone",  cliente.Telefone);
-
-                    cmd.ExecuteNonQuery();
+                    cmd.Parameters.AddWithValue("@rg",        cliente.Rg       ?? DBNull.Value.ToString());
+                    cmd.Parameters.AddWithValue("@email",     cliente.Email    ?? DBNull.Value.ToString());
+                    cmd.Parameters.AddWithValue("@telefone",  cliente.Telefone ?? DBNull.Value.ToString());
+                
+                    id_pessoa = (int)cmd.ExecuteScalar();
                 }
                 else
                 {
-                    reader.Close();
-                    reader.Dispose();
-                    cmd.CommandText = @"SELECT id FROM pessoas WHERE cpf = @cpf3";
-                    cmd.Parameters.AddWithValue("@cpf3", cliente.Cpf);
-
-                    reader = cmd.ExecuteReader();
-                    if (reader.Read())
-                    {
-                        int id_pessoa = (int)reader["id"];
-                        reader.Close();
-                        reader.Dispose();
-                        cmd.CommandText = @"INSERT INTO clientes (id_pessoa) VALUES (@id_pessoa)";
-                        cmd.Parameters.AddWithValue("@id_pessoa", id_pessoa);
-                        cmd.ExecuteNonQuery();
-                    }
+                  cmd.CommandText = @"SELECT COUNT(1) > 0 as cliente_cadastrado 
+                                        FROM clientes 
+                                       WHERE id_pessoa = @id_pessoa";
+                  cmd.Parameters.AddWithValue("@id_pessoa", id_pessoa);
+                  bool cliente_cadastrado = (bool)reader["cliente_cadastrado"];
+                  reader.Dispose();
+                  
+                  if(cliente_cadastrado)
+                    errorMsg += "Este CPF já está associado a um cliente.";
                 }
+
+                
+
+                cmd.CommandText = @"INSERT INTO clientes (id_pessoa) VALUES (@id_pessoa)";
+                cmd.Parameters.AddWithValue("@id_pessoa", id_pessoa);
+                cmd.ExecuteNonQuery();
             }
             catch(Exception ex)
             {

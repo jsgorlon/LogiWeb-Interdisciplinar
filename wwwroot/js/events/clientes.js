@@ -1,3 +1,4 @@
+let clientes = []; 
 
 class Cliente {
     constructor(){
@@ -22,6 +23,11 @@ let dialogCadastrar = $.confirm({
     type: 'green', 
     columnClass: 'col-12 col-md-7 col-lg-6', 
     draggable: false, 
+    onOpen: () => {
+        $('input').on('focus', function(){
+            $(this).removeClass('is-invalid');
+        });
+    },
     onOpenBefore: () => {
 
         $("#cpf").mask('000.000.000-00');
@@ -169,4 +175,54 @@ function formataCPF(cpf){
     
     //realizar a formatação...
       return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
-  }
+}
+
+function obterFuncionarios(loadingButton = false){
+
+
+    if(loadingButton){
+        $("#btPesquisar").spinner();
+    }
+
+    let status = $("[name='flexRadioDefault']:checked").val();
+    $.ajax({
+         type: 'GET',
+         url: '/cliente/todos',
+         dataType: 'JSON',
+         data: {
+            nome: $("#filtro_nome").val(), 
+            status: status == 'A' ? null : status 
+         },
+         success: data => {
+            funcionarios = []; 
+             let users = [];
+
+             data.map(user => {
+                users.push({
+                    id: user.id, 
+                    nome_cpf: `${user.nome} - <b>${formataCPF(user.cpf)}</b> ${user.ativo ? '' : "<span class='text-white rounded-pill bg-danger fw-bold px-2' style='font-size:13px;'>INATIVO</span>"}`,
+                    active: user.ativo, 
+                    status: user.ativo ? `<span class="badge badge-success rounded-pill bg-success">ATIVO</span>` : `<span class="badge badge-success rounded-pill bg-danger">INATIVO</span>`
+                   });
+                
+
+                   clientes.push({
+                        Id: user.id,
+                        Nome: user.nome,  
+                        Telefone: user.telefone, 
+                        Email: user.email, 
+                        DatNasc: user.datNasc, 
+                        Cpf: user.cpf, 
+                        Rg: user.rg, 
+                   });
+             });
+
+             $('table').bootstrapTable('load', users);
+
+             $("[data-bs-toggle='popover']").popover({content: 'body', trigger: 'hover'});
+            
+             if(loadingButton)
+                $("#btPesquisar").spinner({submete: false});
+         }
+     });
+}
