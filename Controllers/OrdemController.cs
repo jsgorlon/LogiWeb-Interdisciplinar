@@ -20,11 +20,9 @@ public class OrdemController : Controller
      }
 
     [HttpGet]
-    public JsonResult Ordem()
+    public JsonResult Ordem(string? nome)
     {
-        List<Ordem> ordens = this.repository.MostrarOrdens();
-        //string ordens  = JsonSerializer.Serialize(ordens);
-
+        List<Ordem> ordens = this.repository.MostrarOrdens(nome);
         return Json(ordens);
     }
 
@@ -32,16 +30,16 @@ public class OrdemController : Controller
     public ActionResult Cadastrar()
     {
         List<Cliente> clientes = clienteRepository.Mostrar();
-        string clientesJson  = JsonSerializer.Serialize(clientes);
-        Console.WriteLine(clientesJson);
+
         return View();
     }
 
     [HttpPost]
-    public ActionResult Cadastrar(Ordem ordem)
+    public string Cadastrar(Ordem ordem)
     {
-        this.repository.Cadastrar(ordem);
-        return RedirectToAction("Mostrar");
+        // ordem.IdFuncionario = session(id) funcionario logado
+        //verificar se endereco ja existe, caso nao adicionar o endereco
+        return this.repository.Cadastrar(ordem);
     }
 
     

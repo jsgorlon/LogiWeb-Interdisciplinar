@@ -13,7 +13,7 @@ namespace logiWeb.Repositories
             this.clienteRepository = clienteRepository;
         }
 
-        public void Cadastrar(Ordem ordem)
+        public string Cadastrar(Ordem ordem)
         {
             Console.WriteLine("chegamos", ordem);
             try
@@ -30,7 +30,7 @@ namespace logiWeb.Repositories
                 cmd.Parameters.AddWithValue("@peso", ordem.Peso);
                 cmd.Parameters.AddWithValue("@observacao", ordem.Observacao);
                 cmd.ExecuteNonQuery();
-
+                return "alert_success('Ordem cadastrada com sucesso!');dialog.close();";
             }
               catch(Exception ex)
             {
@@ -47,7 +47,7 @@ namespace logiWeb.Repositories
             try
             {
                 cmd.Connection = connection;
-                cmd.CommandText = @"UPDATE ORDENS SET ATIVO = 0 WHERE ID_ORDEM = @ID";
+                cmd.CommandText = @"UPDATE ORDENS SET ATIVO = 0 WHERE ID = @ID";
                 cmd.Parameters.AddWithValue("@ID", id);
                 cmd.ExecuteNonQuery();
             }
@@ -61,9 +61,11 @@ namespace logiWeb.Repositories
             }
         }
 
-        public List<Ordem> MostrarOrdens()
+        public List<Ordem> MostrarOrdens(string? nome)
         {
             try{
+                
+
                 cmd.Connection = connection;
                 cmd.CommandText = @"SELECT O.ID, O.ID_CLIENTE, O.ID_FUNCIONARIO, O.id_endereco, 
                                     O.VOLUME, O.PESO, O.OBSERVACAO, O.QTD_ITENS, P.NOME NOME_CLIENTE, F.NOME NOME_FUNCIONARIO,
@@ -82,7 +84,11 @@ namespace logiWeb.Repositories
 									INNER JOIN estados EST
 										ON CID.id_estado = EST.id
                                     WHERE O.ATIVO > 0 ";
-
+                if(!String.IsNullOrEmpty(nome)){
+                    cmd.CommandText += " AND upper(p.nome) LIKE upper(@nome) ; ";
+                    cmd.Parameters.AddWithValue("@nome", nome);
+                }
+                    
                 SqlDataReader reader = cmd.ExecuteReader();
 
                 List<Ordem> lista = new List<Ordem>();
@@ -92,7 +98,7 @@ namespace logiWeb.Repositories
                     
                     item.Id = (int)reader["ID"];
                     item.Cliente.Id = (int)reader["ID_CLIENTE"];
-                    item.Cliente.Id = (int)reader["ID_FUNCIONARIO"];
+                    item.Funcionario.Id = (int)reader["ID_FUNCIONARIO"];
                     item.Endereco.Id =(int)reader["id_endereco"];
                     item.Peso = (decimal)reader["PESO"];
                     item.Observacao = (string)reader["OBSERVACAO"];
