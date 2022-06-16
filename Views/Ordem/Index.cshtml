@@ -25,17 +25,25 @@
             <input type="text" id="filter_cliente" class="form-control form-control-sm">
         </div>
     </div>
-    <div class="col-md-3"></div>
-            <button id="btPesquisar" class="btn btn-sm btn-primary">
-                <i class="fa-solid fa-magnifying-glass"></i> Pesquisar
-            </button>
+    <div class="col-md-3">
+        <label for="">Criada em:</label>
+        <div class="input-group input-group-sm">
+            <input class="form-control" type="date" id="criada_em" style="max-width:120px!important;">
+            <div class="input-group-prepend bg-transaparent border-0 ps-2">
+                <button id="btPesquisar" class="btn btn-sm btn-primary">
+                    <i class="fa-solid fa-magnifying-glass"></i> Pesquisar
+                </button>
+            </div>
+        </div>
     </div>
+         
+  </div>
   <div class="row py-5">
-      <div class="d-flex justify-content-end py-1">
-            <button id="btCadastrar" class="btn btn-sm btn-success rounded-pill">
-               <i class="fa-solid fa-circle-plus"></i>  Nova Ordem 
-            </button>
-       </div>
+      <div class="d-flex justify-content-end">
+         <button class="btn btn-sm btn-success rounded-pill" id="btCadastrar">
+           <i class="fa-solid fa-circle-plus"></i> Criar Ordem 
+         </button>
+      </div>
       <div class="table-responsive">
           <table data-pagination="true" class="border-0">
                 <thead>
@@ -76,85 +84,118 @@
 <template id="template_cad_ordem">
     <div class="container">
         <div class="row">
-                <div class="col-md-6">
-                    <label for="filter_cliente">Cliente</label>
-                        <div class="input-group input-group-sm">
-                        <select id="filter_cliente"   class="form-select ">
-                            <option value="">SELECIONE</option>
-                        </select>
+            <div class="col-md-6" id="col_pesquisar_cliente">
+                <label for="nome_cliente">Nome cliente</label>
+                <div class="input-group input-group-sm">
+                    <input type="text" class="form-control" id="nome_cliente" maxlength="100">
+                    <div class="input-group-prepend">
+                        <button id="btPesquisarCliente" class="btn btn-sm btn-primary">
+                          <i class="fa-solid fa-magnifying-glass"></i>  Pesquisar 
+                        </button>
                     </div>
                 </div>
-                <div class="col-md-6 mb-2">
-                    <label for="qtd_itens">Qtd Itens <span class="text-danger">*</span></label>
+                <small class="text-muted">
+                    No mín. 3 caracters
+                </small>
+            </div>
+            <div class="col-md-6" id="col_cliente" style="display: none;">
+                <label for="cliente">Cliente</label>
                     <div class="input-group input-group-sm">
-                        <input type="text" class="form-control form-control-sm" id="qtd_itens">
-                    </div>
+                    <select id="cliente"   class="form-select ">
+                        <option value="">SELECIONE</option>
+                    </select>
                 </div>
-                <div class="col-md-6 mb-2">
-                    <label for="peso">Peso <span class="text-danger">*</span></label>
-                    <div class="input-group input-group-sm">
-                        <input type="text" class="form-control form-control-sm" id="peso">
-                    </div>
+            </div> 
+        </div>
+        <div class="row" id="form_ordem" style="display: none;">
+            <div class="col-12">
+                <small class="text-muted">
+                    Dados da Ordem 
+                </small>
+                <hr class="m-0" style="height:3px;border-radius:15px;background:#333;">
+            </div>
+            <div class="col-md-2">
+                <label for="qtd_itens">Qtd. Itens <span class="text-danger">*</span></label>
+                <div class="input-group input-group-sm">
+                    <input class="form-control" type="text" id="qtd_itens">
                 </div>
-                <div class="col-md-6 mb-2">
-                    <label for="volume">Volume <span class="text-danger">*</span></label>
-                    <div class="input-group input-group-sm">
-                        <input type="text" class="form-control form-control-sm" id="volume">
-                    </div>
+            </div>
+            <div class="col-md-2">
+                <label for="volume">Volume <span class="text-danger">*</span></label>
+                <div class="input-group input-group-sm">
+                    <input class="form-control" type="text" id="volume">
                 </div>
-                <div class="col-md-6 mb-2">
-                    <label for="observacao">Observação <span class="text-danger">*</span></label>
-                    <div class="input-group input-group-sm">
-                        <input type="text" class="form-control form-control-sm" id="observacao">
+            </div>
+            <div class="col-md-3">
+                <label for="peso">Peso <span class="text-danger">*</span></label>
+                <div class="input-group input-group-sm">
+                    <div class="input-group-prepend px-1 rounded" style="background:#ccc;">
+                        <b>
+                            <small>KG</small>
+                        </b>
                     </div>
+                    <input class="form-control" type="text" id="peso">
                 </div>
-                <div class="col-md-6 mb-2">
-                    <label for="logradouro">Rua <span class="text-danger">*</span></label>
-                    <div class="input-group input-group-sm">
-                        <input type="text" class="form-control form-control-sm" id="logradouro">
-                    </div>
+            </div>
+            <div class="col-md-5">
+                <label for="obs_ordem">Observacao</label>
+                <div class="input-group input-group-sm">
+                    <input class="form-control" type="text" maxlength="100" id="obs_ordem">
                 </div>
-                <div class="col-md-2 mb-2">
-                    <label for="nr_casa">Nº <span class="text-danger">*</span></label>
-                    <div class="input-group input-group-sm">
-                        <input type="text" class="form-control form-control-sm" id="nr_casa">
-                    </div>
+            </div>
+            <div class="col-12">
+                <small class="text-muted">
+                    Destino de entrega
+                </small>
+                <hr class="m-0" style="height:3px;border-radius:15px;background:#333;">
+            </div>
+            <div class="col-md-4">
+                <label for="">Estado <span class="text-danger">*</span></label>
+                 <div class="input-group input-group-sm">
+                    <select id="estado" class="form-control form-control-sm">
+                        <option value="">SELECIONE</option>
+                    </select>
+                 </div>
+            </div>
+            <div class="col-md-8">
+                <label for="">Cidade <span class="text-danger">*</span></label>
+                 <div class="input-group input-group-sm">
+                    <select id="cidade" class="form-control form-control-sm">
+                        <option value="">SELECIONE UM ESTADO</option>
+                    </select>
+                 </div>
+            </div>
+            <div class="col-md-4">
+                <label for="">Bairro <span class="text-danger">*</span></label>
+                <div class="input-group input-group-sm">
+                    <input type="text" id="bairro" maxlength="50" class="form-control">
                 </div>
-                <div class="col-md-6 mb-2">
-                    <label for="complemento">Complemento <span class="text-danger">*</span></label>
-                    <div class="input-group input-group-sm">
-                        <input type="text" class="form-control form-control-sm" id="complemento">
-                    </div>
+            </div>
+            <div class="col-md-6">
+                <label for="">Logradouro</label>
+                <div class="input-group input-group-sm">
+                    <input type="text" id="logradouro" maxlength="150" class="form-control">
                 </div>
-                <div class="col-md-6 mb-2">
-                    <label for="bairro">Bairro <span class="text-danger">*</span></label>
-                    <div class="input-group input-group-sm">
-                        <input type="text" class="form-control form-control-sm" id="bairro">
-                    </div>
+            </div>
+            <div class="col-md-2">
+                <label for="">Id. Casa <span class="text-danger">*</span></label>
+                <div class="input-group input-group-sm">
+                    <input type="text" id="nr_casa" maxlength="15" class="form-control">
                 </div>
-                <div class="col-md-6 mb-2">
-                    <label for="cep">CEP</label>
-                    <div class="input-group input-group-sm">
-                        <input type="text" class="form-control form-control-sm" id="cep">
-                    </div>
+            </div>
+            <div class="col-md-2">
+                <label for="">CEP <span class="text-danger">*</span></label>
+                <div class="input-group input-group-sm">
+                    <input type="text" id="cep" class="form-control">
                 </div>
-                <div class="col-md-6">
-                    <label for="filter_cidade">Cidade</label>
-                        <div class="input-group input-group-sm">
-                        <select id="filter_cidade"   class="form-select ">
-                            <option value="">SELECIONE</option>
-                        </select>
-                    </div>
+            </div>
+            <div class="col-md-10">
+                <label for="">Complemento</label>
+                <div class="input-group input-group-sm">
+                    <input type="text" maxlength="100" id="complemento" class="form-control">
                 </div>
-                <div class="col-md-6">
-                    <label for="filter_estado">Estado</label>
-                        <div class="input-group input-group-sm">
-                        <select id="filter_estado"   class="form-select ">
-                            <option value="">SELECIONE</option>
-                        </select>
-                    </div>
-                </div>
-                
+            </div>
+
         </div>
     </div>
 </template>

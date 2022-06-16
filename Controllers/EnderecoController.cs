@@ -21,9 +21,9 @@ namespace logiWeb.Controllers
         }
 
         [HttpGet]
-        public JsonResult MostrarCidade()
+        public JsonResult MostrarCidade(int id_estado)
         {
-            List<Endereco> endereco = this.repository.MostrarCidade();
+            List<Endereco> endereco = this.repository.MostrarCidade(id_estado);
             return Json(endereco);
         }
     }

@@ -6,7 +6,7 @@ namespace logiWeb.Repositories
     {
         void Cadastrar(Endereco endereco);
         List<Endereco> MostrarEstado();
-        List<Endereco> MostrarCidade();
+        List<Endereco> MostrarCidade(int id_estado);
         Endereco MostrarEndereco(string cep, string nrCasa);
     }
 }

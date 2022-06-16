@@ -26,8 +26,8 @@ namespace logiWeb.Repositories
             connection.Close();
         }
 
-        ~DBContext(){
+        /* ~DBContext(){
             Dispose(); 
-        }
+        } */
     }
 }

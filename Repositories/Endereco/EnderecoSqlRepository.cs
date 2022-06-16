@@ -101,11 +101,13 @@ namespace logiWeb.Repositories
             }
             
         }  
-        public List<Endereco> MostrarCidade()
+        public List<Endereco> MostrarCidade(int id_estado)
         {
             try{
                 cmd.Connection = connection;
-                cmd.CommandText = @"select id, nome, id_estado from cidades";
+                cmd.CommandText = @"SELECT id, nome, id_estado FROM cidades WHERE cidades.id_estado = @id_estado ORDER BY nome";
+                cmd.Parameters.Clear(); 
+                cmd.Parameters.AddWithValue("@id_estado", id_estado);
                 SqlDataReader reader = cmd.ExecuteReader();
 
                 List<Endereco> lista = new List<Endereco>();

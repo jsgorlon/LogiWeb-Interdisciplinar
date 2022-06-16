@@ -1,5 +1,8 @@
 
+
 use LogiWeb; 
+
+
 
 DROP TABLE IF EXISTS status_entrega;
 DROP TABLE IF EXISTS status;
@@ -83,39 +86,40 @@ CREATE TABLE cidades
 ) ;
 
 
+CREATE TABLE ordens
+(
+  id              INT           IDENTITY,
+  id_funcionario  INT           NOT NULL,
+  id_cliente      INT           NOT NULL,
+  qtd_itens       SMALLINT      NOT NULL,  
+  peso            NUMERIC(15,4) NOT NULL, 
+  volume          VARCHAR(15)   NOT NULL,
+  observacao      VARCHAR(100)      NULL,
+  ativo           BIT NOT NULL DEFAULT 1,
+  CONSTRAINT pkordens_id              PRIMARY KEY(id),
+  CONSTRAINT fkordens_id_funcionario  FOREIGN KEY(id_funcionario) REFERENCES funcionarios(id_pessoa),
+  CONSTRAINT fkordens_id_cliente      FOREIGN KEY(id_cliente)     REFERENCES clientes(id_pessoa),
+  CONSTRAINT ckordens_peso            CHECK(peso>0),
+  CONSTRAINT ckordens_qtd_itens       CHECK(qtd_itens>=1)
+ 
+); 
+
+
+
 CREATE TABLE enderecos
 (
-  id          INT           IDENTITY,
+  id_ordem    INT           NOT NULL,
   id_cidade   INT           NOT NULL, 
   cep         VARCHAR(8)    NOT NULL,
   logradouro  VARCHAR(150)  NULL, 
   nr_casa     VARCHAR(15)   NOT NULL,  
   bairro      VARCHAR(50)   NOT NULL, 
   complemento VARCHAR(100)  NULL, 
-  CONSTRAINT pkenderecos_id         PRIMARY KEY(id), 
-  CONSTRAINT ukenderecos_cep_nr_casa UNIQUE(cep, nr_casa), 
+  CONSTRAINT pkenderecos_id_ordem         PRIMARY KEY(id_ordem), 
+  CONSTRAINT fkenderecos_id_ordem FOREIGN KEY(id_ordem) REFERENCES ordens(id), 
   CONSTRAINT fkenderecos_id_cidade FOREIGN KEY(id_cidade) REFERENCES cidades(id)
 );
 
-CREATE TABLE ordens
-(
-  id              INT           IDENTITY,
-  id_funcionario  INT           NOT NULL,
-  id_cliente      INT           NOT NULL,
-  id_endereco     INT           NOT NULL,
-  qtd_itens       SMALLINT      NOT NULL,  
-  peso            NUMERIC(15,4) NOT NULL, 
-  volume          VARCHAR(15)   NOT NULL,
-  observacao      VARCHAR(100)  NOT NULL,
-  ativo     BIT NOT NULL DEFAULT 1,
-  CONSTRAINT pkordens_id              PRIMARY KEY(id),
-  CONSTRAINT fkordens_id_funcionario  FOREIGN KEY(id_funcionario) REFERENCES funcionarios(id_pessoa),
-  CONSTRAINT fkordens_id_cliente      FOREIGN KEY(id_cliente)     REFERENCES clientes(id_pessoa),
-  CONSTRAINT fkordens_id_endereco     FOREIGN KEY(id_endereco) REFERENCES enderecos(id),
-  CONSTRAINT ckordens_peso            CHECK(peso>0),
-  CONSTRAINT ckordens_qtd_itens       CHECK(qtd_itens>=1)
- 
-); 
 
 CREATE TABLE entregas 
 (

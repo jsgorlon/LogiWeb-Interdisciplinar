@@ -1,11 +1,13 @@
 using System.Data.SqlClient;
 using logiWeb.Models;
+using logiWeb.Helpers; 
 
 namespace logiWeb.Repositories
 {
     public class OrdemSqlRepository : DBContext, IOrdemRepository
     {
         private SqlCommand cmd = new SqlCommand();
+        private AjaxResponse response = new AjaxResponse(); 
 
         private IClienteRepository clienteRepository;
         public OrdemSqlRepository(IClienteRepository clienteRepository)
@@ -13,24 +15,38 @@ namespace logiWeb.Repositories
             this.clienteRepository = clienteRepository;
         }
 
-        public string Cadastrar(Ordem ordem)
+        public AjaxResponse Cadastrar(Ordem ordem, Endereco endereco)
         {
        
             try
             {
                 cmd.Connection = connection;
-                cmd.CommandText = @"INSERT INTO ORDENS (id_cliente, id_endereco, id_funcionario, qtd_itens, volume, peso, observacao)  
-                                    VALUES (@id_cliente, @id_endereco, @id_funcionario, @qtd_itens, @volume, @peso, @observacao);";
-
-                cmd.Parameters.AddWithValue("@id_cliente", ordem.Cliente.Id);
-                cmd.Parameters.AddWithValue("@id_endereco", ordem.Endereco.Id);
+                cmd.CommandText = @"INSERT INTO ordens (id_cliente, id_funcionario, qtd_itens, volume, peso, observacao)  
+                                         VALUES (@id_cliente, @id_funcionario, @qtd_itens, @volume, @peso, @observacao);
+                                         SELECT SCOPE_IDENTITY();";
+                cmd.Parameters.Clear(); 
+                cmd.Parameters.AddWithValue("@id_cliente",     ordem.IdCliente);
                 cmd.Parameters.AddWithValue("@id_funcionario", ordem.Funcionario.Id);
-                cmd.Parameters.AddWithValue("@qtd_itens", ordem.Qtd_itens);
-                cmd.Parameters.AddWithValue("@volume", ordem.Volume);
-                cmd.Parameters.AddWithValue("@peso", ordem.Peso);
-                cmd.Parameters.AddWithValue("@observacao", ordem.Observacao);
+                cmd.Parameters.AddWithValue("@qtd_itens",      ordem.Qtd_itens);
+                cmd.Parameters.AddWithValue("@volume",         ordem.Volume);
+                cmd.Parameters.AddWithValue("@peso",           ordem.Peso);
+                cmd.Parameters.AddWithValue("@observacao",     ordem.Observacao ?? DBNull.Value.ToString());
+           
+                int id_ordem = (int)cmd.ExecuteScalar();
+
+                cmd.CommandText = @"INSERT INTO enderecos(id_ordem, id_cidade, cep, logradouro, nr_casa, bairro, complemento)
+                                          VALUES (@id_ordem, @id_cidade, @cep, @logradouro, @nr_casa, @bairro, @complemento)";
+                cmd.Parameters.AddWithValue("@id_ordem",     id_ordem);
+                cmd.Parameters.AddWithValue("@id_cidade",    endereco.IdCidade);
+                cmd.Parameters.AddWithValue("@cep",          endereco.Cep);
+                cmd.Parameters.AddWithValue("@nr_casa",      endereco.Nr_casa);
+                cmd.Parameters.AddWithValue("@bairro",       endereco.Bairro);
+                cmd.Parameters.AddWithValue("@logradouro",   endereco.Logradouro ?? DBNull.Value.ToString());
+                cmd.Parameters.AddWithValue("@complemento",  endereco.Complemento ?? DBNull.Value.ToString());
                 cmd.ExecuteNonQuery();
-                return "alert_success('Ordem cadastrada com sucesso!');dialog.close();";
+
+
+                return response; 
             }
               catch(Exception ex)
             {
@@ -132,7 +148,7 @@ namespace logiWeb.Repositories
             try
             {
                 cmd.Connection = connection;
-                cmd.CommandText = @"SELECT O.ID, O.ID_CLIENTE, O.ID_FUNCIONARIO, O.id_endereco, 
+                cmd.CommandText = @"SELECT O.ID, O.ID_CLIENTE, O.ID_FUNCIONARIO,
                                     O.VOLUME, O.PESO, O.OBSERVACAO, O.QTD_ITENS, P.NOME NOME_CLIENTE, F.NOME NOME_FUNCIONARIO,
 		                            O.ID_ENDERECO, EN.logradouro, EN.nr_casa, EN.complemento, EN.bairro, EN.cep, 
 		                            EN.ID_CIDADE, CID.nome NOME_CIDADE, 
@@ -142,8 +158,6 @@ namespace logiWeb.Repositories
                                         ON O.ID_CLIENTE = P.ID 
                                     INNER JOIN PESSOAS F
                                         ON O.ID_FUNCIONARIO = F.ID 
-									INNER JOIN enderecos EN
-										ON O.id_endereco = EN.id
 									INNER JOIN cidades CID
 										ON EN.id_cidade = CID.id
 									INNER JOIN estados EST

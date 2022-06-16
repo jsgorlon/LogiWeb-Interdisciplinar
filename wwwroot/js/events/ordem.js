@@ -1,15 +1,28 @@
 let ordens = []; 
+
 class Ordem {
      constructor(){ 
-        this.IdCliente = $("#id_cliente").val(); 
-        this.QtdItens = $("#qtd_itens").val(); 
+        this.IdCliente = $("#cliente").val(); 
+        this.Qtd_itens = $("#qtd_itens").val(); 
         this.Volume = $("#volume").val(); 
         this.Peso = $("#peso").val(); 
-        this.Observacao = $("#observacao").val(); 
-        this.IdStatus = $("#status").val(); 
-        this.IdEndereco = $("#endereco").val(); 
+        this.Observacao = $("#obs_ordem").val(); 
+       
         this.Ativo = true; 
      }
+}
+
+class Endereco {
+ 
+   constructor(){
+    this.IdEstado = $("#estado").val(); 
+    this.IdCidade = $("#cidade").val(); 
+    this.Bairro = $("#bairro").val(); 
+    this.Logradouro = $("#logradouro").val(); 
+    this.Nr_casa = $("#nr_casa").val(); 
+    this.Cep = $("#cep").val().replaceAll(/[^0-9]/gi, ''); 
+    this.Complemento = $("#complemento").val(); 
+   }
 }
 
 let dialogOrdem = $.confirm({
@@ -18,18 +31,64 @@ let dialogOrdem = $.confirm({
     lazyOpen: true,
     closeIcon: true,  
     id_ordem: null, 
+    edicao: false, 
     type: 'green', 
-    columnClass: 'col-12 col-md-7 col-lg-6', 
+    columnClass: 'col-12 col-md-11 col-lg-10', 
     draggable: false, 
     onClose: function(){
         this.id_ordem = null; 
+        this.edicao = false; 
     }, 
     onOpenBefore: function(){
+        this.showLoading();
+
         obterCliente('filter_cliente','selecione');
-        obterEstado('filter_estado','selecione');
-        obterCidade('filter_cidade','selecione');
+       
         
+        $("#cep").mask("99999-999");
+        $("#volume, #qtd_itens").mask("99");
+        $("#peso").mask("99");
+    
+        if(this.edicao)
+        {
+            $("#col_pesquisar_cliente").fadeOut();
+            $("#cliente").attr('disabled', true);
+        }
+
+        obterEstado('estado', 'SELECIONE');
+
+        this.hideLoading(); 
     },
+    onOpen: () => {
+        $("#btPesquisarCliente").click(function(){
+            obterClientes();
+        });
+
+      
+        $('input, select').on('focus', function(){
+            $(this).removeClass('is-invalid');
+        });
+
+        $("#cliente").on('change', ev => {
+            if(ev.target.value == '')
+                $("#form_ordem").fadeOut(); 
+            else 
+                $("#form_ordem").fadeIn(); 
+        });
+
+        $("#estado").change(function(){
+            let id_estado = $(this).val();
+
+            if(!id_estado){
+                $("#cidade").html("<option value=''>SELECIONE UM ESTADO</option>");
+            }
+
+            else {
+                obterCidade(id_estado);
+            }
+
+        });
+    }, 
     cadastrar: function(){
         
         this.title = `<span style="font-size:18px !important;" class="fw-bold">Nova Ordem</span>`;
@@ -45,17 +104,19 @@ let dialogOrdem = $.confirm({
                    if(!campos_validos)
                      return false;
                 
-                   $(".btCadastrar").spinner();
+                   // $(".btCadastrar").spinner();
 
                    let ordem = new Ordem(); 
-
+                    console.log(ordem);
                    $.ajax({
                        url: '/ordem/cadastrar', 
                        type: 'POST',
                        dataType: 'JSON',
-                       data: ordem, 
+                       data: {
+                        ordem
+                       }, 
                        complete: data => {
-                        $(".btCadastrar").spinner({submete: false});
+                        // $(".btCadastrar").spinner({submete: false});
                            console.log(data);
                           eval(data.responseText);
                           obterOrdens(); 
@@ -101,7 +162,7 @@ function excluir(button){
       $("#"+button.id).spinner();
    
       let ordem = ordens.find(item=> item.id == id_ordem);
-      console.log(id_ordem, ordens)
+    
       delete ordem.Id; 
    
        $.ajax({
@@ -120,7 +181,7 @@ function excluir(button){
    }
 
 function obterEstado(selectId, ig = 'selecione', id_select = 0){
-    return $.ajax({
+     $.ajax({
          type: 'GET',
          url: '/endereco/MostrarEstado',
          dataType: 'JSON',
@@ -134,17 +195,20 @@ function obterEstado(selectId, ig = 'selecione', id_select = 0){
      });
  }
 
- function obterCidade(selectId, ig = 'selecione', id_select = 0){
-    return $.ajax({
+ function obterCidade(id_estado, ig = 'selecione', id_select = 0){
+    $.ajax({
          type: 'GET',
          url: '/endereco/MostrarCidade',
          dataType: 'JSON',
+         data:{
+            id_estado
+         },
          success: data => {
              let newOption = (label, value = '') =>  `<option ${value == id_select ? 'selected' : ''} value='${value}'>${label.toLocaleUpperCase()}</option>`;
              let html = newOption(ig);
  
-             data.map(endereco => html += newOption(endereco.cidade, endereco.idcidade));
-             $('#'+selectId).html(html);
+             data.map(cidade => html += newOption(cidade.cidade, cidade.id));
+             $('#cidade').html(`<option value=''>SELECIONE</option>${html}`);
          }
      });
  }
@@ -230,5 +294,127 @@ function obterEstado(selectId, ig = 'selecione', id_select = 0){
      });
 }
 
+function obterClientes(){
+
+    let nome_cliente = $("#nome_cliente");
+
+    if(nome_cliente.val().length < 3){
+        nome_cliente.addClass('is-invalid');
+        alert_error('Atenção:', "O nome deve ter no <b>mínimo 3</b> caracteres.");
+        return;
+    }
+
+    $.ajax({
+         type: 'GET',
+         url: '/cliente/todos',
+         dataType: 'JSON',
+         data: {
+            nome: nome_cliente.val(),
+            status: 1
+         },
+         success: data => {
+            let clientes = data.item.clientes; 
+
+            if(clientes.length == 0){
+                alert_warning("Atenção", "Nenhum cliente foi encontrado!");
+                $("#col_cliente, #form_ordem").fadeOut();
+                $("#cliente").html(` <option value="">SELECIONE</option>`);
+            }
+            else {
+                let items_select = "<option value='' selected>SELECIONE</option>";
+
+                clientes.map(cliente => {
+                    items_select += `<option value='${cliente.id}' ${clientes.length == 1 ? 'selected' : ''}>${cliente.nome}</option>`;
+                });
+
+                $("#cliente").html(items_select);
+                $("#col_cliente").fadeIn();
+
+                if(clientes.length == 1){
+                    $("#form_ordem").fadeIn(); 
+                }
+            }
+
+         }
+     });
+}
 
 
+function validarCampos(){
+    let qtd_itens = $("#qtd_itens"); 
+    let volume = $("#volume"); 
+    let peso = $("#peso"); 
+    let obs_ordem = $("#obs_ordem"); 
+    let estado = $("#estado"); 
+    let cidade = $("#cidade");
+    let bairro = $("#bairro"); 
+    let logradouro = $("#logradouro"); 
+    let nr_casa = $("#nr_casa"); 
+    let cep = $("#cep"); 
+    let complemento = $("#complemento"); 
+   
+
+    let msg = ''; 
+
+    let isNotEmptyNum = (field) => field.val() != '' && field.val() > 0; 
+
+    let validacoes = [
+        {
+            campo: qtd_itens, 
+            valido: isNotEmptyNum(qtd_itens),
+            msg: 'qtd_itens inválido.'
+        },
+        {
+            campo: volume, 
+            valido: isNotEmptyNum(volume),
+            msg:'volume inválido.'
+        },
+        {
+            campo: peso, 
+            valido: isNotEmptyNum(peso),
+            msg: 'Peso inválido.'
+        },
+        {
+            campo: estado, 
+            valido: estado.val() != '', 
+            msg: 'Estado inválida.'
+        },
+        {
+            campo: cidade, 
+            valido: cidade.val() != '', 
+            msg: 'Cidade inválida.'
+        },
+        {
+            campo: bairro, 
+            valido: bairro.val() != '', 
+            msg: 'Bairro inválido.'
+        },
+        {
+            campo: nr_casa, 
+            valido: nr_casa.val() != '', 
+            msg: 'Nr. Casa inválido'
+        },
+        {
+            campo: cep, 
+            valido: cep.val().replaceAll(/[^0-9]/gi, '').length == 8, 
+            msg: 'CEP inválido'
+        },
+    ];
+
+
+
+    validacoes.map(field => {
+        if(!field.valido)
+        {
+            msg += field.msg + '<br>'; 
+            field.campo.addClass('is-invalid');
+        }
+    });
+
+    if(msg != '')
+       alert_error('Preencha corretamente os campos inválidos.');
+
+    return {
+        campos_validos: msg == ''
+    }
+}

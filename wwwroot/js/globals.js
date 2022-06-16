@@ -135,3 +135,11 @@ jQuery.fn.spinner = function (options = {}) {
         console.log($(this));
       });
     });
+
+
+    $(document).ready(function(){
+      $('input').on('focus', function(){
+        $(this).removeClass('is-invalid');
+        $('#msg_usuario_senha_invalidos').css('visibility','hidden');
+      });
+    });

@@ -1,5 +1,7 @@
 using System.Data.SqlClient;
 using logiWeb.Models;
+using Microsoft.AspNetCore.Mvc;
+
 
 namespace logiWeb.Repositories
 {
@@ -23,7 +25,10 @@ namespace logiWeb.Repositories
                 if(reader.Read()){
 
                     string senha = (string)reader["senha"];
-                    
+                    int  id_funcionario = (int)reader["id_pessoa"]; 
+
+                    HttpContext.Session.SetInt32(id_funcionario);
+
                     bool loginIsValid = (senha == Senha); 
 
                     return loginIsValid; 

@@ -3,26 +3,177 @@
     Layout = "~/Views/Templates/_Layout.cshtml";
     ViewBag.Title = "Cliente Pessoa Fisica"; 
 }
+@{
+  Layout = "~/Views/Templates/_Menu.cshtml";
+  ViewBag.Title = "Ordens"; 
+
+  Random number = new Random();
+}
+
+@section styles {
+    <link rel="stylesheet" href="~/lib/bootstrap-table/bootstrap-table.min.css">
+    <link rel="stylesheet" href="~/lib/jquery-confirm/jquery-confirm.min.css">
+}
 
 <style>
-    body{
-    background: whitesmoke !important;
-    }
+  
+  [data-invalid]{
+    visibility: hidden;
+  }
 </style>
-<div>
-    <h1>Clientes</h1>
+<div class="container py-4">
+ <label class="fw-bold">Ordem</label>
+ <div class="row py-4">
+    <div class="col-md-3">
+        <label for="filter_cliente">Cliente</label>
+        <div class="input-group input-group-sm">
+            <input type="text" id="filter_cliente" class="form-control form-control-sm">
+        </div>
+    </div>
+    <div class="col-md-3">
+        <label for="">Criada em:</label>
+        <div class="input-group input-group-sm">
+            <input class="form-control" type="date" id="criada_em" style="max-width:120px!important;">
+            <div class="input-group-prepend bg-transaparent border-0 ps-2">
+                <button id="btPesquisar" class="btn btn-sm btn-primary">
+                    <i class="fa-solid fa-magnifying-glass"></i> Pesquisar
+                </button>
+            </div>
+        </div>
+    </div>
+         
+  </div>
+  <div class="row py-5">
+      <div class="d-flex justify-content-end">
+         <button class="btn btn-sm btn-success rounded-pill" id="btNovaOrdem">
+           <i class="fa-solid fa-circle-plus"></i> Criar Ordem 
+         </button>
+      </div>
+      <div class="table-responsive">
+          <table data-pagination="true" class="border-0">
+                <thead>
+                    <th data-field="cliente_nome">
+                        Cliente 
+                    </th>
+                    <th data-field="peso">
+                        Peso
+                    </th>
+                    <th data-field="observacao">
+                        Observação
+                    </th>
+                    <th data-field="qtd_itens">
+                        Qtd Itens
+                    </th>
+                    <th data-field="logradouro">
+                        Logradouro
+                    </th>
+                    <th data-field="nr_casa">
+                        Nº
+                    </th>
+                    <th data-field="bairro">
+                        Bairro
+                    </th>
+                    <th data-field="cidade">
+                        Cidade
+                    </th>
+                    <th data-field='id' data-width='150' data-formatter="buttons">
+                        Ações
+                    </th>
+                </thead>
+          </table>
+      </div>
+  </div>
+</div>
 
-    <table class="table table-hover">
-        <tr>
-            <th>ID</th>
-            <th>NOME</th>
-            <th>EMAIL</th>
-            <th>CPF</th>
-            <th>RG</th>
-            <th>NASCIMENTO</th>
-            <th>DATA CADASTRO</th>
-        </tr>
-       
-</table>
 
-<a href="/Cliente/Cadastrar" class="btn btn-primary">Adicionar</a>
+<template id="template_cad_ordem">
+    <div class="container">
+        <div class="row">
+                <div class="col-md-6">
+                    <label for="filter_cliente">Cliente</label>
+                        <div class="input-group input-group-sm">
+                        <select id="filter_cliente"   class="form-select ">
+                            <option value="">SELECIONE</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-2">
+                    <label for="qtd_itens">Qtd Itens <span class="text-danger">*</span></label>
+                    <div class="input-group input-group-sm">
+                        <input type="text" class="form-control form-control-sm" id="qtd_itens">
+                    </div>
+                </div>
+                <div class="col-md-6 mb-2">
+                    <label for="peso">Peso <span class="text-danger">*</span></label>
+                    <div class="input-group input-group-sm">
+                        <input type="text" class="form-control form-control-sm" id="peso">
+                    </div>
+                </div>
+                <div class="col-md-6 mb-2">
+                    <label for="volume">Volume <span class="text-danger">*</span></label>
+                    <div class="input-group input-group-sm">
+                        <input type="text" class="form-control form-control-sm" id="volume">
+                    </div>
+                </div>
+                <div class="col-md-6 mb-2">
+                    <label for="observacao">Observação <span class="text-danger">*</span></label>
+                    <div class="input-group input-group-sm">
+                        <input type="text" class="form-control form-control-sm" id="observacao">
+                    </div>
+                </div>
+                <div class="col-md-6 mb-2">
+                    <label for="logradouro">Rua <span class="text-danger">*</span></label>
+                    <div class="input-group input-group-sm">
+                        <input type="text" class="form-control form-control-sm" id="logradouro">
+                    </div>
+                </div>
+                <div class="col-md-2 mb-2">
+                    <label for="nr_casa">Nº <span class="text-danger">*</span></label>
+                    <div class="input-group input-group-sm">
+                        <input type="text" class="form-control form-control-sm" id="nr_casa">
+                    </div>
+                </div>
+                <div class="col-md-6 mb-2">
+                    <label for="complemento">Complemento <span class="text-danger">*</span></label>
+                    <div class="input-group input-group-sm">
+                        <input type="text" class="form-control form-control-sm" id="complemento">
+                    </div>
+                </div>
+                <div class="col-md-6 mb-2">
+                    <label for="bairro">Bairro <span class="text-danger">*</span></label>
+                    <div class="input-group input-group-sm">
+                        <input type="text" class="form-control form-control-sm" id="bairro">
+                    </div>
+                </div>
+                <div class="col-md-6 mb-2">
+                    <label for="cep">CEP</label>
+                    <div class="input-group input-group-sm">
+                        <input type="text" class="form-control form-control-sm" id="cep">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label for="filter_cidade">Cidade</label>
+                        <div class="input-group input-group-sm">
+                        <select id="filter_cidade"   class="form-select ">
+                            <option value="">SELECIONE</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label for="filter_estado">Estado</label>
+                        <div class="input-group input-group-sm">
+                        <select id="filter_estado"   class="form-select ">
+                            <option value="">SELECIONE</option>
+                        </select>
+                    </div>
+                </div>
+                
+        </div>
+    </div>
+</template>
+
+@section events {
+     <script src="~/lib/bootstrap-table/bootstrap-table.min.js"></script>
+     <script src="~/lib/jquery-confirm/jquery-confirm.min.js"></script>
+     <script src="~/js/events/entrega.js?=@number.Next(0,19999)"></script>
+}

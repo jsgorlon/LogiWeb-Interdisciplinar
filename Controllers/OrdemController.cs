@@ -1,4 +1,5 @@
 using logiWeb.Models;
+using logiWeb.Helpers; 
 using logiWeb.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
@@ -26,19 +27,11 @@ public class OrdemController : Controller
         return Json(ordens);
     }
 
-    [HttpGet]
-    public ActionResult Cadastrar()
-    {
-        
-        return View();
-    }
 
     [HttpPost]
-    public string Cadastrar(Ordem ordem)
+    public AjaxResponse Cadastrar(Ordem ordem, Endereco endereco)
     {
-        // ordem.IdFuncionario = session(id) funcionario logado
-        //verificar se endereco ja existe, caso nao adicionar o endereco
-        return this.repository.Cadastrar(ordem);
+        return this.repository.Cadastrar(ordem, endereco);
     }
 
     
