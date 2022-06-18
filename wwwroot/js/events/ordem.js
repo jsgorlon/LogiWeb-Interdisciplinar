@@ -2,10 +2,13 @@ let ordens = [];
 
 class Ordem {
      constructor(){ 
+        let peso = parseInt( $("#peso").val()); 
+
+        this.IdFuncionario = _ID_FUNCIONARIO; 
         this.IdCliente = $("#cliente").val(); 
         this.Qtd_itens = $("#qtd_itens").val(); 
         this.Volume = $("#volume").val(); 
-        this.Peso = $("#peso").val(); 
+        this.Peso = peso.toFixed(2); 
         this.Observacao = $("#obs_ordem").val(); 
        
         this.Ativo = true; 
@@ -15,6 +18,7 @@ class Ordem {
 class Endereco {
  
    constructor(){
+
     this.IdEstado = $("#estado").val(); 
     this.IdCidade = $("#cidade").val(); 
     this.Bairro = $("#bairro").val(); 
@@ -107,19 +111,21 @@ let dialogOrdem = $.confirm({
                    // $(".btCadastrar").spinner();
 
                    let ordem = new Ordem(); 
+                   let endereco = new Endereco(); 
                     console.log(ordem);
                    $.ajax({
                        url: '/ordem/cadastrar', 
                        type: 'POST',
                        dataType: 'JSON',
                        data: {
-                        ordem
+                        ordem,
+                        endereco
                        }, 
                        complete: data => {
                         // $(".btCadastrar").spinner({submete: false});
                            console.log(data);
-                          eval(data.responseText);
-                          obterOrdens(); 
+                          //eval(data.responseText);
+                          //obterOrdens(); 
                           
                        }
                    });
@@ -207,7 +213,7 @@ function obterEstado(selectId, ig = 'selecione', id_select = 0){
              let newOption = (label, value = '') =>  `<option ${value == id_select ? 'selected' : ''} value='${value}'>${label.toLocaleUpperCase()}</option>`;
              let html = newOption(ig);
  
-             data.map(cidade => html += newOption(cidade.cidade, cidade.id));
+             data.map(cidade => html += newOption(cidade.cidade, cidade.idCidade));
              $('#cidade').html(`<option value=''>SELECIONE</option>${html}`);
          }
      });

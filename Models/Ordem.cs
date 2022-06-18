@@ -5,7 +5,7 @@ namespace logiWeb.Models
         public int Id { get; set; }
         public int IdCliente { get; set; }
         public int IdFuncionario { get; set; }
-        public short Qtd_itens { get; set; }
+        public int Qtd_itens { get; set; }
         public Funcionario Funcionario {get; set;} = new Funcionario();
         public Cliente Cliente {get; set;} = new Cliente();
         public string Volume { get; set; } = string.Empty;

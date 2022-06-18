@@ -6,7 +6,7 @@ namespace logiWeb.Repositories
     public interface IOrdemRepository
     {
         AjaxResponse Cadastrar(Ordem ordem, Endereco endereco);
-        List<Ordem> MostrarOrdens();
+        AjaxResponse MostrarOrdens();
         Ordem MostrarOrdem(int id);
         void Excluir(int id);
     }

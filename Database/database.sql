@@ -180,3 +180,10 @@ insert into status values ('Pendente', 'Objeto não foi alocado em uma entrega')
 	('Entrega finalizada com observações', 'A entrega foi concluída porém, algumas ordens não puderam ser entregues'),
 	('Entrega em aguardo', 'Por problemas no veículo ou com o motorista a entrega está em aguardo'),
 	('Entrega cancelada', 'A entrega foi cancelada');
+
+
+
+INSERT INTO pessoas(nome, cpf, data_nasc, email)
+VALUES ('teste', '78482758098','2001-01-01','teste@email.com')
+INSERT INTO funcionarios(id_pessoa, id_cargo, login, senha)
+ VALUES (1,1,'test','test');

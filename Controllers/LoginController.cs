@@ -27,7 +27,7 @@ public class LoginController : Controller
     public string Autenticar(string Login, string Senha)
     { 
       
-      if(repository.GetUser(Login, Senha))
+      if(repository.GetUser(Login, Senha, HttpContext))
       {
         HttpContext.Session.SetString("Auth", "True"); 
         return "window.location.href = '/ordem';";

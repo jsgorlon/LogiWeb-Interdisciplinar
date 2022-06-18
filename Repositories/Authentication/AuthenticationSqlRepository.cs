@@ -10,7 +10,7 @@ namespace logiWeb.Repositories
         private SqlCommand cmd = new SqlCommand();
 
       
-        public bool GetUser(string Login, string Senha)
+        public bool GetUser(string Login, string Senha, HttpContext context)
         {
             try
             {
@@ -25,9 +25,10 @@ namespace logiWeb.Repositories
                 if(reader.Read()){
 
                     string senha = (string)reader["senha"];
-                    int  id_funcionario = (int)reader["id_pessoa"]; 
 
-                    HttpContext.Session.SetInt32(id_funcionario);
+                    int id_funcionario = (int)reader["id_pessoa"]; 
+
+                    context.Session.SetString("id_funcionario", id_funcionario.ToString());
 
                     bool loginIsValid = (senha == Senha); 
 
