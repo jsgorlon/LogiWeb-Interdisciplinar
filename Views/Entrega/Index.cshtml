@@ -1,11 +1,11 @@
 @using logiWeb.Models
 @{
+    ViewBag.Title = "Entregas"; 
     Layout = "~/Views/Templates/_Layout.cshtml";
-    ViewBag.Title = "Cliente Pessoa Fisica"; 
 }
 @{
   Layout = "~/Views/Templates/_Menu.cshtml";
-  ViewBag.Title = "Ordens"; 
+
 
   Random number = new Random();
 }
@@ -22,59 +22,42 @@
   }
 </style>
 <div class="container py-4">
- <label class="fw-bold">Ordem</label>
+ <label class="fw-bold">Entregas</label>
  <div class="row py-4">
-    <div class="col-md-3">
-        <label for="filter_cliente">Cliente</label>
-        <div class="input-group input-group-sm">
-            <input type="text" id="filter_cliente" class="form-control form-control-sm">
+     <div class="col-md-3">
+        <label for="filter_cargo">Criado Por</label>
+            <div class="input-group input-group-sm">
+            <select id="id_funcionario"   class="form-select ">
+                <option value="">TODOS</option>
+            </select>
         </div>
     </div>
-    <div class="col-md-3">
-        <label for="">Criada em:</label>
-        <div class="input-group input-group-sm">
-            <input class="form-control" type="date" id="criada_em" style="max-width:120px!important;">
-            <div class="input-group-prepend bg-transaparent border-0 ps-2">
-                <button id="btPesquisar" class="btn btn-sm btn-primary">
-                    <i class="fa-solid fa-magnifying-glass"></i> Pesquisar
-                </button>
-            </div>
+     <div class="col-md-3">
+        <label for="filter_cargo">Entregue Por</label>
+            <div class="input-group input-group-sm">
+            <select id="id_motorista"   class="form-select ">
+                <option value="">TODOS</option>
+            </select>
         </div>
     </div>
-         
   </div>
   <div class="row py-5">
       <div class="d-flex justify-content-end">
-         <button class="btn btn-sm btn-success rounded-pill" id="btNovaOrdem">
-           <i class="fa-solid fa-circle-plus"></i> Criar Ordem 
+         <button class="btn btn-sm btn-success rounded-pill" id="btNovaEntrega">
+           <i class="fa-solid fa-circle-plus"></i> Criar Entrega 
          </button>
       </div>
       <div class="table-responsive">
           <table data-pagination="true" class="border-0">
                 <thead>
                     <th data-field="cliente_nome">
-                        Cliente 
+                        Criada por 
                     </th>
                     <th data-field="peso">
-                        Peso
+                        Motorista
                     </th>
-                    <th data-field="observacao">
-                        Observação
-                    </th>
-                    <th data-field="qtd_itens">
-                        Qtd Itens
-                    </th>
-                    <th data-field="logradouro">
-                        Logradouro
-                    </th>
-                    <th data-field="nr_casa">
-                        Nº
-                    </th>
-                    <th data-field="bairro">
-                        Bairro
-                    </th>
-                    <th data-field="cidade">
-                        Cidade
+                    <th data-field="peso">
+                        Cliente
                     </th>
                     <th data-field='id' data-width='150' data-formatter="buttons">
                         Ações
@@ -86,88 +69,72 @@
 </div>
 
 
-<template id="template_cad_ordem">
+<template id="template_cad_entrega">
     <div class="container">
         <div class="row">
-                <div class="col-md-6">
-                    <label for="filter_cliente">Cliente</label>
-                        <div class="input-group input-group-sm">
-                        <select id="filter_cliente"   class="form-select ">
-                            <option value="">SELECIONE</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="col-md-6 mb-2">
-                    <label for="qtd_itens">Qtd Itens <span class="text-danger">*</span></label>
+             <div class="col-md-12 mb-3">
+                <label for="">Selecione o Motorista</label>
                     <div class="input-group input-group-sm">
-                        <input type="text" class="form-control form-control-sm" id="qtd_itens">
-                    </div>
+                    <select id="filter_cargo"   class="form-select ">
+                        <option value="">SELECIONE</option>
+                    </select>
+                    <div class="input-group-prepend ps-2">
+                        <button class="btn btn-sm btn-success">
+                            <i class="fa-solid fa-magnifying-glass"></i> Gerar Entrega
+                        </button>
+                   </div>
                 </div>
-                <div class="col-md-6 mb-2">
-                    <label for="peso">Peso <span class="text-danger">*</span></label>
+            </div>
+             <div class="col-12 mb-2">
+                <small class="text-muted">
+                   Atribuir pedidos a entrega  
+                </small>
+                <hr class="m-0" style="height:3px;border-radius:15px;background:#333;">
+            </div>
+            <div class="col-md-6 mb-2">
+                <label for="">Pedido <span class="text-danger">*</span></label>
+                <div class="input-group input-group-sm">
+                   <input class="form-control form-control-sm"/>
+                   <div class="input-group-prepend">
+                     <button class="btn btn-sm btn-primary">
+                          <i class="fa-solid fa-magnifying-glass"></i> Pesquisar
+                     </button>
+                   </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-2">
+                <label for="">Pedido <span class="text-danger">*</span></label>
                     <div class="input-group input-group-sm">
-                        <input type="text" class="form-control form-control-sm" id="peso">
-                    </div>
+                    <select id="filter_cargo"   class="form-select ">
+                        <option value="">SELECIONE</option>
+                    </select>
+                    <div class="input-group-prepend">
+                        <button class="btn btn-sm btn-success">
+                            <i class="fa-solid fa-circle-plus"></i> Adicionar 
+                        </button>
+                   </div>
                 </div>
-                <div class="col-md-6 mb-2">
-                    <label for="volume">Volume <span class="text-danger">*</span></label>
-                    <div class="input-group input-group-sm">
-                        <input type="text" class="form-control form-control-sm" id="volume">
-                    </div>
-                </div>
-                <div class="col-md-6 mb-2">
-                    <label for="observacao">Observação <span class="text-danger">*</span></label>
-                    <div class="input-group input-group-sm">
-                        <input type="text" class="form-control form-control-sm" id="observacao">
-                    </div>
-                </div>
-                <div class="col-md-6 mb-2">
-                    <label for="logradouro">Rua <span class="text-danger">*</span></label>
-                    <div class="input-group input-group-sm">
-                        <input type="text" class="form-control form-control-sm" id="logradouro">
-                    </div>
-                </div>
-                <div class="col-md-2 mb-2">
-                    <label for="nr_casa">Nº <span class="text-danger">*</span></label>
-                    <div class="input-group input-group-sm">
-                        <input type="text" class="form-control form-control-sm" id="nr_casa">
-                    </div>
-                </div>
-                <div class="col-md-6 mb-2">
-                    <label for="complemento">Complemento <span class="text-danger">*</span></label>
-                    <div class="input-group input-group-sm">
-                        <input type="text" class="form-control form-control-sm" id="complemento">
-                    </div>
-                </div>
-                <div class="col-md-6 mb-2">
-                    <label for="bairro">Bairro <span class="text-danger">*</span></label>
-                    <div class="input-group input-group-sm">
-                        <input type="text" class="form-control form-control-sm" id="bairro">
-                    </div>
-                </div>
-                <div class="col-md-6 mb-2">
-                    <label for="cep">CEP</label>
-                    <div class="input-group input-group-sm">
-                        <input type="text" class="form-control form-control-sm" id="cep">
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <label for="filter_cidade">Cidade</label>
-                        <div class="input-group input-group-sm">
-                        <select id="filter_cidade"   class="form-select ">
-                            <option value="">SELECIONE</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <label for="filter_estado">Estado</label>
-                        <div class="input-group input-group-sm">
-                        <select id="filter_estado"   class="form-select ">
-                            <option value="">SELECIONE</option>
-                        </select>
-                    </div>
-                </div>
-                
+            </div>
+            <div class="col-12 mb-2">
+                <small class="text-muted">
+                   Destino  
+                </small>
+                <hr class="m-0" style="height:3px;border-radius:15px;background:#333;">
+            </div>
+            <div class="col-12 mb-2">
+                <div class="d-flex">Secretaria Especial de Comunicação Social do Senado Federal</div>
+                <div class="d-flex">Praça dos Três Poderes, Anexo 1, 21° andar</div>
+                <div class="d-flex">70165-920  Brasília, DF</div>
+    
+            </div>
+            <div class="col-md-12">
+                <table>
+                    <thead>
+                        <th data-field="id_ordem"># Ordem</th>
+                        <th data-field="">Ações</th>
+                    </thead>
+                </table>
+            </div>
         </div>
     </div>
 </template>
