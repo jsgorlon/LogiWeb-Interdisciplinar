@@ -243,15 +243,15 @@ function obterFuncionarios(loadingButton = false){
          url: '/funcionario/todos',
          dataType: 'JSON',
          data: {
-            nome: $("#filtro_nome").val(), 
-            id_cargo: $("#filter_cargo").val() ?? null,   
+            nome: $("#filtro_nome").val() || null, 
+            id_cargo: $("#filter_cargo").val() || null,   
             status: status == 'A' ? null : status 
          },
          success: data => {
             funcionarios = []; 
              let users = [];
 
-             data.map(user => {
+             data.item.funcionarios.map(user => {
                 users.push({
                     id: user.id, 
                     nome_cpf: `${user.nome} - <b>${formataCPF(user.cpf)}</b> ${user.ativo ? '' : "<span class='text-white rounded-pill bg-danger fw-bold px-2' style='font-size:13px;'>INATIVO</span>"}`,

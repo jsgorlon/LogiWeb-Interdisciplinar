@@ -12,6 +12,7 @@ namespace logiWeb.Models
         public decimal Peso {get; set;}
         public string Observacao { get; set; } = string.Empty;
         public int IdStatus { get; set; }
+        public bool Ativo { get; set; }
         public int IdEndereco { get; set; }
         public Status Status {get; set;} = new Status();
         public Endereco Endereco {get; set;} = new Endereco();

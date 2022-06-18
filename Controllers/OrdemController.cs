@@ -25,4 +25,14 @@ public class OrdemController : Controller
        return Json(this.repository.Cadastrar(ordem, endereco));
     }
 
+    public JsonResult Todas(int? id_funcionario,string? nome, int? status){
+        var ordens = this.repository.MostrarOrdens(id_funcionario, nome, status); 
+        
+        return Json(ordens);
+    }
+
+    public JsonResult AlterarStatus(int id, int status)
+    {
+       return Json(this.repository.AlterarStatus(id, status));
+    }
 }

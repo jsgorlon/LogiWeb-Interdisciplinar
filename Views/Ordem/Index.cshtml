@@ -24,22 +24,49 @@
  <label class="fw-bold">Ordem</label>
  <div class="row py-4">
     <div class="col-md-3">
+        <label for="filter_cargo">Criado Por</label>
+            <div class="input-group input-group-sm">
+            <select id="id_funcionario"   class="form-select ">
+                <option value="">TODOS</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-md-3">
         <label for="filter_cliente">Cliente</label>
         <div class="input-group input-group-sm">
             <input type="text" id="filter_cliente" class="form-control form-control-sm">
         </div>
     </div>
-    <div class="col-md-3">
-        <label for="">Criada em:</label>
-        <div class="input-group input-group-sm">
-            <input class="form-control" type="date" id="criada_em" style="max-width:120px!important;">
-            <div class="input-group-prepend bg-transaparent border-0 ps-2">
-                <button id="btPesquisar" class="btn btn-sm btn-primary">
-                    <i class="fa-solid fa-magnifying-glass"></i> Pesquisar
-                </button>
-            </div>
-        </div>
-    </div>
+     <div class="col-md-4">
+          <label for="filtro_status" class="fw-bold">Status Ordem</label>
+          <div class="d-flex grid grid-cols-3 gap-2">
+                <div class="form-check">
+                    <input class="form-check-input"  value="1" type="radio" name="status_ordem" id="filter_ativos" checked>
+                    <label class="form-check-label" for="filter_ativos">
+                       Ativos
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" value="0" type="radio" name="status_ordem" id="filter_inativo">
+                    <label class="form-check-label" for="filter_inativo">
+                       Inativos
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" value="A" type="radio" name="status_ordem" id="filter_ambos">
+                    <label class="form-check-label" for="filter_ambos">
+                       Ambos
+                    </label>
+                </div>
+          </div>
+      </div>
+      <div class="col-md-2">
+          <div class="d-flex h-100 flex-column justify-content-end align-items-bottom">
+              <button id="btPesquisar" class="btn btn-sm btn-primary">
+                    <i class="fa-solid fa-magnifying-glass"></i>  Pesquisar
+              </button>
+          </div>
+      </div>
          
   </div>
   <div class="row py-5">
@@ -51,29 +78,21 @@
       <div class="table-responsive">
           <table data-pagination="true" class="border-0">
                 <thead>
-                    <th data-field="cliente_nome">
+
+                    <th data-field="id_num_pedido">
+                       # PEDIDO 
+                    </th>
+                    <th data-field="nome_funcionario">
+                        Funcionário 
+                    </th>
+                    <th data-field="nome_cliente">
                         Cliente 
                     </th>
-                    <th data-field="peso">
-                        Peso
+                    <th data-field="peso_qtd_itens">
+                        Peso & Qtd Itens 
                     </th>
                     <th data-field="observacao">
                         Observação
-                    </th>
-                    <th data-field="qtd_itens">
-                        Qtd Itens
-                    </th>
-                    <th data-field="logradouro">
-                        Logradouro
-                    </th>
-                    <th data-field="nr_casa">
-                        Nº
-                    </th>
-                    <th data-field="bairro">
-                        Bairro
-                    </th>
-                    <th data-field="cidade">
-                        Cidade
                     </th>
                     <th data-field='id' data-width='150' data-formatter="buttons">
                         Ações

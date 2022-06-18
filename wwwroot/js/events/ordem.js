@@ -42,28 +42,51 @@ let dialogOrdem = $.confirm({
     onClose: function(){
         this.id_ordem = null; 
         this.edicao = false; 
+        $("input, select").attr('disabled', false);
     }, 
     onOpenBefore: function(){
         this.showLoading();
 
-        obterCliente('filter_cliente','selecione');
+     /*    obterCliente('filter_cliente','selecione'); */
        
         
         $("#cep").mask("99999-999");
         $("#volume, #qtd_itens").mask("99");
         $("#peso").mask("99");
-    
+       
+        let id_estado = 0;
         if(this.edicao)
         {
+            let ordem = ordens.find(ord => ord.id == this.id_ordem); 
+
             $("#col_pesquisar_cliente").fadeOut();
-            $("#cliente").attr('disabled', true);
+            $("#cliente").html(`<option selected>${ordem.cliente.nome.toLocaleUpperCase()}</option>`).attr('disabled', true);
+
+            $("input, select").attr('disabled', true);
+            
+            id_estado = ordem.endereco.idEstado;
+
+            obterCidade(id_estado, 'SELECIONE', ordem.endereco.idCidade);
+
+     
+            $("#qtd_itens").val(ordem.qtd_itens); 
+            $("#volume").val(ordem.volume); 
+            $("#peso").val(ordem.peso) 
+            $("#obs_ordem").val(ordem.observacao); 
+            $("#bairro").val(ordem.endereco.bairro); 
+            $("#logradouro").val(ordem.endereco.logradouro); 
+            $("#nr_casa").val(ordem.endereco.nr_casa); 
+            $("#cep").val(ordem.endereco.cep); 
+            $("#complemento").val(ordem.endereco.complemento); 
+
+            $("#form_ordem").fadeIn(); 
         }
 
-        obterEstado('estado', 'SELECIONE');
+        obterEstado('estado', 'SELECIONE', id_estado);
 
         this.hideLoading(); 
     },
-    onOpen: () => {
+    onOpen: function(){
         $("#btPesquisarCliente").click(function(){
             obterClientes();
         });
@@ -92,6 +115,9 @@ let dialogOrdem = $.confirm({
             }
 
         });
+
+        if(this.edicao)
+            $("#col_cliente").fadeIn();
     }, 
     cadastrar: function(){
         
@@ -108,7 +134,7 @@ let dialogOrdem = $.confirm({
                    if(!campos_validos)
                      return false;
                 
-                   // $(".btCadastrar").spinner();
+                   $(".btCadastrar").spinner();
 
                    let ordem = new Ordem(); 
                    let endereco = new Endereco(); 
@@ -121,11 +147,15 @@ let dialogOrdem = $.confirm({
                         ordem,
                         endereco
                        }, 
-                       complete: data => {
-                        // $(".btCadastrar").spinner({submete: false});
-                           console.log(data);
-                          //eval(data.responseText);
-                          //obterOrdens(); 
+                       success: data => {
+                         $(".btCadastrar").spinner({submete: false});
+                        ajaxResponse(data);
+
+                      //  obterClientes(); 
+                        if(data.error)
+                            return false; 
+                        else 
+                            this.close(); 
                           
                        }
                    });
@@ -136,14 +166,29 @@ let dialogOrdem = $.confirm({
         }
         
         this.open(); 
+    },
+    visualizar: function(id_ordem, pedido_ativo = true){
+        this.edicao = true; 
+        let ordem = ordens.find(ord => ord.id == id_ordem);
+        pedido_ativo = ordem.ativo; 
+
+        this.id_ordem = id_ordem; 
+        this.title = `<span style="font-size:18px !important;" class="fw-bold">Visualização do pedido: #${id_ordem} ${!pedido_ativo ? "<small class='py-1 px-1 bg-danger rounded-pill text-white'>INATIVO</small>" : ''}</span>`;
+        this.buttons ={
+            fechar: {
+                text: 'Fechar',
+                btnClass: 'btn btn-sm btn-primary', 
+            }
+        }
+        this.open();
     }
-   
 });
 $(document).ready(_=>{
     $('table').bootstrapTable({});
     $("[data-bs-toggle='popover']").popover({content: 'body', trigger: 'hover'});
     $('#btCadastrar').click(_=>dialogOrdem.cadastrar());
 
+    obterFuncionarios(); 
     obterOrdens(); 
 
 
@@ -153,12 +198,27 @@ $(document).ready(_=>{
 function buttons(id, rows) 
 {
 
- const inactive = `<button data-bs-content="Excluir Ordem" id="delete_${id}" onclick="excluir(this);" data-bs-toggle="popover"  data-active="${rows.active}" class="p-0 m-0 btn btn-sm shadow-none" data-idordem="${id}">
-                     <i class="fa-solid fa-circle-minus"></i>
+ const editar = `<button onclick="visualizar_ordem(this)" class="p-0 m-0 btn btn-sm shadow-none" data-idordem="${id}">
+                     <i class="fa-solid fa-eye text-secondary" 
+                        data-bs-toggle="popover" data-bs-placement="top" data-bs-content="Visualizar Ordem"></i>
+                 </button>`;
+ const inactive = `<button onclick="alterar_status(this)" id="alterar_status_${id}" class="p-0 m-0 btn btn-sm shadow-none" data-idordem="${id}">
+                     <i class="fa-solid fa-circle-minus text-secondary"
+                     data-bs-toggle="popover" data-bs-placement="top" data-bs-content="Ao <b>Inativar ordem</b> você precisará criar outra." data-bs-html="true"></i>
                    </button>`;
- return `<div class="d-flex justify-content-end gap-1 buttons-grid">${inactive}</div>`;
+
+  const active = `<button   class="p-0 m-0 btn btn-sm shadow-none" data-idordem="${id}" style="color:blue !important;">
+                      <i class="fa-solid fa-circle-info text-info"
+                         data-bs-toggle="popover" data-bs-placement="top" data-bs-content="Não é possível <b>REATIVAR</b> esta ordem." data-bs-html="true"></i>
+                  </button>`;
+
+
+
+ return `<div class="d-flex justify-content-end gap-1 buttons-grid">${editar} ${rows.ativo ? inactive : active}</div>`;
 }
-function excluir(button){
+
+
+function alterar_status(button){
 
     $(".popover").popover('dispose');
    
@@ -169,22 +229,33 @@ function excluir(button){
    
       let ordem = ordens.find(item=> item.id == id_ordem);
     
-      delete ordem.Id; 
-   
+      delete ordem.id; 
+      ordem.ativo = !ordem.ativo; 
+
        $.ajax({
-       url: '/ordem/excluir', 
+       url: '/ordem/AlterarStatus', 
        type: 'POST',
        dataType: 'JSON',
        data: {
-           id: id_ordem
+           id: id_ordem,
+           status: ordem.ativo ? 1 : 0
        }, 
-       complete: data => {
+       success: data => {
           $("button").attr('disabled', false);
           obterOrdens();
-          alert_success(`Ordem excluída com sucesso!`);
+         
+          ajaxResponse(data);
        }
     });
-   }
+}
+
+function visualizar_ordem(button){
+    $(".popover").popover('dispose');
+   
+    let id_ordem =   button.dataset.idordem; 
+
+    dialogOrdem.visualizar(id_ordem);
+}
 
 function obterEstado(selectId, ig = 'selecione', id_select = 0){
      $.ajax({
@@ -240,54 +311,31 @@ function obterEstado(selectId, ig = 'selecione', id_select = 0){
         $("#btPesquisar").spinner();
     }
 
-    let status = $("[name='flexRadioDefault']:checked").val();
+    let status = $("[name='status_ordem']:checked").val();
     $.ajax({
          type: 'GET',
-         url: '/ordem/ordem',
+         url: '/ordem/Todas',
          dataType: 'JSON',
          data: {
-            nome: "%"+$("#filter_cliente").val()+"%"
+            id_funcionario: $("#id_funcionario").val(), 
+            nome: $("#filter_cliente").val().trim(), 
+            status: status == 'A' ? null : status,
          },
          success: data => {
             ordens = []; 
              let orders = [];
-             data.map(order => {
+             data.item.ordens.map(order => {
                 orders.push({
-                    id: order.id,
-                    peso: order.peso ,
-                    observacao: order.observacao,
-                    qtd_itens: order.qtd_itens, 
-                    cliente_nome: order.cliente.nome,
-                    funcionario_nome: order.funcionario.nome,
-                    logradouro: order.endereco.logradouro,
-                    nr_casa: order.endereco.nr_casa, 
-                    complemento: order.endereco.complemento,
-                    bairro: order.endereco.bairro, 
-                    cep: order.endereco.cep, 
-                    cidade: order.endereco.cidade,
-                    endereco: order.endereco.uf 
+                        id:order.id,
+                        id_num_pedido: `<b class="${order.ativo ? '' : 'text-danger'}">#${order.id}</b>`,
+                        ativo: order.ativo, 
+                        observacao: order.observacao,
+                        peso_qtd_itens: `Peso: ${ order.peso} KG <br>${order.qtd_itens} iten(s)`,
+                        nome_cliente: order.cliente.nome.toLocaleUpperCase(),
+                        nome_funcionario: order.funcionario.nome.toLocaleUpperCase(),
                    });
                 
-                   ordens.push({
-                    id: order.id,
-                    cliente_id: order.cliente.id ,
-                    funcionario_id: order.funcionario.id, 
-                    endereco_id: order.endereco.id ,
-                    peso: order.peso ,
-                    observacao: order.observacao,
-                    qtd_itens: order.qtd_itens, 
-                    cliente_nome: order.cliente.nome,
-                    funcionario_nome: order.funcionario.nome,
-                    logradouro: order.endereco.logradouro,
-                    nr_casa: order.endereco.nr_casa, 
-                    complemento: order.endereco.complemento,
-                    bairro: order.endereco.bairro, 
-                    cep: order.endereco.cep, 
-                    cidade: order.endereco.cidade,
-                    endereco: order.endereco.uf 
-                   });
-                
-
+                   ordens.push(order);
              });
 
              $('table').bootstrapTable('load', orders);
@@ -424,3 +472,28 @@ function validarCampos(){
         campos_validos: msg == ''
     }
 }
+
+
+function obterFuncionarios(){
+    $.ajax({
+         type: 'GET',
+         url: '/funcionario/todos',
+         dataType: 'JSON',
+         data: {
+            nome: null, 
+            id_cargo: null,   
+            status: 1
+         },
+         success: data => {
+             let option = (value = "", text = "TODOS") => `<option value="${value}" ${(_ID_FUNCIONARIO == value) ? "selected" : ""}>${text}</option>`; 
+             let html = option();
+            data.item.funcionarios.map(funcionario => {
+                html += option(funcionario.id, funcionario.nome); 
+            });
+
+            $("#id_funcionario").html(html);
+        }
+     });
+}
+
+

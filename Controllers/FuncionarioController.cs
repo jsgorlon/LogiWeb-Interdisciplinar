@@ -21,33 +21,11 @@ public class FuncionarioController : Controller
     [HttpGet]
     public JsonResult Todos(string? nome, int? id_cargo, int? status)
     {
-        List<Funcionario> funcionarios = this.repository.Mostrar(nome, id_cargo, status);
+        var funcionarios = this.repository.Mostrar(nome, id_cargo, status);
         return Json(funcionarios);
     }
 
-    [HttpGet]
-    public ActionResult MostrarPorCargo(short id_cargo)
-    {
-        ViewBag.Cargos = this.cargoRepository.Mostrar();
-        List<Funcionario> funcionarios = this.repository.MostrarPorCargo(id_cargo);
-        return View();
-    }
-
-    [HttpGet]
-    public ActionResult MostrarPorCpf(string cpf)
-    {
-        ViewBag.Cargos = this.cargoRepository.Mostrar();
-        List<Funcionario> funcionarios = this.repository.MostrarPorCpf(cpf);
-        return View();
-    }
-
-    [HttpGet]
-    public ActionResult MostrarPorNome(string cpf)
-    {
-        ViewBag.Cargos = this.cargoRepository.Mostrar();
-        List<Funcionario> funcionarios = this.repository.MostrarPorCpf(cpf);
-        return View();
-    }
+  
 
     [HttpPost]
     public string Cadastrar(Funcionario funcionario)
