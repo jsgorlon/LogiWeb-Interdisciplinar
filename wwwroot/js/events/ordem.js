@@ -150,6 +150,7 @@ let dialogOrdem = $.confirm({
                        success: data => {
                          $(".btCadastrar").spinner({submete: false});
                         ajaxResponse(data);
+                        obterOrdens();
 
                       //  obterClientes(); 
                         if(data.error)

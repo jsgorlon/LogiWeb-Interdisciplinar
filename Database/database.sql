@@ -179,7 +179,8 @@ insert into status values ('Pendente', 'Objeto não foi alocado em uma entrega')
 	('Entrega finalizada com sucesso', 'A entrega foi concluída e todas ordens foram entregues'),
 	('Entrega finalizada com observações', 'A entrega foi concluída porém, algumas ordens não puderam ser entregues'),
 	('Entrega em aguardo', 'Por problemas no veículo ou com o motorista a entrega está em aguardo'),
-	('Entrega cancelada', 'A entrega foi cancelada');
+	('Entrega cancelada', 'A entrega foi cancelada'),
+  ('Entrega pendente', 'Entrega foi criada mas não foi iniciada');
 
 
 

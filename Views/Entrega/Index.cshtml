@@ -16,6 +16,8 @@
 }
 
 <style>
+
+
   
   [data-invalid]{
     visibility: hidden;
@@ -33,13 +35,20 @@
         </div>
     </div>
      <div class="col-md-3">
-        <label for="filter_cargo">Entregue Por</label>
+        <label for="filter_motorista">Entregue Por</label>
             <div class="input-group input-group-sm">
             <select id="id_motorista"   class="form-select ">
                 <option value="">TODOS</option>
             </select>
         </div>
     </div>
+     <div class="col-md-2">
+          <div class="d-flex h-100 flex-column justify-content-end align-items-bottom">
+              <button id="btPesquisar" class="btn btn-sm btn-primary">
+                    <i class="fa-solid fa-magnifying-glass"></i>  Pesquisar
+              </button>
+          </div>
+      </div>
   </div>
   <div class="row py-5">
       <div class="d-flex justify-content-end">
@@ -50,14 +59,14 @@
       <div class="table-responsive">
           <table data-pagination="true" class="border-0">
                 <thead>
-                    <th data-field="cliente_nome">
+                    <th data-field="nome_funcionario">
                         Criada por 
                     </th>
-                    <th data-field="peso">
+                    <th data-field="nome_motorista">
                         Motorista
                     </th>
-                    <th data-field="peso">
-                        Cliente
+                    <th data-field="status">
+                        Status
                     </th>
                     <th data-field='id' data-width='150' data-formatter="buttons">
                         Ações
@@ -75,7 +84,7 @@
              <div class="col-md-12 mb-3">
                 <label for="">Selecione o Motorista</label>
                     <div class="input-group input-group-sm">
-                    <select id="filter_cargo"   class="form-select ">
+                    <select id="filter_motorista"   class="form-select ">
                         <option value="">SELECIONE</option>
                     </select>
                     <div class="input-group-prepend ps-2">

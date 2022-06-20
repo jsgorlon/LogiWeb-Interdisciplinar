@@ -1,5 +1,6 @@
 using System.Data.SqlClient;
 using logiWeb.Models;
+using logiWeb.Helpers; 
 
 namespace logiWeb.Repositories
 {
@@ -8,6 +9,7 @@ namespace logiWeb.Repositories
         private SqlCommand cmd = new SqlCommand();
         private IOrdemRepository ordemRepository;
         private IStatusRepository statusRepository;
+        private AjaxResponse response = new AjaxResponse(); 
 
         public EntregaSqlRepository(IOrdemRepository ordemRepository,IStatusRepository statusRepository)
         {
@@ -35,12 +37,12 @@ namespace logiWeb.Repositories
                 {
                     idEntrega = (int)reader["ID"];
                 }
-                //status padrao 1
+                //status padrao para entrega 12 - pendente
                 cmd.CommandText = @"INSERT INTO status_entrega (id_entrega, id_status) 
-                                    VALUES (@id_entrega, 1); ";
+                                    VALUES (@id_entrega, 12); ";
                 cmd.Parameters.AddWithValue("@id_entrega", idEntrega);
                 cmd.ExecuteNonQuery();
-
+                 //status padrao para ordem 1 - pendente
                 foreach (var idOrd in idOrdem)
                 {
                     cmd.CommandText = @"INSERT INTO entregas_ordens (ordem_id, entrega_id, status_id) 
@@ -79,7 +81,7 @@ namespace logiWeb.Repositories
             }
         }
 
-        public List<Entrega> MostrarEntregas()
+        public AjaxResponse MostrarEntregas(int? id_funcionario, int? id_motorista)
         {
             try{
                 cmd.Connection = connection;
@@ -97,6 +99,18 @@ namespace logiWeb.Repositories
                                         ON SE.ID_STATUS = S.ID
                                     WHERE E.ATIVO > 0
                 ";
+                if(id_funcionario != null)
+                {
+                    cmd.CommandText += " and e.id_funcionario = @id_funcionario";
+                    cmd.Parameters.AddWithValue("@id_funcionario", id_funcionario);
+                }
+                    
+            
+                if(id_motorista != null)
+                {
+                    cmd.CommandText += " and e.id_motorista = @id_motorista";
+                    cmd.Parameters.AddWithValue("@id_motorista", id_motorista);
+                }
 
                 SqlDataReader reader = cmd.ExecuteReader();
 
@@ -116,7 +130,8 @@ namespace logiWeb.Repositories
                     item.Status.Descricao = (string)reader["DESCRICAO"];
                     lista.Add(item);
                 }
-                return lista;
+                response.Item.Add("entregas", lista); 
+                return response;
             }catch(Exception ex)
             {
                 throw ex;

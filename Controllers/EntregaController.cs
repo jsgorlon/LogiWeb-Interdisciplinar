@@ -18,15 +18,15 @@ public class EntregaController : Controller
 
     public ActionResult Index()
     {
+
         return View();
     }
 
-    [HttpPost]
-    public ActionResult Entregas()
-    {
-        List<Entrega> entregas = this.repository.MostrarEntregas();
 
-        return View();
+    public JsonResult Entregas(int? id_funcionario, int? id_motorista)
+    {
+        var entregas = this.repository.MostrarEntregas(id_funcionario, id_motorista); 
+        return Json(entregas);
     }
 
     [HttpGet]
