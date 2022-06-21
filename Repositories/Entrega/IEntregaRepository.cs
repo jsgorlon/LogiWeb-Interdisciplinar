@@ -4,7 +4,7 @@ namespace logiWeb.Repositories
 {
     public interface IEntregaRepository
     {
-        void Cadastrar(Entrega entrega, int[] id);
+        AjaxResponse Cadastrar(int IdFuncionario, int idMotorista, int[] idOrdem);
         AjaxResponse MostrarEntregas(int? id_funcionario, int? id_motorista);
         List<Ordem> MostrarOrdensEntrega(int id);
         AjaxResponse Excluir(int id);

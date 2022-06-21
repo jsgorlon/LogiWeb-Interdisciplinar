@@ -18,7 +18,7 @@ public class AuthenticationMiddleware {
         try
         {
           
-           List<string> privateRoute = new List<string>{"/ordem","/funcionario","/cliente"};
+           List<string> privateRoute = new List<string>{"/ordem","/funcionario","/cliente", "/entrega"};
 
            if(privateRoute.Contains(context.Request.Path.ToString()) && context.Session.Get("Auth") == null)
                context.Response.Redirect("/");

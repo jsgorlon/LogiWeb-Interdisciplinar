@@ -17,29 +17,23 @@ namespace logiWeb.Repositories
             this.statusRepository = statusRepository;
         }
 
-        public void Cadastrar(Entrega entrega, int[] idOrdem)
+        public AjaxResponse Cadastrar(int IdFuncionario, int idMotorista, int[] idOrdem)
         {
             try
             {
                 cmd.Connection = connection;
                 cmd.CommandText = @"INSERT INTO ENTREGAS (id_funcionario, id_motorista) 
-                                    VALUES (@id_funcionario, @id_motorista); ";
-
-                cmd.Parameters.AddWithValue("@id_funcionario", entrega.IdFuncionario);
-                cmd.Parameters.AddWithValue("@id_motorista", entrega.IdMotorista);
-                cmd.ExecuteNonQuery();
-
-                cmd.CommandText = @"select SCOPE_IDENTITY()";
-                SqlDataReader reader = cmd.ExecuteReader();
-                int idEntrega = 0;
-
-                if (reader.Read())
-                {
-                    idEntrega = (int)reader["ID"];
-                }
+                                    VALUES (@id_funcionario, @id_motorista);
+                                    SELECT SCOPE_IDENTITY();  ";
+                cmd.Parameters.Clear();
+                cmd.Parameters.AddWithValue("@id_funcionario", IdFuncionario);
+                cmd.Parameters.AddWithValue("@id_motorista", idMotorista);
+                decimal idEntrega = (decimal)cmd.ExecuteScalar();
+                
                 //status padrao para entrega 12 - pendente
                 cmd.CommandText = @"INSERT INTO status_entrega (id_entrega, id_status) 
                                     VALUES (@id_entrega, 12); ";
+                cmd.Parameters.Clear();
                 cmd.Parameters.AddWithValue("@id_entrega", idEntrega);
                 cmd.ExecuteNonQuery();
                  //status padrao para ordem 1 - pendente
@@ -47,10 +41,14 @@ namespace logiWeb.Repositories
                 {
                     cmd.CommandText = @"INSERT INTO entregas_ordens (ordem_id, entrega_id, status_id) 
                                         VALUES (@id_ordem,  @id_entrega , 1); ";
+                    cmd.Parameters.Clear();
                     cmd.Parameters.AddWithValue("@id_ordem", idOrd);
                     cmd.Parameters.AddWithValue("@id_entrega", idEntrega);
+
                     cmd.ExecuteNonQuery();
                 }
+                response.Message.Add("Entrega adicionada com sucesso!");
+                return response;
             }
               catch(Exception ex)
             {

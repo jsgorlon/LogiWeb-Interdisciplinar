@@ -16,9 +16,10 @@
 }
 
 <style>
+<script>
+    const _ID_FUNCIONARIO = @ViewBag.IdFuncionario; 
+</script>
 
-
-  
   [data-invalid]{
     visibility: hidden;
   }
@@ -86,15 +87,10 @@
         <div class="row">
              <div class="col-md-12 mb-3">
                 <label for="">Selecione o Motorista</label>
-                    <div class="input-group input-group-sm">
-                    <select id="filter_motorista"   class="form-select ">
+                <div class="input-group input-group-sm">
+                    <select id="id_motoristas"   class="form-select ">
                         <option value="">SELECIONE</option>
                     </select>
-                    <div class="input-group-prepend ps-2">
-                        <button class="btn btn-sm btn-success">
-                            <i class="fa-solid fa-magnifying-glass"></i> Gerar Entrega
-                        </button>
-                   </div>
                 </div>
             </div>
              <div class="col-12 mb-2">
@@ -103,50 +99,35 @@
                 </small>
                 <hr class="m-0" style="height:3px;border-radius:15px;background:#333;">
             </div>
-            <div class="col-md-6 mb-2">
+            <div class="col-md-12 mb-2">
                 <label for="">Pedido <span class="text-danger">*</span></label>
                 <div class="input-group input-group-sm">
-                   <input class="form-control form-control-sm"/>
+                   <input id="id_ordem" class="form-control form-control-sm"/>
                    <div class="input-group-prepend">
-                     <button class="btn btn-sm btn-primary">
-                          <i class="fa-solid fa-magnifying-glass"></i> Pesquisar
+                     <button id="btPesquisarOrdemId" class="btn btn-sm btn-primary">
+                          <i class="fa-solid fa-magnifying-glass"></i> Adicionar
                      </button>
                    </div>
                 </div>
             </div>
-            <div class="col-md-6 mb-2">
-                <label for="">Pedido <span class="text-danger">*</span></label>
-                    <div class="input-group input-group-sm">
-                    <select id="filter_cargo"   class="form-select ">
-                        <option value="">SELECIONE</option>
-                    </select>
-                    <div class="input-group-prepend">
-                        <button class="btn btn-sm btn-success">
-                            <i class="fa-solid fa-circle-plus"></i> Adicionar 
-                        </button>
-                   </div>
-                </div>
-            </div>
-            <div class="col-12 mb-2">
-                <small class="text-muted">
-                   Destino  
-                </small>
-                <hr class="m-0" style="height:3px;border-radius:15px;background:#333;">
-            </div>
-            <div class="col-12 mb-2">
-                <div class="d-flex">Secretaria Especial de Comunicação Social do Senado Federal</div>
-                <div class="d-flex">Praça dos Três Poderes, Anexo 1, 21° andar</div>
-                <div class="d-flex">70165-920  Brasília, DF</div>
-    
             </div>
             <div class="col-md-12">
-                <table>
+                <table id="tblEntrega">
                     <thead>
                         <th data-field="id_ordem"># Ordem</th>
-                        <th data-field="">Ações</th>
+                        <th data-field="endereco">Endereço</th>
                     </thead>
                 </table>
             </div>
+            <div class="col-md-12">
+                <div class="input-group-prepend ps-2">
+                        <button id="btGerarEntrega" class="btn btn-sm btn-success">
+                            <i class="fa-solid fa-magnifying-glass"></i> Gerar Entrega
+                        </button>
+                </div>
+            </div>
+           
+            
         </div>
     </div>
 </template>

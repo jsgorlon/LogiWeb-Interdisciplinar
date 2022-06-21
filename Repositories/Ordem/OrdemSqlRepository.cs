@@ -172,6 +172,65 @@ namespace logiWeb.Repositories
             
         }
 
+        public AjaxResponse MostrarOrdem(int id_ordem)
+        {
+            try{
+                
+                cmd.Connection = connection;
+                cmd.CommandText = @"SELECT O.ID, O.ID_CLIENTE, O.ID_FUNCIONARIO, 
+                                    O.VOLUME, O.PESO, O.OBSERVACAO, O.QTD_ITENS, P.NOME NOME_CLIENTE, F.NOME NOME_FUNCIONARIO,
+		                            O.id, EN.logradouro, EN.nr_casa, EN.complemento, EN.bairro, EN.cep, 
+		                            EN.ID_CIDADE, CID.nome NOME_CIDADE, 
+                                    CID.ID_ESTADO, EST.sigla_uf
+                                    FROM ORDENS O
+                                    INNER JOIN PESSOAS P
+                                        ON O.ID_CLIENTE = P.ID 
+                                    INNER JOIN PESSOAS F
+                                        ON O.ID_FUNCIONARIO = F.ID 
+									INNER JOIN enderecos EN
+										ON O.id = EN.id_ordem
+									INNER JOIN cidades CID
+										ON EN.id_cidade = CID.id
+									INNER JOIN estados EST
+										ON CID.id_estado = EST.id
+                                     
+                                    where  O.ATIVO > 0 and o.id = @ID";
+                cmd.Parameters.AddWithValue("@ID", id_ordem);
+                cmd.ExecuteNonQuery();
+
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                Ordem ordem = new Ordem();
+
+                while (reader.Read())
+                {
+                        
+                    ordem.Id = (int)reader["ID"];
+                    ordem.Endereco.Logradouro = (string)reader["logradouro"];
+                    ordem.Endereco.Nr_casa = (string)reader["nr_casa"];
+                    ordem.Endereco.Complemento = (string)reader["complemento"];
+                    ordem.Endereco.Bairro = (string)reader["bairro"];
+                    ordem.Endereco.Cep = (string)reader["cep"];
+                    ordem.Endereco.Cidade = (string)reader["nome_cidade"];
+                    ordem.Endereco.Uf = (string)reader["sigla_uf"];
+                }
+                if (ordem.Id == 0)
+                {
+                    response.Message.Add("Ordem não encontrada!");
+                }
+                response.Item.Add("ordens", ordem); 
+                return response;
+            }catch(Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                Dispose();
+            }
+            
+        }
+
         
     }
 }

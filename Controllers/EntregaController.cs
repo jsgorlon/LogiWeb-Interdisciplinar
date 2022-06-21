@@ -18,7 +18,7 @@ public class EntregaController : Controller
 
     public ActionResult Index()
     {
-
+        ViewBag.IdFuncionario =  HttpContext.Session.GetString("id_funcionario"); 
         return View();
     }
 
@@ -37,10 +37,10 @@ public class EntregaController : Controller
     }
 
     [HttpPost]
-    public ActionResult Cadastrar(Entrega entrega, int[] idOrdem)
+    public JsonResult Cadastrar(int IdFuncionario, int idMotorista, int[] idOrdem)
     {
-        this.repository.Cadastrar(entrega, idOrdem);
-        return RedirectToAction("Mostrar");
+        var entrega = this.repository.Cadastrar(IdFuncionario, idMotorista, idOrdem);
+        return Json(entrega);
     }
 
     

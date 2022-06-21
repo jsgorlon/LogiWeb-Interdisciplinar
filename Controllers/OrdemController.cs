@@ -31,6 +31,12 @@ public class OrdemController : Controller
         return Json(ordens);
     }
 
+    public JsonResult Ordem(int id){
+        var ordens = this.repository.MostrarOrdem(id); 
+        
+        return Json(ordens);
+    }
+
     public JsonResult AlterarStatus(int id, int status)
     {
        return Json(this.repository.AlterarStatus(id, status));

@@ -1,12 +1,12 @@
-
+let ordId =[];
 let entregas = []; 
 let ordens = [];
-let id_entrega
+let id_entrega;
 class Ordem {
      constructor(){ 
         let peso = parseInt( $("#peso").val()); 
 
-       // this.IdFuncionario = $("#id_funcionario2").val(); 
+        this.IdFuncionario = _ID_FUNCIONARIO;
         this.IdCliente = $("#cliente").val(); 
         this.Qtd_itens = $("#qtd_itens").val(); 
         this.Volume = $("#volume").val(); 
@@ -49,7 +49,13 @@ $(document).ready(_=>{
         draggable: false, 
         closeIcon: true, 
         onOpen: function(){
-
+            obterFuncionarios();
+            $("#btPesquisarOrdemId").click(function(){
+                ordemId($("#id_ordem").val());
+            });
+            $("#btGerarEntrega").click(function(){
+                gerarEntrega();
+            });
         }, 
         onOpenBefore: function(){
             $("table").bootstrapTable();
@@ -252,6 +258,7 @@ function obterFuncionarios(){
 
             $("#id_funcionario").html(html);
             $("#id_motorista").html(html);
+            $("#id_motoristas").html(html);
         }
 
         
@@ -321,3 +328,60 @@ function alterarStatus(id_ordem, id_status){
     this.close();
 }
 
+function ordemId(id){
+
+    $.ajax({
+         type: 'GET',
+         url: '/ordem/Ordem',
+         dataType: 'JSON',
+         data: {
+            id: id
+         },
+         success: data => {
+            console.log(data);
+            if(data.item.ordens.id != 0){
+                ord ={
+                        id_ordem:data.item.ordens.id,
+                        endereco: data.item.ordens.endereco.logradouro +" "+ data.item.ordens.endereco.nr_casa +" "+ data.item.ordens.endereco.bairro +" "+ data.item.ordens.endereco.cidade +" "+ data.item.ordens.endereco.uf
+                    };
+                ordId.push(ord);            
+                 $('#tblEntrega').bootstrapTable('load', ordId);
+    
+                 $("[data-bs-toggle='popover']").popover({content: 'body', trigger: 'hover'});
+            }else{
+                
+            }
+            
+         }
+     });
+}
+
+function gerarEntrega(){
+    let idMoto = $("#id_motoristas").val();
+    //let ordem = new Ordem();
+   // let idFunc = ordem.IdFuncionario;
+   let idFunc = 1;
+    let idOrd = [];
+    ordId.forEach(item => {
+        idOrd.push(item.id_ordem);
+    });
+    console.log(idMoto);
+    $.ajax({
+        url: '/entrega/Cadastrar', 
+        type: 'POST',
+        dataType: 'JSON',
+        data: {
+         IdFuncionario: idFunc,
+         idMotorista: idMoto,
+         idOrdem: idOrd
+        }, 
+        success: data => {
+          $(".btCadastrar").spinner({submete: false});
+         ajaxResponse(data);
+         obterEntregas();
+       
+           
+        }
+    });
+    this.close();
+}
