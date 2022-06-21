@@ -220,7 +220,8 @@ namespace logiWeb.Repositories
                     ordem.IdStatus = (short)Convert.ToInt16(reader["status_id"]);
                 }
                 if (ordem.Id == 0)
-                {
+                { 
+                    response.Error = true; 
                     response.Message.Add("Ordem não encontrada!");
                 }
                 response.Item.Add("ordens", ordem); 

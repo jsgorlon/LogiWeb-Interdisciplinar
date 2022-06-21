@@ -41,7 +41,7 @@ $(document).ready(_=>{
     obterFuncionarios(); 
     $("#btPesquisar").click(_=>obterEntregas(true));
 
-    dialogEntrega = $.dialog({
+    dialogEntrega = $.confirm({
         title: `<span style="font-size:18px !important;" class="fw-bold">Nova entrega</span>`,
         content: $("#template_cad_entrega").html(), 
         type: 'green', 
@@ -49,22 +49,36 @@ $(document).ready(_=>{
         draggable: false, 
         closeIcon: true, 
         lazyOpen: true, 
+        buttons: {
+            cadastrar:  {
+                btnText: `<i class="fa-solid fa-circle-plus"></i> Cadastrar Entrega`,
+                btnClass: 'btn btn-sm btn-success btCadEntrega', 
+                action: function(){
+                    gerarEntrega(this);
+                    return false; 
+                }
+            }
+        },
         onOpen: function(){
             obterFuncionarios();
             obterMotorista();
             $("#btPesquisarOrdemId").click(function(){
-                ordemId($("#id_ordem").val());
+                let ordem = ordId.find(a => a.id_ordem == $("#id_ordem").val());
+
+                if(!ordem)
+                    ordemId($("#id_ordem").val());
+                else 
+                  alert_error('ATENÇÃO', "Esta ordem já foi adicionada a está entrega."); 
             });
-            $("#btGerarEntrega").click(function(){
-                gerarEntrega();
-            });
+            
+            $("#id_ordem").mask("99999999");
         }, 
         onOpenBefore: function(){
             $("table").bootstrapTable();
             
         },
         criar: function() {
-            this.buttons = {}; 
+       
             this.open(); 
         }
     });
@@ -255,11 +269,19 @@ function obterFuncionarios(){
          success: data => {
              let option = (value = "", text = "TODOS") => `<option value="${value}"}>${text}</option>`; 
              let html = option();
+             let htmlMoto = option();
+
             data.item.funcionarios.map(funcionario => {
-                html += option(funcionario.id, funcionario.nome); 
+
+
+                if(funcionario.cargo.id != 3)
+                    html += option(funcionario.id, funcionario.nome); 
+                else 
+                    htmlMoto += option(funcionario.id, funcionario.nome); 
             });
 
             $("#id_funcionario").html(html);
+            $("#id_motorista").html(htmlMoto);
 
         }
 
@@ -278,7 +300,7 @@ function obterMotorista(){
          },
          success: data => {
              let option = (value = "", text = "TODOS") => `<option value="${value}"}>${text}</option>`; 
-             let html = option();
+             let html = option("","SELECIONE");
             data.item.funcionarios.map(funcionario => {
                 html += option(funcionario.id, funcionario.nome); 
             });
@@ -364,7 +386,7 @@ function ordemId(id){
             id: id
          },
          success: data => {
-            console.log(data);
+            ajaxResponse(data);
             if(data.item.ordens.id != 0){
                 ord ={
                         id_ordem:data.item.ordens.id,
@@ -386,12 +408,35 @@ function ordemId(id){
      });
 }
 
-function gerarEntrega(){
+function gerarEntrega(dialog){
+
     let idMoto = $("#id_motoristas").val();
+    let messageError = ""; 
+
+    if(!idMoto){
+        $("#id_motoristas").addClass('is-invalid');
+        messageError += "Selecione o motorista responsável pela entrega!<br>"; 
+       
+    }
+
     let idOrd = [];
     ordId.forEach(item => {
         idOrd.push(item.id_ordem);
     });
+
+    if(idOrd.length == 0){
+        messageError += "Atribua ao menos 1 ordem para esta entrega!"; 
+    }
+
+    if(messageError != "")
+    {
+        console.log(messageError);
+        alert_error('ATENÇÃO',messageError);
+        return 0;
+    }
+
+    $(".btCadEntrega").spinner();
+
     $.ajax({
         url: '/entrega/Cadastrar', 
         type: 'POST',
@@ -402,12 +447,11 @@ function gerarEntrega(){
          idOrdem: idOrd
         }, 
         success: data => {
-          $("#btGerarEntrega").spinner({submete: false});
-         ajaxResponse(data);
-         obterEntregas();
+          $(".btCadEntrega").spinner({submete: false});
+          ajaxResponse(data);
+          obterEntregas();
        
-           
+          dialog.close(); 
         }
     });
-    this.close();
 }
