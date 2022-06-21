@@ -366,12 +366,16 @@ function ordemId(id){
             if(data.item.ordens.id != 0){
                 ord ={
                         id_ordem:data.item.ordens.id,
-                        endereco: data.item.ordens.endereco.logradouro +" "+ data.item.ordens.endereco.nr_casa +" "+ data.item.ordens.endereco.bairro +" "+ data.item.ordens.endereco.cidade +" "+ data.item.ordens.endereco.uf
+                        endereco: data.item.ordens.endereco.logradouro +" "+ data.item.ordens.endereco.nr_casa +" "+ data.item.ordens.endereco.bairro +" "+ data.item.ordens.endereco.cidade +" "+ data.item.ordens.endereco.uf,
+                        status: data.item.ordens.idStatus
                     };
-                ordId.push(ord);            
-                 $('#tblEntrega').bootstrapTable('load', ordId);
-    
-                 $("[data-bs-toggle='popover']").popover({content: 'body', trigger: 'hover'});
+                    console.log(ord)
+                if (ord.status != 4) {
+                    ordId.push(ord);            
+                     $('#tblEntrega').bootstrapTable('load', ordId);
+        
+                     $("[data-bs-toggle='popover']").popover({content: 'body', trigger: 'hover'});                    
+                }
             }else{
                 
             }

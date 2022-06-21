@@ -177,7 +177,7 @@ namespace logiWeb.Repositories
             try{
                 
                 cmd.Connection = connection;
-                cmd.CommandText = @"SELECT O.ID, O.ID_CLIENTE, O.ID_FUNCIONARIO, 
+                cmd.CommandText = @"SELECT O.ID, O.ID_CLIENTE, O.ID_FUNCIONARIO, coalesce(eo.status_id,0) status_id,  
                                     O.VOLUME, O.PESO, O.OBSERVACAO, O.QTD_ITENS, P.NOME NOME_CLIENTE, F.NOME NOME_FUNCIONARIO,
 		                            O.id, EN.logradouro, EN.nr_casa, EN.complemento, EN.bairro, EN.cep, 
 		                            EN.ID_CIDADE, CID.nome NOME_CIDADE, 
@@ -193,7 +193,8 @@ namespace logiWeb.Repositories
 										ON EN.id_cidade = CID.id
 									INNER JOIN estados EST
 										ON CID.id_estado = EST.id
-                                     
+                                    left join entregas_ordens eo
+									  on eo.ordem_id = o.id
                                     where  O.ATIVO > 0 and o.id = @ID";
                 cmd.Parameters.AddWithValue("@ID", id_ordem);
                 cmd.ExecuteNonQuery();
@@ -213,6 +214,7 @@ namespace logiWeb.Repositories
                     ordem.Endereco.Cep = (string)reader["cep"];
                     ordem.Endereco.Cidade = (string)reader["nome_cidade"];
                     ordem.Endereco.Uf = (string)reader["sigla_uf"];
+                    ordem.IdStatus = (short)Convert.ToInt16(reader["status_id"]);
                 }
                 if (ordem.Id == 0)
                 {
