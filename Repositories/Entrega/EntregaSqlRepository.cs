@@ -62,14 +62,16 @@ namespace logiWeb.Repositories
             }
         }
 
-        public void Excluir(int id)
+        public AjaxResponse Excluir(int id)
         {
             try
             {
                 cmd.Connection = connection;
-                cmd.CommandText = @"UPDATE ENTREGAS SET ATIVO = 0 WHERE ID_ENTREGA = @ID";
+                cmd.CommandText = @"UPDATE ENTREGAS SET ATIVO = 0 WHERE ID = @ID";
                 cmd.Parameters.AddWithValue("@ID", id);
                 cmd.ExecuteNonQuery();
+                response.Message.Add("Entrega excluída com sucesso!");
+                return response;
             }
               catch(Exception ex)
             {

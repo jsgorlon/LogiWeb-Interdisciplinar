@@ -44,10 +44,10 @@ public class EntregaController : Controller
     }
 
     
-    public ActionResult Excluir(int id)
+    public JsonResult Excluir(int id)
     {
-        this.repository.Excluir(id);
-        return RedirectToAction("Mostrar");
+        return Json(this.repository.Excluir(id));
+    
     }
 
     public JsonResult AtualizarOrdens(int id_ordem, int id_status, int id_entrega)

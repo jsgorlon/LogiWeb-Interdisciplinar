@@ -104,14 +104,14 @@ function buttons(id, rows)
                      <i class="fa-solid fa-eye text-secondary" 
                         data-bs-toggle="popover" data-bs-placement="top" data-bs-content="Visualizar detalhes entrega"></i>
                  </button>`;
- const inactive = `<button data-bs-content="Excluir Entrega" id="delete_${id}" onclick="excluir(this);" data-bs-toggle="popover"  data-active="${rows}" class="p-0 m-0 btn btn-sm shadow-none" data-identrega="${id}">
+ const excluir = `<button data-bs-content="Excluir Entrega" id="delete_${id}" onclick="excluir(this);" data-bs-toggle="popover"  data-active="${rows}" class="p-0 m-0 btn btn-sm shadow-none" data-identrega="${id}">
                  <i class="fa-solid fa-circle-minus"></i>
                </button>`;
 
 
 
 
- return `<div class="d-flex justify-content-end gap-1 buttons-grid">${editar}</div>`;
+ return `<div class="d-flex justify-content-end gap-1 buttons-grid">${editar} ${excluir}</div>`;
 }
 
 function visualizar_entrega(button){
@@ -127,26 +127,27 @@ function excluir(button){
 
     $(".popover").popover('dispose');
    
-     let id_entrega =   button.dataset.identrega; 
+     let id_entreg =   button.dataset.identrega; 
    
       $("button").attr('disabled', true);
       $("#"+button.id).spinner();
-   
-      let entrega = entregas.find(item=> item.id == id_entrega);
+      let entrega = entregas[0].find(item=> item.id == id_entreg);
       delete entrega.Id; 
-   
-       $.ajax({
-       url: '/entrega/excluir', 
-       type: 'POST',
-       dataType: 'JSON',
-       data: {
-           id: id_ordem
-       }, 
-       complete: data => {
-          $("button").attr('disabled', false);
-          obterEntregas();
-          alert_success(`Entrega excluída com sucesso!`);
-       }
+     console.log(id_entreg)
+      $.ajax({
+        url: '/entrega/excluir', 
+        type: 'POST',
+        dataType: 'JSON',
+        data: {
+         id: id_entreg
+        }, 
+        success: data => {
+        
+         ajaxResponse(data);
+         obterEntregas();
+
+           
+        }
     });
    }
 
@@ -313,9 +314,10 @@ function alterarStatus(id_ordem, id_status){
           $(".btCadastrar").spinner({submete: false});
          ajaxResponse(data);
          obterEntregas();
-         this.close();
+       
            
         }
     });
+    this.close();
 }
 
