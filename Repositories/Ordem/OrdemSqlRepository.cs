@@ -199,8 +199,7 @@ namespace logiWeb.Repositories
                                     left join entregas_ordens eo
 									  on eo.ordem_id = o.id
                                     where  O.ATIVO > 0 and o.id = @ID";
-                cmd.Parameters.AddWithValue("@ID", id_ordem);
-                cmd.ExecuteNonQuery();
+                cmd.Parameters.AddWithValue("@ID", id_ordem);              
 
                 SqlDataReader reader = cmd.ExecuteReader();
 

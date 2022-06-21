@@ -41,7 +41,7 @@ namespace logiWeb.Repositories
                     cmd.Parameters.AddWithValue("@email",     cliente.Email    ?? DBNull.Value.ToString());
                     cmd.Parameters.AddWithValue("@telefone",  cliente.Telefone ?? DBNull.Value.ToString());
                 
-                    id_pessoa = (int)cmd.ExecuteScalar();
+                    id_pessoa = Convert.ToInt32((decimal)cmd.ExecuteScalar());
                 }
                 else
                 {

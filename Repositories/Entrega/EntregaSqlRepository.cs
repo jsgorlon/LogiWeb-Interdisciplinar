@@ -155,7 +155,6 @@ namespace logiWeb.Repositories
                 cmd.CommandText = @"SELECT ordem_id, status_id from entregas_ordens where entrega_id = @id_entreg";
 
                 cmd.Parameters.AddWithValue("@ID_ENTREG", id);
-                cmd.ExecuteNonQuery();
 
                 SqlDataReader reader = cmd.ExecuteReader();
                 List<Ordem> lista = new List<Ordem>();
@@ -168,7 +167,7 @@ namespace logiWeb.Repositories
                     ordem.IdStatus= (short)reader["status_id"];
                     lista.Add(ordem);           
                 }
-                
+                reader.Close();
                 return lista;
             }   
             catch(Exception ex)
@@ -177,7 +176,8 @@ namespace logiWeb.Repositories
             }
             finally
             {
-                Dispose();
+              //  Dispose();
+               connection.Close();
             }
         }
         public AjaxResponse MostrarDetalheEntrega(int id)
@@ -209,7 +209,6 @@ namespace logiWeb.Repositories
                                         where eo.entrega_id =@ID_ENTREGA ";
 
                 cmd.Parameters.AddWithValue("@ID_ENTREGA", id);
-                cmd.ExecuteNonQuery();
 
                 SqlDataReader reader = cmd.ExecuteReader();
 
@@ -263,6 +262,7 @@ namespace logiWeb.Repositories
                 cmd.Parameters.AddWithValue("@ID_ENTREGA", id_entrega);
                 cmd.ExecuteNonQuery();
                 response.Message.Add("Status alterado com sucesso!");
+               
                 return response;
             }
               catch(Exception ex)
@@ -271,7 +271,8 @@ namespace logiWeb.Repositories
             }
             finally
             {
-               // Dispose();
+               
+                //Dispose();
             }
         }
          public void StatusEntrega(int id_entrega, int id_status)
@@ -287,7 +288,7 @@ namespace logiWeb.Repositories
                 cmd.Parameters.AddWithValue("@ID_STAT", id_status);
                 cmd.Parameters.AddWithValue("@ID_ENTRE",id_entrega);
                 cmd.ExecuteNonQuery();
-                Dispose();
+             //   Dispose();
             }
               catch(Exception ex)
             {
@@ -296,6 +297,8 @@ namespace logiWeb.Repositories
             finally
             {
                 Dispose();
+               // connection.Close();
+               SqlConnection.ClearPool(connection);
             }
         }
     }
