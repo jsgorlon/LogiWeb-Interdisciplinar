@@ -6,10 +6,10 @@ namespace logiWeb.Repositories
     {
         void Cadastrar(Entrega entrega, int[] id);
         AjaxResponse MostrarEntregas(int? id_funcionario, int? id_motorista);
-        Entrega MostrarEntrega(int id);
+        List<Ordem> MostrarOrdensEntrega(int id);
         void Excluir(int id);
-        void StatusOrdem(Ordem ordem);
-        void StatusEntrega(Entrega entrega);
-        Entrega MostrarDetalheEntrega(int id);
+        AjaxResponse StatusOrdem(int id_ordem, int id_status, int id_entrega);
+        void StatusEntrega(int id_entrega, int id_status);
+        AjaxResponse MostrarDetalheEntrega(int id);
     }
 }

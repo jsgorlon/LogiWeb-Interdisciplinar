@@ -143,46 +143,29 @@ namespace logiWeb.Repositories
             
         }
 
-        public Entrega MostrarEntrega(int id)
+        public List<Ordem> MostrarOrdensEntrega(int id)
         {
             try
             {
                 cmd.Connection = connection;
-                cmd.CommandText = @"SELECT E.ID, E.ID_ORDEM, E.ID_FUNCIONARIO, E.ID_MOTORISTA, 
-                                    F.NOME NOME_FUNCIONARIO, M.NOME NOME_MOTORISTA,
-                                    SE.ID_STATUS, SE.DATA_CAD, S.NOME STATUS, S.DESCRICAO
-                                    FROM ENTREGAS E
-                                    INNER JOIN PESSOAS F
-                                        ON E.ID_FUNCIONARIO = F.ID 
-                                    INNER JOIN PESSOAS M
-                                        ON E.ID_MOTORISTA = M.ID 
-                                    INNER JOIN status_entrega SE
-                                        ON E.ID = SE.ID_ENTREGA
-                                    INNER JOIN STATUS S
-                                        ON SE.ID_STATUS = S.ID                          
-                                    WHERE E.ID = @ID_ENTREGA AND E.ATIVO > 0";
+                cmd.CommandText = @"SELECT ordem_id, status_id from entregas_ordens where entrega_id = @id_entreg";
 
-                cmd.Parameters.AddWithValue("@ID_ENTREGA", id);
+                cmd.Parameters.AddWithValue("@ID_ENTREG", id);
                 cmd.ExecuteNonQuery();
 
                 SqlDataReader reader = cmd.ExecuteReader();
-
-                Entrega entrega = new Entrega();
+                List<Ordem> lista = new List<Ordem>();
+                
 
                 while (reader.Read())
-                {                        
-                    entrega.Id = (int)reader["ID"];
-                    entrega.IdOrdem = (int)reader["ID_ORDEM"];
-                    entrega.IdFuncionario = (int)reader["ID_FUNCIONARIO"];
-                    entrega.IdMotorista = (int)reader["ID_MOTORISTA"];
-                    entrega.Funcionario.Nome = (string)reader["NOME_FUNCIONARIO"];
-                    entrega.Motorista.Nome = (string)reader["NOME_MOTORISTA"];
-                    entrega.Status.Id = (short)reader["ID_STATUS"];
-                    entrega.DataCadastro = (DateTime)reader["DATA_CAD"];
-                    entrega.Status.Nome = (string)reader["STATUS"];
-                    entrega.Status.Descricao = (string)reader["DESCRICAO"];               
+                {       
+                    Ordem ordem = new Ordem();                 
+                    ordem.Id = (int)reader["ordem_id"];
+                    ordem.IdStatus= (short)reader["status_id"];
+                    lista.Add(ordem);           
                 }
-                return entrega;
+                
+                return lista;
             }   
             catch(Exception ex)
             {
@@ -193,78 +176,65 @@ namespace logiWeb.Repositories
                 Dispose();
             }
         }
-        public Entrega MostrarDetalheEntrega(int id)
+        public AjaxResponse MostrarDetalheEntrega(int id)
         {
             try
             {
                 cmd.Connection = connection;
-                cmd.CommandText = @"SELECT ent.id, ent.entrega_id, ent.ordem_id, ent.status_id,
-                                    e.id_funcionario, e.id_motorista,
-                                    p.nome nome_motorista,
-                                    f.nome nome_funcionario,
-                                    o.peso, o.volume, o.qtd_itens, o.observacao,
-                                    c.nome nome_cliente, c.telefone,
-                                    EN.logradouro, EN.nr_casa, EN.complemento, EN.bairro, EN.cep, 
-                                    EN.ID_CIDADE, CID.nome NOME_CIDADE, 
-                                    CID.ID_ESTADO, EST.NOME NOME_ESTADO EST.sigla_uf,
-                                    s.nome, s.descricao
-                                    FROM entregas_ordens ent
-                                    inner join entregas e
-                                        on e.id = ent.entrega_id
-                                    inner join pessoas p
-                                        on p.id = e.id_motorista
-                                    inner join pessoas f
-                                        on f.id = e.id_funcionario
-                                    inner join ordens o
-                                        on o.id = ent.ordem_id
-                                    inner join pessoas c
-                                        on c.id = o.id_cliente
-                                    INNER JOIN enderecos EN
-                                        ON O.id_endereco = EN.id
-                                    INNER JOIN cidades CID
-                                        ON EN.id_cidade = CID.id
-                                    INNER JOIN estados EST
-                                        ON CID.id_estado = EST.id
-                                    inner join status s
-                                        on s.id = ent.status
-                                    where ent.entrega_id = @ID_ENTREGA ";
+                cmd.CommandText = @"SELECT eo.status_id,  s.id stats_id, s.nome nome_status, o.id, o.qtd_itens, o.peso, o.volume, o.observacao,
+                                    e.bairro, e.cep, e.complemento, e.logradouro, e.nr_casa,
+                                    cid.id id_cidade, cid.nome nome_cidade,
+                                    est.id id_estado, est.nome nome_estado,
+                                    p.nome nome_cliente
+                                    from entregas_ordens eo
+                                        inner join status s
+                                            on s.id = eo.status_id
+                                        inner join ordens o
+                                            on o.id = eo.ordem_id
+                                        inner join enderecos e
+                                            on e.id_ordem = o.id
+                                        inner join cidades cid
+                                            on e.id_cidade = cid.id
+                                        inner join estados est
+                                            on cid.id_estado = est.id
+                                        inner join clientes c
+                                            on o.id_cliente = c.id_pessoa
+                                        inner join pessoas p
+		                                    on c.id_pessoa = p.id
+                                        where eo.entrega_id =@ID_ENTREGA ";
 
                 cmd.Parameters.AddWithValue("@ID_ENTREGA", id);
                 cmd.ExecuteNonQuery();
 
                 SqlDataReader reader = cmd.ExecuteReader();
 
-                Entrega entrega = new Entrega();
-
+                List<Ordem> lista = new List<Ordem>();
+                
                 while (reader.Read())
                 {
-                        
-                    entrega.Id = (int)reader["entrega_id"];
-                    entrega.IdOrdem = (int)reader["entrega_id"];
-                    entrega.IdFuncionario = (int)reader["ID_FUNCIONARIO"];
-                    entrega.IdMotorista = (int)reader["ID_MOTORISTA"];
-                    entrega.Funcionario.Nome = (string)reader["NOME_FUNCIONARIO"];
-                    entrega.Motorista.Nome = (string)reader["NOME_MOTORISTA"];
-                    entrega.Ordem.Volume = (string)reader["VOLUME"];
-                    entrega.Ordem.Observacao = (string)reader["OBSERVACAO"];
-                    entrega.Ordem.Peso = (decimal)reader["PESO"];
-                    entrega.Ordem.Qtd_itens =  (short)reader["qtd_itens"];
-                    entrega.Ordem.Cliente.Nome = (string)reader["NOME_CLIENTE"];
-                    entrega.Ordem.Cliente.Telefone = (string)reader["TELEFONE"];
-                    entrega.Ordem.Endereco.Id = (int)reader["ID_ENDERECO"];
-                    entrega.Ordem.Endereco.Logradouro =  (string)reader["LOGRADOURO"];
-                    entrega.Ordem.Endereco.Nr_casa =  (string)reader["NR_CASA"];
-                    entrega.Ordem.Endereco.Bairro =  (string)reader["BAIRRO"];
-                    entrega.Ordem.Endereco.Complemento =  (string)reader["COMPLEMENTO"];
-                    entrega.Ordem.Endereco.Cep =  (string)reader["CEP"];
-                    entrega.Ordem.Endereco.IdCidade = (int)reader["ID_CIDADE"];
-                    entrega.Ordem.Endereco.Cidade =  (string)reader["NOME_CIDADE"];
-                    entrega.Ordem.Endereco.IdEstado = (int)reader["ID_ESTADO"];
-                    entrega.Ordem.Endereco.Estado =  (string)reader["NOME_ESTADO"];
-                    entrega.Ordem.Endereco.Uf =  (string)reader["SIGLA_UF"];
+                    Ordem ordem = new Ordem();
+                    ordem.Id = (int)reader["id"];
+                    ordem.Qtd_itens =  (short)reader["qtd_itens"];
+                    ordem.Peso = (decimal)reader["PESO"];
+                    ordem.Volume = (string)reader["VOLUME"];
+                    ordem.Observacao = (string)reader["OBSERVACAO"];
+                    ordem.Cliente.Nome = (string)reader["NOME_CLIENTE"];
+                    ordem.Endereco.Bairro =  (string)reader["BAIRRO"];
+                    ordem.Endereco.Cep =  (string)reader["CEP"];
+                    ordem.Endereco.Complemento =  (string)reader["COMPLEMENTO"];
+                    ordem.Endereco.Logradouro =  (string)reader["LOGRADOURO"];
+                    ordem.Endereco.Nr_casa =  (string)reader["NR_CASA"];
+                    ordem.Endereco.IdCidade = (int)reader["ID_CIDADE"];
+                    ordem.Endereco.Cidade =  (string)reader["NOME_CIDADE"];
+                    ordem.Endereco.IdEstado = (int)reader["ID_ESTADO"];
+                    ordem.Endereco.Estado =  (string)reader["NOME_ESTADO"];
+                    ordem.Status.Nome = (string)reader["nome_status"];
+                    ordem.IdStatus = (short)reader["stats_id"];
+                    lista.Add(ordem);
                     
                 }
-                return entrega;
+                response.Item.Add("ordens", lista); 
+                return response;
             }   
             catch(Exception ex)
             {
@@ -275,16 +245,19 @@ namespace logiWeb.Repositories
                 Dispose();
             }
         }
-        public void StatusOrdem(Ordem ordem)
+        public AjaxResponse StatusOrdem(int id_ordem, int id_status, int id_entrega)
         {
             try
             {
                 cmd.Connection = connection;
-                cmd.CommandText = @"UPDATE entregas_ordens SET STATUS = @ID_STATUS 
-                                    WHERE ordem_id = @ID_ORDEM";
-                cmd.Parameters.AddWithValue("@ID_STATUS", ordem.IdStatus);
-                cmd.Parameters.AddWithValue("@ID_ORDEM", ordem.Id);
+                cmd.CommandText = @"UPDATE entregas_ordens SET STATUS_id = @ID_STATUS 
+                                    WHERE ordem_id = @ID_ORDEM and entrega_id = @ID_ENTREGA";
+                cmd.Parameters.AddWithValue("@ID_STATUS", id_status);
+                cmd.Parameters.AddWithValue("@ID_ORDEM",id_ordem);
+                cmd.Parameters.AddWithValue("@ID_ENTREGA", id_entrega);
                 cmd.ExecuteNonQuery();
+                response.Message.Add("Status alterado com sucesso!");
+                return response;
             }
               catch(Exception ex)
             {
@@ -292,19 +265,23 @@ namespace logiWeb.Repositories
             }
             finally
             {
-                Dispose();
+               // Dispose();
             }
         }
-         public void StatusEntrega(Entrega entrega)
+         public void StatusEntrega(int id_entrega, int id_status)
         {
             try
             {
+                
                 cmd.Connection = connection;
-                cmd.CommandText = @"UPDATE status_entrega SET ID_STATUS = @ID_STATUS 
-                                    WHERE ID_ENTREGA = @ID_ENTREGA";
-                cmd.Parameters.AddWithValue("@ID_STATUS", entrega.IdStatus);
-                cmd.Parameters.AddWithValue("@ID_ENTREGA", entrega.Id);
+                cmd.Connection.Open();
+                cmd.Parameters.Clear();
+                cmd.CommandText = @"UPDATE status_entrega SET ID_STATUS = @ID_STAT 
+                                    WHERE ID_ENTREGA = @ID_ENTRE";
+                cmd.Parameters.AddWithValue("@ID_STAT", id_status);
+                cmd.Parameters.AddWithValue("@ID_ENTRE",id_entrega);
                 cmd.ExecuteNonQuery();
+                Dispose();
             }
               catch(Exception ex)
             {

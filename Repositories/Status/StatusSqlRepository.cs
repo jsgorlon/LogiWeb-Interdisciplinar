@@ -1,33 +1,32 @@
 using System.Data.SqlClient;
 using logiWeb.Models;
-
+using logiWeb.Helpers; 
 namespace logiWeb.Repositories
 {
     public class StatusSqlRepository : DBContext, IStatusRepository
     {
         private SqlCommand cmd = new SqlCommand();
-
-        public List<Status> Mostrar()
+        private AjaxResponse response = new AjaxResponse(); 
+        public AjaxResponse Mostrar()
         {
             try{
                 cmd.Connection = connection;
-                cmd.CommandText = @"SELECT ID, NOME, DESCRICAO FROM STATUS ";
-
+                cmd.CommandText = @"SELECT ID, NOME, DESCRICAO FROM STATUS where descricao like @obj ";
+                cmd.Parameters.AddWithValue("@obj", "%Objeto%");
                 SqlDataReader reader = cmd.ExecuteReader();
 
-                List<Status> lista = new List<Status>();
+                List<Entrega> lista = new List<Entrega>();
 
                 while (reader.Read())
                 {
-                    lista.Add(
-                        new Status{
-                            Id = (short)reader["ID_ORDEM"],
-                            Nome = (string)reader["NOME"],
-                            Descricao = (string)reader["DESCRICAO"]
-                        }
-                    );
+                   Entrega item = new Entrega();
+                   item.Status.Id = (short)reader["id"];
+                   item.Status.Nome = (string)reader["NOME"];
+                   item.Status.Descricao = (string)reader["DESCRICAO"];
+                   lista.Add(item);
                 }
-                return lista;
+                response.Item.Add("entregas", lista); 
+                return response;
             }catch(Exception ex)
             {
                 throw ex;

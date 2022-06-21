@@ -148,6 +148,123 @@
     </div>
 </template>
 
+
+
+<template id="template_detalhe_entrega">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 mb-3">
+                <label for="">Selecione a Ordem </label>
+                    <div class="input-group input-group-sm">
+                    <select id="id_ordem"   class="form-select ">
+                        <option value="">SELECIONE</option>
+                    </select>
+                    <div class="input-group-prepend ps-2">
+                        <button id="btPesquisarOrdem" class="btn btn-sm btn-success">
+                            <i class="fa-solid fa-magnifying-glass"></i> Ver detalhe
+                        </button>
+                   </div>
+                </div>
+            </div>
+             <div class="col-12">
+                <small class="text-muted">
+                    Dados da Ordem 
+                </small>
+                <hr class="m-0" style="height:3px;border-radius:15px;background:#333;">
+            </div>
+            <div class="col-md-2">
+                <label for="qtd_itens">Qtd. Itens <span class="text-danger">*</span></label>
+                <div class="input-group input-group-sm">
+                    <input class="form-control" type="text" id="qtd_itens">
+                </div>
+            </div>
+            <div class="col-md-2">
+                <label for="volume">Volume <span class="text-danger">*</span></label>
+                <div class="input-group input-group-sm">
+                    <input class="form-control" type="text" id="volume">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <label for="peso">Peso <span class="text-danger">*</span></label>
+                <div class="input-group input-group-sm">
+                    <div class="input-group-prepend px-1 rounded" style="background:#ccc;">
+                        <b>
+                            <small>KG</small>
+                        </b>
+                    </div>
+                    <input class="form-control" type="text" id="peso">
+                </div>
+            </div>
+            <div class="col-md-5">
+                <label for="obs_ordem">Observacao</label>
+                <div class="input-group input-group-sm">
+                    <input class="form-control" type="text" maxlength="100" id="obs_ordem">
+                </div>
+            </div>
+            <div class="col-12">
+                <small class="text-muted">
+                    Destino de entrega
+                </small>
+                <hr class="m-0" style="height:3px;border-radius:15px;background:#333;">
+            </div>
+            <div class="col-md-4">
+                <label for="">Estado <span class="text-danger">*</span></label>
+                <div class="input-group input-group-sm">
+                    <input type="text" id="estado" maxlength="50" class="form-control">
+                </div>
+            </div>
+            <div class="col-md-8">
+                <label for="">Cidade <span class="text-danger">*</span></label>
+                 <div class="input-group input-group-sm">
+                    <input type="text" id="cidade" maxlength="50" class="form-control">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <label for="">Bairro <span class="text-danger">*</span></label>
+                <div class="input-group input-group-sm">
+                    <input type="text" id="bairro" maxlength="50" class="form-control">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <label for="">Logradouro</label>
+                <div class="input-group input-group-sm">
+                    <input type="text" id="logradouro" maxlength="150" class="form-control">
+                </div>
+            </div>
+            <div class="col-md-2">
+                <label for="">Id. Casa <span class="text-danger">*</span></label>
+                <div class="input-group input-group-sm">
+                    <input type="text" id="nr_casa" maxlength="15" class="form-control">
+                </div>
+            </div>
+            <div class="col-md-2">
+                <label for="">CEP <span class="text-danger">*</span></label>
+                <div class="input-group input-group-sm">
+                    <input type="text" id="cep" class="form-control">
+                </div>
+            </div>
+            <div class="col-md-10">
+                <label for="">Complemento</label>
+                <div class="input-group input-group-sm">
+                    <input type="text" maxlength="100" id="complemento" class="form-control">
+                </div>
+            </div>
+             <div class="col-md-12 mb-3">
+                <label for="">Selecione o status </label>
+                    <div class="input-group input-group-sm">
+                    <select id="id_status"   class="form-select ">
+                        <option value="">SELECIONE</option>
+                    </select>
+                    <div class="input-group-prepend ps-2">
+                        <button  id="btAlterarStatus" class="btn btn-sm btn-success" id="btnStatus">
+                            <i class="fa-solid fa-magnifying-glass"></i> Alterar status
+                        </button>
+                   </div>
+                </div>
+            </div>
+         
+</template>
+
 @section events {
      <script src="~/lib/bootstrap-table/bootstrap-table.min.js"></script>
      <script src="~/lib/jquery-confirm/jquery-confirm.min.js"></script>
