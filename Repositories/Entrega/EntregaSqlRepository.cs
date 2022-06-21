@@ -29,7 +29,7 @@ namespace logiWeb.Repositories
                 cmd.Parameters.Clear();
                 cmd.Parameters.AddWithValue("@id_funcionario", IdFuncionario);
                 cmd.Parameters.AddWithValue("@id_motorista", idMotorista);
-                decimal idEntrega = (decimal)cmd.ExecuteScalar();
+                int idEntrega = Convert.ToInt32((decimal)cmd.ExecuteScalar());
                 
                 //status padrao para entrega 12 - pendente
                 cmd.CommandText = @"INSERT INTO status_entrega (id_entrega, id_status) 
