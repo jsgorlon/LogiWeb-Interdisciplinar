@@ -6,7 +6,7 @@ namespace logiWeb.Repositories
 {
     public class EntregaSqlRepository : DBContext, IEntregaRepository
     {
-        private SqlCommand cmd = new SqlCommand();
+       
         private IOrdemRepository ordemRepository;
         private IStatusRepository statusRepository;
         private AjaxResponse response = new AjaxResponse(); 
@@ -21,6 +21,7 @@ namespace logiWeb.Repositories
         {
             try
             {
+                SqlCommand cmd = new SqlCommand();
                 cmd.Connection = connection;
                 cmd.CommandText = @"INSERT INTO ENTREGAS (id_funcionario, id_motorista) 
                                     VALUES (@id_funcionario, @id_motorista);
@@ -64,6 +65,7 @@ namespace logiWeb.Repositories
         {
             try
             {
+                SqlCommand cmd = new SqlCommand();
                 cmd.Connection = connection;
                 cmd.CommandText = @"UPDATE ENTREGAS SET ATIVO = 0 WHERE ID = @ID";
                 cmd.Parameters.AddWithValue("@ID", id);
@@ -84,6 +86,7 @@ namespace logiWeb.Repositories
         public AjaxResponse MostrarEntregas(int? id_funcionario, int? id_motorista)
         {
             try{
+                SqlCommand cmd = new SqlCommand();
                 cmd.Connection = connection;
                 cmd.CommandText = @"SELECT E.ID, E.ID_FUNCIONARIO, E.ID_MOTORISTA, 
                                     F.NOME NOME_FUNCIONARIO, M.NOME NOME_MOTORISTA,
@@ -147,6 +150,7 @@ namespace logiWeb.Repositories
         {
             try
             {
+                SqlCommand cmd = new SqlCommand();
                 cmd.Connection = connection;
                 cmd.CommandText = @"SELECT ordem_id, status_id from entregas_ordens where entrega_id = @id_entreg";
 
@@ -180,6 +184,7 @@ namespace logiWeb.Repositories
         {
             try
             {
+                SqlCommand cmd = new SqlCommand();
                 cmd.Connection = connection;
                 cmd.CommandText = @"SELECT eo.status_id,  s.id stats_id, s.nome nome_status, o.id, o.qtd_itens, o.peso, o.volume, o.observacao,
                                     e.bairro, e.cep, e.complemento, e.logradouro, e.nr_casa,
@@ -249,6 +254,7 @@ namespace logiWeb.Repositories
         {
             try
             {
+                SqlCommand cmd = new SqlCommand();
                 cmd.Connection = connection;
                 cmd.CommandText = @"UPDATE entregas_ordens SET STATUS_id = @ID_STATUS 
                                     WHERE ordem_id = @ID_ORDEM and entrega_id = @ID_ENTREGA";
@@ -272,7 +278,7 @@ namespace logiWeb.Repositories
         {
             try
             {
-                
+                SqlCommand cmd = new SqlCommand();
                 cmd.Connection = connection;
                 cmd.Connection.Open();
                 cmd.Parameters.Clear();

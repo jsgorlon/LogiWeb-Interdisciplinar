@@ -8,11 +8,12 @@ namespace logiWeb.Repositories
     {
       
         private AjaxResponse response = new AjaxResponse(); 
-        private SqlCommand cmd = new SqlCommand();
+   
         public AjaxResponse Cadastrar(Cliente cliente)
         {
             try
             {
+                SqlCommand cmd = new SqlCommand();
                 cmd.Connection = connection;
                 cmd.CommandText = @"SELECT pessoas.id 
                                       FROM pessoas 
@@ -80,7 +81,8 @@ namespace logiWeb.Repositories
         {
             try
             {
-                
+                SqlCommand cmd = new SqlCommand();
+
                 List<Cliente> clientes = new List<Cliente>();
                 string query = "";
                 List<string> query_parameters = new List<string>(); 
@@ -140,6 +142,7 @@ namespace logiWeb.Repositories
         {
             try
             {
+                SqlCommand cmd = new SqlCommand();
                 cmd.Connection = connection;
                 cmd.CommandText = @"UPDATE pessoas
                                     SET nome = @nome, 
@@ -174,7 +177,7 @@ namespace logiWeb.Repositories
         {
             try
             {
-                
+                SqlCommand cmd = new SqlCommand();
                 cmd.Connection = connection;
                 cmd.CommandText = @"UPDATE clientes
                                        SET clientes.ativo = @status

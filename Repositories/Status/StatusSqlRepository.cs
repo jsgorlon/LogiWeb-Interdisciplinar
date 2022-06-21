@@ -5,11 +5,12 @@ namespace logiWeb.Repositories
 {
     public class StatusSqlRepository : DBContext, IStatusRepository
     {
-        private SqlCommand cmd = new SqlCommand();
+       
         private AjaxResponse response = new AjaxResponse(); 
         public AjaxResponse Mostrar()
         {
             try{
+                SqlCommand cmd = new SqlCommand();
                 cmd.Connection = connection;
                 cmd.CommandText = @"SELECT ID, NOME, DESCRICAO FROM STATUS where descricao like @obj ";
                 cmd.Parameters.AddWithValue("@obj", "%Objeto%");

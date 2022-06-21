@@ -5,12 +5,13 @@ namespace logiWeb.Repositories
 {
     public class CargoSqlRepository: DBContext, ICargoRepository
     {
-        private SqlCommand cmd = new SqlCommand();
+       
 
         public void Cadastrar(Cargo cargo)
         {
             try
             {
+                SqlCommand cmd = new SqlCommand();
                 cmd.Connection = connection;
                 cmd.CommandText = @"INSERT INTO Cargos (nome, descricao, salario)
                                     VALUES (@nome, @descricao, @salario);";
@@ -35,6 +36,7 @@ namespace logiWeb.Repositories
         {
             try
             {
+                SqlCommand cmd = new SqlCommand();
                 cmd.Connection = connection;
                 cmd.CommandText = "SELECT * FROM Cargos ORDER BY nome;";
 
@@ -70,6 +72,7 @@ namespace logiWeb.Repositories
         {
             try
             {
+                SqlCommand cmd = new SqlCommand();
                 cmd.Connection = connection;
                 cmd.CommandText = @"SELECT * FROM Cargos
                                     WHERE id = @id;";
@@ -104,6 +107,7 @@ namespace logiWeb.Repositories
         {
             try
             {
+                SqlCommand cmd = new SqlCommand();
                 cmd.Connection = connection;
                 cmd.CommandText = @"UPDATE Cargos
                                 SET nome = @nome, descricao = @descricao, salario = @salario
@@ -130,6 +134,7 @@ namespace logiWeb.Repositories
         {
             try
             {
+                SqlCommand cmd = new SqlCommand();
                 cmd.Connection = connection;
                 cmd.CommandText = @"DELETE FROM Cargos Where id = @id;";
                 cmd.Parameters.AddWithValue("@id", id);

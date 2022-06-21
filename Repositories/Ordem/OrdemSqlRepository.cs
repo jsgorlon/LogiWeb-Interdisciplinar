@@ -6,7 +6,7 @@ namespace logiWeb.Repositories
 {
     public class OrdemSqlRepository : DBContext, IOrdemRepository
     {
-        private SqlCommand cmd = new SqlCommand();
+        
         private AjaxResponse response = new AjaxResponse(); 
 
         private IClienteRepository clienteRepository;
@@ -20,6 +20,7 @@ namespace logiWeb.Repositories
           
             try
             {   
+                SqlCommand cmd = new SqlCommand();
                 cmd.Connection = connection;
                 cmd.CommandText = @"INSERT INTO ordens (id_cliente, id_funcionario, qtd_itens, volume, peso, observacao)  
                                          VALUES (@id_cliente, @id_funcionario, @qtd_itens, @volume, @peso, @observacao);
@@ -65,6 +66,7 @@ namespace logiWeb.Repositories
         {
             try
             {
+                SqlCommand cmd = new SqlCommand();
                 cmd.Connection = connection;
                 cmd.CommandText = @"UPDATE ordens SET ativo = @status WHERE id = @id";
                 cmd.Parameters.Clear();
@@ -88,6 +90,7 @@ namespace logiWeb.Repositories
         public AjaxResponse MostrarOrdens(int? id_funcionario,string? nome_cliente, int? status)
         {
             try{
+                 SqlCommand cmd = new SqlCommand();
 
                 string query = "";
                
@@ -175,7 +178,7 @@ namespace logiWeb.Repositories
         public AjaxResponse MostrarOrdem(int id_ordem)
         {
             try{
-                
+                SqlCommand cmd = new SqlCommand();
                 cmd.Connection = connection;
                 cmd.CommandText = @"SELECT O.ID, O.ID_CLIENTE, O.ID_FUNCIONARIO, coalesce(eo.status_id,0) status_id,  
                                     O.VOLUME, O.PESO, O.OBSERVACAO, O.QTD_ITENS, P.NOME NOME_CLIENTE, F.NOME NOME_FUNCIONARIO,

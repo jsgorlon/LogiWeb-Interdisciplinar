@@ -6,7 +6,7 @@ namespace logiWeb.Repositories
 {
     public class FuncionarioSqlRepository : DBContext, IFuncionarioRepository
     {
-        private SqlCommand cmd = new SqlCommand();
+       
         private ICargoRepository cargoRepository;
         private AjaxResponse response = new AjaxResponse(); 
 
@@ -21,6 +21,7 @@ namespace logiWeb.Repositories
         {
             try
             {
+                SqlCommand cmd = new SqlCommand();
                 string msg = "";
 
                 if(!this.verifyLogin(funcionario.Login))
@@ -99,6 +100,8 @@ namespace logiWeb.Repositories
         {             
             try
             {
+                 SqlCommand cmd = new SqlCommand();
+
                 string filters = "";
          
                 if(nome != null)
@@ -169,6 +172,8 @@ namespace logiWeb.Repositories
         {
             try
             {
+                 SqlCommand cmd = new SqlCommand();
+
                 if(!this.verifyLogin(funcionario.Login, id))
                      return "alert_error('Usuário já está em uso.');";
 
@@ -219,6 +224,7 @@ namespace logiWeb.Repositories
         {
             try
             {
+                 SqlCommand cmd = new SqlCommand();
                 cmd.Connection = connection;
                 cmd.CommandText = @"UPDATE funcionarios
                                     SET ativo = @status
@@ -240,7 +246,8 @@ namespace logiWeb.Repositories
         }
 
         public bool verifyLogin(string login, int? id = null){
-            
+             SqlCommand cmd = new SqlCommand();
+             
             string filter = "";
 
             if(id != null)

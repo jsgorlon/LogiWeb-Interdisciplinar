@@ -7,13 +7,13 @@ namespace logiWeb.Repositories
 {
     public class IAuthenticationSqlRepository: DBContext, IAuthenticationRepository
     {
-        private SqlCommand cmd = new SqlCommand();
-
+     
       
         public bool GetUser(string Login, string Senha, HttpContext context)
         {
             try
             {
+                SqlCommand cmd = new SqlCommand();
                 cmd.Connection = connection;
                 cmd.CommandText = @"SELECT * 
                                       FROM funcionarios 

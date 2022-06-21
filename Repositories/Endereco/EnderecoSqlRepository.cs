@@ -5,12 +5,13 @@ namespace logiWeb.Repositories
 {
     public class EnderecoSqlRepository : DBContext, IEnderecoRepository
     {
-        private SqlCommand cmd = new SqlCommand();
+    
 
         public void Cadastrar(Endereco endereco)
         {
             try
             {
+                SqlCommand cmd = new SqlCommand();
                 cmd.Connection = connection;
                 cmd.CommandText = @"INSERT INTO enderecos (id_cidade, cep, logradouro, nr_casa, bairro, complemento) 
                                     values (@id_cidade,@cep, @logradouro, @nr_casa, @bairro, @complemento);";
@@ -36,6 +37,7 @@ namespace logiWeb.Repositories
         public Endereco MostrarEndereco(string cep, string nrCasa)
         {
             try{
+                SqlCommand cmd = new SqlCommand();
                 cmd.Connection = connection;
                 cmd.CommandText = @"SELECT EN.ID, logradouro, nr_casa, complemento, bairro, cep, 
 		                            ID_CIDADE, CID.nome NOME_CIDADE, 
@@ -76,6 +78,7 @@ namespace logiWeb.Repositories
         public List<Endereco> MostrarEstado()
         {
             try{
+                SqlCommand cmd = new SqlCommand();
                 cmd.Connection = connection;
                 cmd.CommandText = @"select id, nome, sigla_uf from estados";
                 SqlDataReader reader = cmd.ExecuteReader();
@@ -104,6 +107,8 @@ namespace logiWeb.Repositories
         public List<Endereco> MostrarCidade(int id_estado)
         {
             try{
+                 
+                SqlCommand cmd = new SqlCommand();
                 cmd.Connection = connection;
                 cmd.CommandText = @"SELECT id, nome, id_estado FROM cidades WHERE cidades.id_estado = @id_estado ORDER BY nome";
                 cmd.Parameters.Clear(); 
