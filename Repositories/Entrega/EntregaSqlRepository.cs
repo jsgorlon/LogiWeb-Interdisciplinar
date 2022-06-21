@@ -17,40 +17,23 @@ namespace logiWeb.Repositories
             this.statusRepository = statusRepository;
         }
 
-        public void Cadastrar(Entrega entrega, int[] idOrdem)
+        public AjaxResponse Cadastrar(int id_funcionario, int id_motorista)
         {
             try
             {
                 cmd.Connection = connection;
                 cmd.CommandText = @"INSERT INTO ENTREGAS (id_funcionario, id_motorista) 
-                                    VALUES (@id_funcionario, @id_motorista); ";
+                                    VALUES (@id_funcionario, @id_motorista);
+                                    SELECT CAST(SCOPE_IDENTITY() AS INT);";
 
-                cmd.Parameters.AddWithValue("@id_funcionario", entrega.IdFuncionario);
-                cmd.Parameters.AddWithValue("@id_motorista", entrega.IdMotorista);
-                cmd.ExecuteNonQuery();
-
-                cmd.CommandText = @"select SCOPE_IDENTITY()";
-                SqlDataReader reader = cmd.ExecuteReader();
-                int idEntrega = 0;
-
-                if (reader.Read())
-                {
-                    idEntrega = (int)reader["ID"];
-                }
-                //status padrao para entrega 12 - pendente
-                cmd.CommandText = @"INSERT INTO status_entrega (id_entrega, id_status) 
-                                    VALUES (@id_entrega, 12); ";
-                cmd.Parameters.AddWithValue("@id_entrega", idEntrega);
-                cmd.ExecuteNonQuery();
-                 //status padrao para ordem 1 - pendente
-                foreach (var idOrd in idOrdem)
-                {
-                    cmd.CommandText = @"INSERT INTO entregas_ordens (ordem_id, entrega_id, status_id) 
-                                        VALUES (@id_ordem,  @id_entrega , 1); ";
-                    cmd.Parameters.AddWithValue("@id_ordem", idOrd);
-                    cmd.Parameters.AddWithValue("@id_entrega", idEntrega);
-                    cmd.ExecuteNonQuery();
-                }
+                cmd.Parameters.AddWithValue("@id_funcionario",id_funcionario);
+                cmd.Parameters.AddWithValue("@id_motorista",  id_motorista);
+                int id_entrega = (int)cmd.ExecuteScalar();
+                
+                response.Message.Add("Entrega gerada com sucesso!");
+                response.Item.Add("id_entrega", id_entrega);
+                return response; 
+                
             }
               catch(Exception ex)
             {
@@ -60,6 +43,60 @@ namespace logiWeb.Repositories
             {
                 Dispose();
             }
+        }
+
+        public AjaxResponse AdicionarOrdem(int id_entrega, int id_ordem){
+            try{
+                cmd.Connection = connection;
+                cmd.CommandText = @"INSERT INTO entregas_ordens(entrega_id, ordem_id, status_id) 
+                                         VALUES (@entrega_id, @ordem_id, @status_id);";
+                
+                cmd.Parameters.Clear(); 
+                cmd.Parameters.AddWithValue("@entrega_id", id_entrega);
+                cmd.Parameters.AddWithValue("@ordem_id",   id_ordem);
+                cmd.Parameters.AddWithValue("@status_id",  1);
+                response.Message.Add("Ordem adicionada com sucesso!");
+                Console.WriteLine(id_ordem);
+                return response;
+            }catch(Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                Dispose();
+            }
+        }
+
+        public AjaxResponse MostrarEntregaOrdem(int id_entrega){
+                try{
+                cmd.Connection = connection;
+                cmd.CommandText = @"SELECT CONCAT('#', ordens.id) AS num_ordem, 
+                                           pessoas.nome
+                                      FROM entregas_ordens,
+                                           ordens,
+                                           pessoas
+                                     WHERE entregas_ordens.entrega_id = @id_entrega 
+                                       AND ordens.id                  = entregas_ordens.ordem_id 
+                                       AND pessoas.id                 = ordens.id_cliente";
+
+                cmd.Parameters.Clear();
+                cmd.Parameters.AddWithValue("@id_entrega", id_entrega);
+
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                response.Item.Add("itens", reader.Read()); 
+
+                return response;
+            }catch(Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                Dispose();
+            }
+          
         }
 
         public void Excluir(int id)
@@ -101,7 +138,7 @@ namespace logiWeb.Repositories
                 ";
                 if(id_funcionario != null)
                 {
-                    cmd.CommandText += " and e.id_funcionario = @id_funcionario";
+                    cmd.CommandText += " AND e.id_funcionario = @id_funcionario";
                     cmd.Parameters.AddWithValue("@id_funcionario", id_funcionario);
                 }
                     
@@ -114,23 +151,23 @@ namespace logiWeb.Repositories
 
                 SqlDataReader reader = cmd.ExecuteReader();
 
-                List<Entrega> lista = new List<Entrega>();
+                List<Entrega> entregas = new List<Entrega>();
 
                 while (reader.Read())
                 {
-                    Entrega item = new Entrega();
-                    item.Id = (int)reader["ID"];
-                    item.IdFuncionario = (int)reader["ID_FUNCIONARIO"];
-                    item.IdMotorista = (int)reader["ID_MOTORISTA"];
-                    item.Funcionario.Nome = (string)reader["NOME_FUNCIONARIO"];
-                    item.Motorista.Nome = (string)reader["NOME_MOTORISTA"];
-                    item.Status.Id = (short)reader["ID_STATUS"];
-                    item.DataCadastro = (DateTime)reader["DATA_CAD"];
-                    item.Status.Nome = (string)reader["STATUS"];
-                    item.Status.Descricao = (string)reader["DESCRICAO"];
-                    lista.Add(item);
+                    Entrega entrega = new Entrega();
+                            entrega.Id = (int)reader["ID"];
+                            entrega.IdFuncionario = (int)reader["ID_FUNCIONARIO"];
+                            entrega.IdMotorista = (int)reader["ID_MOTORISTA"];
+                            entrega.Funcionario.Nome = (string)reader["NOME_FUNCIONARIO"];
+                            entrega.Motorista.Nome = (string)reader["NOME_MOTORISTA"];
+                            entrega.Status.Id = (short)reader["ID_STATUS"];
+                            entrega.DataCadastro = (DateTime)reader["DATA_CAD"];
+                            entrega.Status.Nome = (string)reader["STATUS"];
+                            entrega.Status.Descricao = (string)reader["DESCRICAO"];
+                    entregas.Add(entrega);
                 }
-                response.Item.Add("entregas", lista); 
+                response.Item.Add("entregas", entregas); 
                 return response;
             }catch(Exception ex)
             {
@@ -295,7 +332,7 @@ namespace logiWeb.Repositories
                 Dispose();
             }
         }
-         public void StatusEntrega(Entrega entrega)
+        public void StatusEntrega(Entrega entrega)
         {
             try
             {

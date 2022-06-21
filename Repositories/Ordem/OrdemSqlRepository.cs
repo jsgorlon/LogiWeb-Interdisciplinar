@@ -172,6 +172,75 @@ namespace logiWeb.Repositories
             
         }
 
-        
+        public  AjaxResponse GetById(int id){
+            try{
+                cmd.Connection = connection;
+                cmd.CommandText = @"SELECT ordens.*, 
+                                           ordens.id AS id_pedido, 
+                                           enderecos.*,
+                                           funcionario.id   AS id_funcionario,
+                                           funcionario.nome AS nome_funcionario,
+                                           cliente.id       AS id_cliente, 
+                                           cliente.nome     AS nome_cliente,
+                                           cidades.id_estado,
+                                           cidades.nome AS nome_cidade, 
+                                           estados.nome as nome_estado
+                                      FROM ordens,
+                                           enderecos, 
+                                           pessoas AS funcionario,
+                                           pessoas AS cliente,
+                                           cidades,
+                                           estados 
+                                     WHERE ordens.id = @id
+                                       AND ordens.ativo = 1
+                                       AND funcionario.id     = ordens.id_funcionario 
+                                       AND cliente.id         = ordens.id_cliente
+                                       AND enderecos.id_ordem = ordens.id 
+                                       AND cidades.id = enderecos.id_cidade
+                                       AND estados.id = cidades.id_estado";
+            
+                cmd.Parameters.Clear(); 
+                cmd.Parameters.AddWithValue("@id", id);
+
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                List<Ordem> ordens = new List<Ordem>();
+                
+
+                while (reader.Read())
+                {
+                    Ordem ordem = new Ordem();
+                    ordem.Id                   = (int)reader["id_ordem"];
+                    ordem.IdCliente            = (int)reader["id_cliente"];
+                    ordem.IdFuncionario        = (int)reader["id_funcionario"];
+                    ordem.Peso                 = (decimal)reader["peso"];
+                    ordem.Observacao           = (string)reader["observacao"];
+                    ordem.Qtd_itens            = (short)reader["qtd_itens"];
+                    ordem.Ativo                = (bool)reader["ativo"];
+                    ordem.Cliente.Nome         = (string)reader["nome_cliente"];
+                    ordem.Funcionario.Nome     = (string)reader["nome_funcionario"];
+                    ordem.Endereco.IdEstado    = (int)reader["id_estado"]; 
+                    ordem.Endereco.IdCidade    = (int)reader["id_cidade"];
+                    ordem.Endereco.Cidade      = (string)reader["nome_cidade"];
+                    ordem.Endereco.Estado      = (string)reader["nome_estado"];
+                    ordem.Endereco.Logradouro  = (string)reader["logradouro"];
+                    ordem.Endereco.Nr_casa     = (string)reader["nr_casa"];
+                    ordem.Endereco.Complemento = (string)reader["complemento"];
+                    ordem.Endereco.Bairro      = (string)reader["bairro"];
+                    ordem.Endereco.Cep         = (string)reader["cep"];
+                    ordens.Add(ordem);
+                }
+
+                response.Item.Add("ordens", ordens); 
+                return response;
+            }catch(Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                Dispose();
+            }
+        }
     }
 }

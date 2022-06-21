@@ -18,7 +18,7 @@ public class EntregaController : Controller
 
     public ActionResult Index()
     {
-
+        ViewBag.IdFuncionario =  HttpContext.Session.GetString("id_funcionario"); 
         return View();
     }
 
@@ -29,20 +29,25 @@ public class EntregaController : Controller
         return Json(entregas);
     }
 
-    [HttpGet]
-    public ActionResult Cadastrar()
+ 
+
+    [HttpPost]
+    public JsonResult Cadastrar(int id_funcionario, int id_motorista)
     {
-       // ViewBag.Ordens = ordemRepository.MostrarOrdens();
-        return View();
+       return Json( this.repository.Cadastrar(id_funcionario, id_motorista)); 
     }
 
     [HttpPost]
-    public ActionResult Cadastrar(Entrega entrega, int[] idOrdem)
-    {
-        this.repository.Cadastrar(entrega, idOrdem);
-        return RedirectToAction("Mostrar");
+    public JsonResult AdicionarOrdem(int id_entrega, int id_ordem){
+
+        return Json(this.repository.AdicionarOrdem(id_entrega, id_ordem));
     }
 
+    [HttpPost]
+    public JsonResult ObterEntregaOrdem(int id_entrega){
+
+        return Json(this.repository.MostrarEntregaOrdem(id_entrega));
+    }
     
     public ActionResult Excluir(int id)
     {

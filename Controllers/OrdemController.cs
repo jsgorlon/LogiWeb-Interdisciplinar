@@ -35,4 +35,9 @@ public class OrdemController : Controller
     {
        return Json(this.repository.AlterarStatus(id, status));
     }
+
+    public JsonResult getById(int id){
+
+        return Json(this.repository.GetById(id));
+    }
 }
