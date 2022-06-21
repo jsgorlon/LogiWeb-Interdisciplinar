@@ -48,6 +48,7 @@ $(document).ready(_=>{
         columnClass: 'col-12 col-md-7 col-lg-6', 
         draggable: false, 
         closeIcon: true, 
+        lazyOpen: true, 
         onOpen: function(){
             obterFuncionarios();
             obterMotorista();
@@ -77,6 +78,7 @@ dialogStatus = $.dialog({
     type: 'green', 
     columnClass: 'col-12 col-md-7 col-lg-6', 
     draggable: false, 
+    lazyOpen: true, 
     closeIcon: true, 
     onOpen: function(){
         $("#btPesquisarOrdem").click(function(){
