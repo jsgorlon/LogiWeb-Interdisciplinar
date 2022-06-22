@@ -106,23 +106,28 @@ namespace logiWeb.Repositories
               
 
                 cmd.Connection = connection;
-                cmd.CommandText = @"SELECT ordens.*, 
-                                           ordens.id AS id_pedido, 
-                                           enderecos.*,
+                cmd.CommandText = @"select  ordens.*,  ordens.id AS id_pedido, 
+                                           enderecos.bairro, enderecos.cep, enderecos.complemento, enderecos.id_cidade, enderecos.id_ordem, enderecos.logradouro, enderecos.nr_casa,
                                            funcionario.id   AS id_funcionario,
                                            funcionario.nome AS nome_funcionario,
                                            cliente.id       AS id_cliente, 
                                            cliente.nome     AS nome_cliente,
-                                           cidades.id_estado 
-                                      FROM ordens,
-                                           enderecos, 
-                                           pessoas AS funcionario,
-                                           pessoas AS cliente,
-                                           cidades 
-                                     WHERE funcionario.id     = ordens.id_funcionario 
-                                       AND cliente.id         = ordens.id_cliente
-                                       AND enderecos.id_ordem = ordens.id 
-                                       AND cidades.id = enderecos.id_cidade  "+query+" ORDER BY ordens.id DESC";
+                                           cidades.id_estado,								
+										   coalesce(s.nome,'Ordem sem entrega') as status_id
+										   from ordens 
+										   inner join  pessoas AS funcionario
+											on funcionario.id     = ordens.id_funcionario 
+										   inner join   pessoas AS cliente
+										    on cliente.id         = ordens.id_cliente
+										   inner join  enderecos
+										    on enderecos.id_ordem = ordens.id 
+										  inner join  cidades
+										   on cidades.id = enderecos.id_cidade 
+										  left join entregas_ordens eo
+											on  ordens.id = eo.ordem_id
+										  left join status s
+										    on s.id = eo.status_id
+                                           where ordens.id = ordens.id "+query+" ORDER BY ordens.id DESC";
             
                 cmd.Parameters.Clear(); 
                 
@@ -159,6 +164,7 @@ namespace logiWeb.Repositories
                     ordem.Endereco.Complemento = (string)reader["complemento"];
                     ordem.Endereco.Bairro      = (string)reader["bairro"];
                     ordem.Endereco.Cep         = (string)reader["cep"];
+                    ordem.Status.Nome = (string)reader["status_id"];
                     ordens.Add(ordem);
                 }
 

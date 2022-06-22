@@ -325,7 +325,9 @@ function obterEstado(selectId, ig = 'selecione', id_select = 0){
          success: data => {
             ordens = []; 
              let orders = [];
+             console.log(data)
              data.item.ordens.map(order => {
+                
                 orders.push({
                         id:order.id,
                         id_num_pedido: `<b class="${order.ativo ? '' : 'text-danger'}">#${order.id}</b>`,
@@ -334,6 +336,7 @@ function obterEstado(selectId, ig = 'selecione', id_select = 0){
                         peso_qtd_itens: `Peso: ${ order.peso} KG <br>${order.qtd_itens} iten(s)`,
                         nome_cliente: order.cliente.nome.toLocaleUpperCase(),
                         nome_funcionario: order.funcionario.nome.toLocaleUpperCase(),
+                        status_descricao: order.status.nome
                    });
                 
                    ordens.push(order);
