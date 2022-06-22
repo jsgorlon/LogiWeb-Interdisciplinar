@@ -9,7 +9,10 @@ A AplicaçãoWeb busca incorporar processos de uma microempresa de Logistica que
 
 # Desenvolvedores:
   Allan Diego Ataide da Silva
+  
   José Florindo Sgorlon Filho
+  
   Lucas Galdino Mendes
+  
 # Instruções:
   Executar a aplicação pelo Command Prompt "dotnet run"
