@@ -325,7 +325,6 @@ function obterEstado(selectId, ig = 'selecione', id_select = 0){
          success: data => {
             ordens = []; 
              let orders = [];
-             console.log(data)
              data.item.ordens.map(order => {
                 
                 orders.push({
