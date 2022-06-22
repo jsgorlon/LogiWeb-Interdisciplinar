@@ -114,6 +114,7 @@ namespace logiWeb.Repositories
                     cmd.CommandText += " and e.id_motorista = @id_motorista";
                     cmd.Parameters.AddWithValue("@id_motorista", id_motorista);
                 }
+                cmd.CommandText += " ORDER BY E.id DESC";
 
                 SqlDataReader reader = cmd.ExecuteReader();
 
