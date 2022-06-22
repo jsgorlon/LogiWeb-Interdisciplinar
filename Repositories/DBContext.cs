@@ -26,9 +26,5 @@ namespace logiWeb.Repositories
             connection.Close();
             SqlConnection.ClearPool(connection);
         }
-
-        /* ~DBContext(){
-            Dispose(); 
-        } */
     }
 }

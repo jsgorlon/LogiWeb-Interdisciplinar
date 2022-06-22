@@ -90,17 +90,24 @@ dialogStatus = $.dialog({
     title: `<span style="font-size:18px !important;" class="fw-bold">Detalhes entrega</span>`,
     content: $("#template_detalhe_entrega").html(), 
     type: 'green', 
-    columnClass: 'col-12 col-md-7 col-lg-6', 
+    columnClass: 'col-12 col-md-7 col-lg-10', 
     draggable: false, 
     lazyOpen: true, 
     closeIcon: true, 
     onOpen: function(){
+        let dialog = this; 
+        $("#id_ordem").change(ev=>{
+            if(!ev.target.value){
+                $("input, select").val('').attr("disabled", false);
+            }
+        });
+
         $("#btPesquisarOrdem").click(function(){
-            obterStatus();
+          
             obterOrdem($("#id_ordem").val());
         });
         $("#btAlterarStatus").click(function(){
-            alterarStatus($("#id_ordem").val(), $("#id_status").val());
+            alterarStatus($("#id_ordem").val(), $("#id_status").val(), dialog);
         });
         
     }, 
@@ -117,6 +124,9 @@ dialogStatus = $.dialog({
             }
         }
         this.open();
+    }, 
+    onClose: function(){
+        $("input, select").attr("disabled", false);
     }
 });
 
@@ -225,7 +235,7 @@ function obterOrdensEntrega(id_entrega){
          },
          success: data => {
             let option = (value = "", text = "TODOS") => `<option value="${value}"}>${text}</option>`; 
-            let html = option();
+            let html = option("","SELECIONE");
             ordens = []; 
             let orders = [];
             data.item.ordens.map(order => {
@@ -246,7 +256,7 @@ function obterOrdensEntrega(id_entrega){
                         complemento: order.endereco.complemento,
                         status: order.status.nome
                    });
-                   html += option(order.id, order.id); 
+                   html += option(order.id, `#${order.id} - ${order.cliente.nome.toLocaleUpperCase()}`); 
                    ordens.push(orders);
                  
              });
@@ -316,6 +326,7 @@ function obterOrdem(id){
 
     if(id)
     {
+        console.log(ordens);
         let ordem = ordens[0].find(ord => ord.id == id); 
         $("#qtd_itens").val(ordem.qtd_itens); 
         $("#volume").val(ordem.volume); 
@@ -328,20 +339,27 @@ function obterOrdem(id){
         $("#complemento").val(ordem.complemento); 
         $("#cidade").val(ordem.cidade); 
         $("#estado").val(ordem.estado); 
-        $("#id_status").val( $('option:contains("'+ordem.status+'")').val() ); 
+        //$("#id_status").val( ordem.status.id); 
         $("#form_ordem").fadeIn(); 
 
+        $("input, select").attr("disabled", true); 
+        $("#id_status, #id_ordem").attr("disabled", false); 
+
+  
+        obterStatus(ordem.status);
     }
 }
-function obterStatus(){
+function obterStatus(id_select = null){
     $.ajax({
          type: 'GET',
          url: '/entrega/status',
          dataType: 'JSON',
          success: data => {
-             let option = (value = "", text = "SELECIONE") => `<option value="${value}"}>${text}</option>`; 
+             let option = (value = "", text = "SELECIONE") => `<option value="${value}"} ${text == id_select ? 'selected' : ''}>${text}</option>`; 
              let html = option();
-             console.log(data);
+            
+            console.log(id_select);
+
             data.item.entregas.map(stat => {
                 
                 html += option(stat.status.id, stat.status.nome); 
@@ -351,7 +369,7 @@ function obterStatus(){
      });
 }
 
-function alterarStatus(id_ordem, id_status){
+function alterarStatus(id_ordem, id_status, dialog = null){
     let ordem = ordens[0].find(ord => ord.id == id_ordem); 
     ordem.id_status = id_status; 
 
@@ -370,7 +388,7 @@ function alterarStatus(id_ordem, id_status){
          ajaxResponse(data);
          obterEntregas();
        
-           
+         dialog.close();
         }
     });
     this.close();

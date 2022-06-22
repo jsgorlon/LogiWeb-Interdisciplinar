@@ -154,6 +154,7 @@ namespace logiWeb.Repositories
                     ordem.Peso                 = (decimal)reader["peso"];
                     ordem.Observacao           = (string)reader["observacao"];
                     ordem.Qtd_itens            = (short)reader["qtd_itens"];
+                    ordem.Volume               = (string)reader["volume"];
                     ordem.Ativo                = (bool)reader["ativo"];
                     ordem.Cliente.Nome         = (string)reader["nome_cliente"];
                     ordem.Funcionario.Nome     = (string)reader["nome_funcionario"];
@@ -222,6 +223,7 @@ namespace logiWeb.Repositories
                     ordem.Endereco.Cep = (string)reader["cep"];
                     ordem.Endereco.Cidade = (string)reader["nome_cidade"];
                     ordem.Endereco.Uf = (string)reader["sigla_uf"];
+                    ordem.Volume = (string)reader["VOLUME"]; 
                     ordem.IdStatus = (short)Convert.ToInt16(reader["status_id"]);
                 }
                 if (ordem.Id == 0)
