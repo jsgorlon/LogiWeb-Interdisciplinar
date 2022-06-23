@@ -16,3 +16,12 @@ A AplicaçãoWeb busca incorporar processos de microempresas de Logistica que re
   
 # Instruções:
   Executar a aplicação pelo Command Prompt "dotnet run".
+
+# Resultado do Projeto Interdisciplinar 
+
+  Este projeto foi considerado ***nota 10*** de acordo com os avalidadores 
+  do interdisciplinar, sendo a maior nota da sala e atendendo todos os
+  requisitos solicitados pelos professores. O projeto final só chegou 
+  ao resultado máximo graças ao grande esforço de **TODOS** os membros do
+  grupo em que todos souberam se organizar, desenvolver, documentar 
+  e testar o projeto. 
