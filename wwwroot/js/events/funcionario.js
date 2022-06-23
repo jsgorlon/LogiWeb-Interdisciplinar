@@ -92,7 +92,7 @@ let dialogFuncionario = $.confirm({
     },
     editar: function(id_funcionario){
         
-        console.log(id_funcionario);
+        let dialog = this;
         this.title = `<span style="font-size:18px !important;" class="fw-bold">Edição do Funcionario</span>`;
         this.id_funcionario = id_funcionario; 
         this.buttons = {

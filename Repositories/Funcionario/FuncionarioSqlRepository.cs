@@ -208,7 +208,7 @@ namespace logiWeb.Repositories
                 cmd.Parameters.AddWithValue("@senha",    funcionario.Senha);
                 cmd.ExecuteNonQuery();
 
-                return "alert_success('Dados atualizados com sucesso!');";
+                return "alert_success('Dados atualizados com sucesso!');dialog.close();";
             }
             catch(Exception ex)
             {
